@@ -98,7 +98,7 @@ namespace NotRed::Math
 			);
 		}
 
-		static Matrix4 MatrixRotationQuaternion(const DMath::Quaternion& q)
+		static Matrix4 MatrixRotationQuaternion(const Math::Quaternion& q)
 		{
 			return Matrix4
 			(
