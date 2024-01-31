@@ -4,6 +4,7 @@
     <ClInclude Include="Inc\Common.h" />
     <ClInclude Include="Inc\Graphics.h" />
     <ClInclude Include="Src\Precompiled.h" />
+    <ClInclude Include="Inc\Colors.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />

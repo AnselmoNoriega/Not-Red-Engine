@@ -1,5 +1,5 @@
 #include "Precompiled.h"
-#include "REMath.h"
+#include "NRMath.h"
 
 using namespace NotRed::Math;
 

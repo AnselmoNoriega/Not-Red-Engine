@@ -32,6 +32,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "Framework\Math\Math
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics", "Framework\Graphics\Graphics.vcxproj", "{63F26F90-57A0-4FDC-A2E3-6315D7CBEC11}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{BE64C3C2-CDAD-4551-90D7-E8121300ABC7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTK_Desktop_2019", "External\DirectXTK\DirectXTK_Desktop_2019.vcxproj", "{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -80,6 +84,14 @@ Global
 		{63F26F90-57A0-4FDC-A2E3-6315D7CBEC11}.Release|x64.Build.0 = Release|x64
 		{63F26F90-57A0-4FDC-A2E3-6315D7CBEC11}.Release|x86.ActiveCfg = Release|Win32
 		{63F26F90-57A0-4FDC-A2E3-6315D7CBEC11}.Release|x86.Build.0 = Release|Win32
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Debug|x64.ActiveCfg = Debug|x64
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Debug|x64.Build.0 = Debug|x64
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Debug|x86.ActiveCfg = Debug|Win32
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Debug|x86.Build.0 = Debug|Win32
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.ActiveCfg = Release|x64
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.Build.0 = Release|x64
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x86.ActiveCfg = Release|Win32
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +103,7 @@ Global
 		{A466E9B0-8CA9-4C2D-831E-EFFC8C3B7CB7} = {CBD2CD9D-1F7C-4B52-922E-6AFA427C3B8E}
 		{ADE8E00A-5CC1-4DE7-B4BB-D28EB96A1F5D} = {CA042ACC-0993-41AC-A551-E6EA5BDEA50A}
 		{63F26F90-57A0-4FDC-A2E3-6315D7CBEC11} = {CA042ACC-0993-41AC-A551-E6EA5BDEA50A}
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E} = {BE64C3C2-CDAD-4551-90D7-E8121300ABC7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {42C00E3B-185C-4077-85D6-BC4109FB8B55}

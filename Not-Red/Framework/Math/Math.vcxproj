@@ -138,7 +138,7 @@
   <ItemGroup>
     <ClInclude Include="Inc\Common.h" />
     <ClInclude Include="Inc\Constants.h" />
-    <ClInclude Include="Inc\REMath.h" />
+    <ClInclude Include="Inc\NRMath.h" />
     <ClInclude Include="Inc\Matrix4.h" />
     <ClInclude Include="Inc\Quaternion.h" />
     <ClInclude Include="Inc\Vector2.h" />
@@ -147,7 +147,7 @@
     <ClInclude Include="Src\Precompiled.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\REMath.cpp" />
+    <ClCompile Include="Src\NRMath.cpp" />
     <ClCompile Include="Src\Precompiled.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
