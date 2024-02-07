@@ -5,6 +5,7 @@
 using namespace NotRed;
 using namespace NotRed::Core;
 using namespace NotRed::Graphics;
+using namespace NotRed::Input;
 
 void App::ChangeState(const std::string& stateName)
 {
@@ -25,7 +26,9 @@ void App::Run(const AppConfig& config)
 		config.winHeight
 	);
 	ASSERT(myWindow.IsActive(), "Failed to create a window");
-	GraphicsSystem::StaticInitialize(myWindow.GetWindowHandle(), false);
+	auto handle = myWindow.GetWindowHandle();;
+	GraphicsSystem::StaticInitialize(handle, false);
+	InputSystem::StaticInitialize(handle);
 
 	ASSERT(mCurrentState, "App: no app state found");
 	mCurrentState->Initialize();
@@ -34,8 +37,10 @@ void App::Run(const AppConfig& config)
 	while (mRunning)
 	{
 		myWindow.ProcessMessage();
+		InputSystem* input = InputSystem::Get();
+		input->Update();
 
-		if (!myWindow.IsActive())
+		if (!myWindow.IsActive() || input->IsKeyPressed(KeyCode::ESCAPE))
 		{
 			Quit();
 			continue;
@@ -57,6 +62,7 @@ void App::Run(const AppConfig& config)
 	}
 
 	mCurrentState->Terminate();
+	InputSystem::StaticTerminate();
 	GraphicsSystem::StaticTerminate();
 	myWindow.Terminate();
 }
