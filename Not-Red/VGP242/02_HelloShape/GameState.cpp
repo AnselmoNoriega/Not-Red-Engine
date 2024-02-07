@@ -208,9 +208,29 @@ void ShapeThree::Update(float dt)
 
 void ShapeThree::CreateShape()
 {
-	mVertices.push_back({ {-0.5f, 0.00f, 0.0f}, Colors::Red });
-	mVertices.push_back({ { 0.0f, 0.75f, 0.0f}, Colors::Blue });
-	mVertices.push_back({ { 0.5f, 0.00f, 0.0f}, Colors::Green });
+	mVertices.push_back({ {-0.05f,-0.05f, 0.0f}, Colors::Red });
+	mVertices.push_back({ {-0.75f,-0.05f, 0.0f}, Colors::Blue });
+	mVertices.push_back({ {-0.05f,-0.50f, 0.0f}, Colors::Green });
+
+	mVertices.push_back({ { 0.05f,-0.05f, 0.0f}, Colors::Red });
+	mVertices.push_back({ { 0.75f,-0.05f, 0.0f}, Colors::Blue });
+	mVertices.push_back({ { 0.05f,-0.50f, 0.0f}, Colors::Green });
+
+	mVertices.push_back({ {-0.05f, 0.05f, 0.0f}, Colors::Red });
+	mVertices.push_back({ {-0.75f, 0.05f, 0.0f}, Colors::Blue });
+	mVertices.push_back({ {-0.40f, 0.40f, 0.0f}, Colors::Green });
+
+	mVertices.push_back({ { 0.05f, 0.05f, 0.0f}, Colors::Red });
+	mVertices.push_back({ { 0.75f, 0.05f, 0.0f}, Colors::Blue });
+	mVertices.push_back({ { 0.40f, 0.40f, 0.0f}, Colors::Green });
+
+	mVertices.push_back({ { 0.02f, 0.07f, 0.0f}, Colors::Red });
+	mVertices.push_back({ { 0.35f, 0.45f, 0.0f}, Colors::Green });
+	mVertices.push_back({ { 0.02f, 0.75f, 0.0f}, Colors::Blue });
+
+	mVertices.push_back({ {-0.02f, 0.07f, 0.0f}, Colors::Red });
+	mVertices.push_back({ {-0.35f, 0.45f, 0.0f}, Colors::Green });
+	mVertices.push_back({ {-0.02f, 0.75f, 0.0f}, Colors::Blue });
 }
 
 
