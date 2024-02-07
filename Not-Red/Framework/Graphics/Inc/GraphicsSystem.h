@@ -44,6 +44,8 @@ namespace NotRed::Graphics
 		ID3D11DeviceContext* GetContext() { return mImmediateContext; }
 
 	private:
+		static LRESULT CALLBACK GraphicsSystemMessageHandler(HWND window, UINT message, WPARAM wParam, LPARAM lParam);
+
 		ID3D11Device* mD3DDevice = nullptr;
 		ID3D11DeviceContext* mImmediateContext = nullptr;
 

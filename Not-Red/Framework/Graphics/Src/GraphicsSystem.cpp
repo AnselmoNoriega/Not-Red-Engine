@@ -3,10 +3,31 @@
 
 using namespace NotRed;
 using namespace NotRed::Graphics;
+using namespace NotRed::Core;
 
 namespace
 {
 	std::unique_ptr<GraphicsSystem> sGraphicsSystem;
+	WindowMessageHandler sWindowMessageHandler;
+}
+
+LRESULT GraphicsSystem::GraphicsSystemMessageHandler(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	if (sGraphicsSystem)
+	{
+		switch (message)
+		{
+			case WM_SIZE:
+			{
+				const uint32_t width = static_cast<uint32_t>(LOWORD(lParam));
+				const uint32_t height = static_cast<uint32_t>(HIWORD(lParam));
+				sGraphicsSystem->Resize(width, height);
+				break;
+			}
+		}
+	}
+
+	return sWindowMessageHandler.ForwardMessage(window, message, wParam, lParam);
 }
 
 void GraphicsSystem::StaticInitialize(HWND window, bool fullscreen)
@@ -18,7 +39,7 @@ void GraphicsSystem::StaticInitialize(HWND window, bool fullscreen)
 
 void GraphicsSystem::StaticTerminate()
 {
-	if (sGraphicsSystem != nullptr)
+	if (sGraphicsSystem)
 	{
 		sGraphicsSystem->Terminate();
 		sGraphicsSystem.reset();
@@ -27,7 +48,7 @@ void GraphicsSystem::StaticTerminate()
 
 GraphicsSystem* GraphicsSystem::Get()
 {
-	ASSERT(sGraphicsSystem != nullptr, "GraphicsSystem: is not initialized");
+	ASSERT(sGraphicsSystem, "GraphicsSystem: is not initialized");
 	return sGraphicsSystem.get();
 }
 
@@ -78,10 +99,14 @@ void GraphicsSystem::Initialize(HWND window, bool fullscreen)
 	mSwapChain->GetDesc(&mSwapChainDesc);
 
 	Resize(GetBackBufferWidth(), GetBackBufferHeight());
+
+	sWindowMessageHandler.Hook(window, GraphicsSystemMessageHandler);
 }
 
 void GraphicsSystem::Terminate()
 {
+	sWindowMessageHandler.Unhook();
+
 	SafeRelease(mDepthStencilView);
 	SafeRelease(mDepthStencilBuffer);
 	SafeRelease(mRenderTargetView);
@@ -152,36 +177,35 @@ void GraphicsSystem::Resize(uint32_t width, uint32_t height)
 
 void GraphicsSystem::ResetRenderTarget()
 {
-
+	mImmediateContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
 }
 
 void GraphicsSystem::ResetViewport()
 {
-
+	mImmediateContext->RSSetViewports(1, &mViewport);
 }
 
 void GraphicsSystem::SetClearColor(const Color& color)
 {
-
+	mClearColor = color;
 }
 
 void GraphicsSystem::SetVSync(bool vSync)
 {
-
+	mVSync = vSync ? 1 : 0;
 }
 
 uint32_t GraphicsSystem::GetBackBufferWidth() const
 {
-	return 0;
+	return mSwapChainDesc.BufferDesc.Width;
 }
 
 uint32_t GraphicsSystem::GetBackBufferHeight() const
 {
-	return 0;
+	return mSwapChainDesc.BufferDesc.Height;
 }
 
 float GraphicsSystem::GetBackBufferAspectRatio() const
 {
-	return 0.0f;
+	return static_cast<float>(GetBackBufferWidth()) / static_cast<float>(GetBackBufferHeight());
 }
-

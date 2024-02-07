@@ -18,6 +18,6 @@ namespace NotRed::Core
 		HWND mWindow = nullptr;
 		RECT mScreenRect{};
 		std::wstring mAppName;
-		bool mActive = false;
+		bool mActive = true;
 	};
 }

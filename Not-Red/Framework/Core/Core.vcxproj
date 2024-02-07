@@ -144,6 +144,7 @@
     </ClCompile>
     <ClCompile Include="Src\TimeUtil.cpp" />
     <ClCompile Include="Src\Window.cpp" />
+    <ClCompile Include="Src\WindowMessageHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inc\Common.h" />
@@ -151,6 +152,7 @@
     <ClInclude Include="Inc\DebugUtil.h" />
     <ClInclude Include="Inc\TimeUtil.h" />
     <ClInclude Include="Inc\Window.h" />
+    <ClInclude Include="Inc\WindowMessageHandler.h" />
     <ClInclude Include="Src\Precompiled.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -4,6 +4,7 @@
 
 using namespace NotRed;
 using namespace NotRed::Core;
+using namespace NotRed::Graphics;
 
 void App::ChangeState(const std::string& stateName)
 {
@@ -23,9 +24,12 @@ void App::Run(const AppConfig& config)
 		config.winWidth,
 		config.winHeight
 	);
+	ASSERT(myWindow.IsActive(), "Failed to create a window");
+	GraphicsSystem::StaticInitialize(myWindow.GetWindowHandle(), false);
 
 	ASSERT(mCurrentState, "App: no app state found");
 	mCurrentState->Initialize();
+
 	mRunning = true;
 	while (mRunning)
 	{
@@ -45,13 +49,15 @@ void App::Run(const AppConfig& config)
 		}
 
 		auto deltaTime = TimeUtil::GetdeltaTime();
-		if (deltaTime < 0.5f)
-		{
-			mCurrentState->Update(deltaTime);
-		}
+		mCurrentState->Update(deltaTime);
+		GraphicsSystem* gs = GraphicsSystem::Get();
+		gs->BeginRender();
+		mCurrentState->Render();
+		gs->EndRender();
 	}
 
 	mCurrentState->Terminate();
+	GraphicsSystem::StaticTerminate();
 	myWindow.Terminate();
 }
 
