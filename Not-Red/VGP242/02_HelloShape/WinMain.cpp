@@ -7,7 +7,9 @@ using namespace NotRed;
 int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
 {
 	App& myApp = NotRed::MainApp();
-	myApp.AddState<MainState>("MainState");
+	myApp.AddState<ShapeOne>("ShapeOne");
+	myApp.AddState<ShapeTwo>("ShapeTwo");
+	myApp.AddState<ShapeThree>("ShapeThree");
 
 	AppConfig config;
 	config.appName = L"This Shape";

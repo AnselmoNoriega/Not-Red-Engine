@@ -40,6 +40,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02_HelloShape", "VGP242\02_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Input", "Framework\Input\Input.vcxproj", "{3629F01A-6FED-42EB-B308-E9F7F1346EAF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{F84F30A7-7F35-4F04-91F3-839E258DEB5F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{2E58C1B6-66A0-407E-8EBF-47BF64287221}"
+	ProjectSection(SolutionItems) = preProject
+		Assets\Shaders\Basic.fx = Assets\Shaders\Basic.fx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -126,6 +133,7 @@ Global
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E} = {BE64C3C2-CDAD-4551-90D7-E8121300ABC7}
 		{D65F42EA-14CC-4C0A-AF9C-D9D3200C0E47} = {CBD2CD9D-1F7C-4B52-922E-6AFA427C3B8E}
 		{3629F01A-6FED-42EB-B308-E9F7F1346EAF} = {CA042ACC-0993-41AC-A551-E6EA5BDEA50A}
+		{2E58C1B6-66A0-407E-8EBF-47BF64287221} = {F84F30A7-7F35-4F04-91F3-839E258DEB5F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {42C00E3B-185C-4077-85D6-BC4109FB8B55}
