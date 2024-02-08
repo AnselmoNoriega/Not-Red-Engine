@@ -197,13 +197,15 @@ void ShapeTwo::Update(float dt)
 
 void ShapeTwo::CreateShape()
 {
-	mVertices.push_back({ { 0.00f,-0.50f, 0.0f}, Colors::Black });
-	mVertices.push_back({ {-0.20f, 0.50f, 0.0f}, Colors::OrangeRed });
-	mVertices.push_back({ { 0.00f, 0.50f, 0.0f}, Colors::OrangeRed });
+	Color orangish = { 0.6f, 0.25f, 0.0f, 1.0f };
 
 	mVertices.push_back({ { 0.00f,-0.50f, 0.0f}, Colors::Black });
-	mVertices.push_back({ { 0.00f, 0.50f, 0.0f}, Colors::OrangeRed });
-	mVertices.push_back({ { 0.20f, 0.50f, 0.0f}, Colors::OrangeRed });
+	mVertices.push_back({ {-0.20f, 0.50f, 0.0f}, orangish });
+	mVertices.push_back({ { 0.00f, 0.50f, 0.0f}, orangish });
+
+	mVertices.push_back({ { 0.00f,-0.50f, 0.0f}, Colors::Black });
+	mVertices.push_back({ { 0.00f, 0.50f, 0.0f}, orangish });
+	mVertices.push_back({ { 0.20f, 0.50f, 0.0f}, orangish });
 
 	mVertices.push_back({ {-0.10f, 0.00f, 0.0f}, Colors::Black });
 	mVertices.push_back({ {-0.40f, 0.40f, 0.0f}, Colors::DarkOrange });
