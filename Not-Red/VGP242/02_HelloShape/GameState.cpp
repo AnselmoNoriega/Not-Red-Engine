@@ -197,29 +197,53 @@ void ShapeTwo::Update(float dt)
 
 void ShapeTwo::CreateShape()
 {
-	mVertices.push_back({ {-0.25f, 0.00f, 0.0f}, Colors::Red });
-	mVertices.push_back({ { 0.25f, 0.00f, 0.0f}, Colors::Red });
-	mVertices.push_back({ { 0.00f,-0.25f, 0.0f}, Colors::DarkRed });
+	mVertices.push_back({ { 0.00f,-0.50f, 0.0f}, Colors::Black });
+	mVertices.push_back({ {-0.20f, 0.50f, 0.0f}, Colors::OrangeRed });
+	mVertices.push_back({ { 0.00f, 0.50f, 0.0f}, Colors::OrangeRed });
 
-	mVertices.push_back({ {-0.50f,-0.25f, 0.0f}, Colors::DarkRed });
-	mVertices.push_back({ {-0.25f, 0.00f, 0.0f}, Colors::Red });
-	mVertices.push_back({ { 0.00f,-0.25f, 0.0f}, Colors::DarkRed });
+	mVertices.push_back({ { 0.00f,-0.50f, 0.0f}, Colors::Black });
+	mVertices.push_back({ { 0.00f, 0.50f, 0.0f}, Colors::OrangeRed });
+	mVertices.push_back({ { 0.20f, 0.50f, 0.0f}, Colors::OrangeRed });
 
-	mVertices.push_back({ {-0.75f, 0.00f, 0.0f}, Colors::Red });
-	mVertices.push_back({ {-0.25f, 0.00f, 0.0f}, Colors::Red });
-	mVertices.push_back({ {-0.50f,-0.25f, 0.0f}, Colors::DarkRed });
+	mVertices.push_back({ {-0.10f, 0.00f, 0.0f}, Colors::Black });
+	mVertices.push_back({ {-0.40f, 0.40f, 0.0f}, Colors::DarkOrange });
+	mVertices.push_back({ {-0.20f, 0.50f, 0.0f}, Colors::DarkOrange });
 
-	mVertices.push_back({ { 0.00f,-0.25f, 0.0f}, Colors::DarkRed });
-	mVertices.push_back({ { 0.25f, 0.00f, 0.0f}, Colors::Red });
-	mVertices.push_back({ { 0.50f,-0.25f, 0.0f}, Colors::DarkRed });
+	mVertices.push_back({ { 0.10f, 0.00f, 0.0f}, Colors::Black });
+	mVertices.push_back({ { 0.20f, 0.50f, 0.0f}, Colors::DarkOrange });
+	mVertices.push_back({ { 0.40f, 0.40f, 0.0f}, Colors::DarkOrange });
 
-	mVertices.push_back({ { 0.25f, 0.00f, 0.0f}, Colors::Red });
-	mVertices.push_back({ { 0.75f, 0.00f, 0.0f}, Colors::Red });
-	mVertices.push_back({ { 0.50f,-0.25f, 0.0f}, Colors::DarkRed });
+	mVertices.push_back({ { 0.00f,-0.50f, 0.0f}, Colors::Black });
+	mVertices.push_back({ {-0.25f, 0.20f, 0.0f}, Colors::Pink });
+	mVertices.push_back({ {-0.10f, 0.00f, 0.0f}, Colors::Pink });
 
-	mVertices.push_back({ {-0.25f, 0.00f, 0.0f}, Colors::DarkRed });
-	mVertices.push_back({ { 0.00f, 0.25f, 0.0f}, Colors::Red });
-	mVertices.push_back({ { 0.25f, 0.00f, 0.0f}, Colors::DarkRed });
+	mVertices.push_back({ { 0.00f,-0.50f, 0.0f}, Colors::Black });
+	mVertices.push_back({ { 0.10f, 0.00f, 0.0f}, Colors::Pink });
+	mVertices.push_back({ { 0.25f, 0.20f, 0.0f}, Colors::Pink });
+
+	mVertices.push_back({ {-0.055f,-0.35f, 0.0f}, Colors::Black });
+	mVertices.push_back({ {-0.55f , 0.10f, 0.0f}, Colors::DarkSlateGray });
+	mVertices.push_back({ {-0.25f , 0.20f, 0.0f}, Colors::DarkSlateGray });
+
+	mVertices.push_back({ { 0.055f,-0.35f, 0.0f}, Colors::Black });
+	mVertices.push_back({ { 0.25f, 0.20f, 0.0f}, Colors::DarkSlateGray });
+	mVertices.push_back({ { 0.55f, 0.10f, 0.0f}, Colors::DarkSlateGray });
+
+	mVertices.push_back({ {-0.25f, 0.20f, 0.0f}, Colors::Black });
+	mVertices.push_back({ {-0.55f, 0.10f, 0.0f}, Colors::DarkOrange });
+	mVertices.push_back({ {-0.40f, 0.40f, 0.0f}, Colors::DarkOrange });
+
+	mVertices.push_back({ { 0.25f, 0.20f, 0.0f}, Colors::Black });
+	mVertices.push_back({ { 0.40f, 0.40f, 0.0f}, Colors::DarkOrange });
+	mVertices.push_back({ { 0.55f, 0.10f, 0.0f}, Colors::DarkOrange });
+
+	mVertices.push_back({ {-0.20f, 0.50f, 0.0f}, Colors::DarkOrange });
+	mVertices.push_back({ {-0.40f, 0.40f, 0.0f}, Colors::DarkOrange });
+	mVertices.push_back({ {-0.35f, 0.70f, 0.0f}, Colors::AntiqueWhite });
+
+	mVertices.push_back({ { 0.20f, 0.50f, 0.0f}, Colors::DarkOrange });
+	mVertices.push_back({ { 0.35f, 0.70f, 0.0f}, Colors::AntiqueWhite });
+	mVertices.push_back({ { 0.40f, 0.40f, 0.0f}, Colors::DarkOrange });
 }
 
 void ShapeThree::Update(float dt)
