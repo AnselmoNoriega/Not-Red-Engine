@@ -173,6 +173,15 @@ void GraphicsSystem::Resize(uint32_t width, uint32_t height)
 	hr = mD3DDevice->CreateTexture2D(&descDepth, nullptr, &mDepthStencilBuffer);
 	ASSERT(SUCCEEDED(hr), "GraphicsSystem failed to crate stencil buffer");
 
+	mImmediateContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
+
+	mViewport.Width = static_cast<float>(GetBackBufferWidth());
+	mViewport.Height = static_cast<float>(GetBackBufferHeight());
+	mViewport.MinDepth = 0.0f;
+	mViewport.MaxDepth = 1.0f;
+	mViewport.TopLeftX = 0;
+	mViewport.TopLeftY = 0;
+	mImmediateContext->RSSetViewports(1, &mViewport);
 }
 
 void GraphicsSystem::ResetRenderTarget()
