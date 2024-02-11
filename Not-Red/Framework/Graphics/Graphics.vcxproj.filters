@@ -6,9 +6,15 @@
     <ClInclude Include="Src\Precompiled.h" />
     <ClInclude Include="Inc\Colors.h" />
     <ClInclude Include="Inc\GraphicsSystem.h" />
+    <ClInclude Include="Inc\VertexShader.h" />
+    <ClInclude Include="Inc\VertexTypes.h" />
+    <ClInclude Include="Inc\MeshTypes.h" />
+    <ClInclude Include="Inc\MeshBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
     <ClCompile Include="Src\GraphicsSystem.cpp" />
+    <ClCompile Include="Src\VertexShader.cpp" />
+    <ClCompile Include="Src\MeshBuffer.cpp" />
   </ItemGroup>
 </Project>
