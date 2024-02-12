@@ -31,7 +31,7 @@ void MainState::Update(float dt)
 {
 	auto input = Input::InputSystem::Get();
 	const float moveSpeed = input->IsKeyDown(KeyCode::LSHIFT) ? 10.0f : 1.0f;
-	const float turnSpeed = 0.1f;
+	const float turnSpeed = 0.4f;
 
 	if (input->IsKeyDown(KeyCode::W))
 	{
@@ -58,7 +58,7 @@ void MainState::Update(float dt)
 		mCamera.Rise(-moveSpeed * dt);
 	}
 
-	if (input->IsMouseDown(MouseButton::RBUTTON))
+	if (input->IsMouseDown(MouseButton::LBUTTON))
 	{
 		mCamera.Yaw(input->GetMouseMoveX() * turnSpeed * dt);
 		mCamera.Pitch(input->GetMouseMoveY() * turnSpeed * dt);
