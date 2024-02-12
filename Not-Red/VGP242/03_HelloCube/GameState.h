@@ -13,10 +13,10 @@ public:
 protected:
 	void virtual CreateShape();
 
+	NotRed::Graphics::Camera mCamera;
 	NotRed::Graphics::MeshPC mMesh;
+	NotRed::Graphics::ConstantBuffer mConstantBuffer;
 	NotRed::Graphics::MeshBuffer mMeshBuffer;
-
-	ID3D11VertexShader* mVertexShader = nullptr;
-	ID3D11InputLayout* mInputLayout = nullptr;
-	ID3D11PixelShader* mPixelShader = nullptr;
+	NotRed::Graphics::VertexShader mVertexShader;
+	NotRed::Graphics::PixelShader mPixelShader;
 };

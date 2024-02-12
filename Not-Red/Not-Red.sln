@@ -45,6 +45,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{2E58C1B6-66A0-407E-8EBF-47BF64287221}"
 	ProjectSection(SolutionItems) = preProject
 		Assets\Shaders\Basic.fx = Assets\Shaders\Basic.fx
+		Assets\Shaders\Transform.fx = Assets\Shaders\Transform.fx
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "03_HelloCube", "VGP242\03_HelloCube\03_HelloCube.vcxproj", "{BA8202AC-2A1E-43A7-8400-FF1A43DDD71C}"
