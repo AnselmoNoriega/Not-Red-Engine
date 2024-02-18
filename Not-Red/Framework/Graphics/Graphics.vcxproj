@@ -143,8 +143,11 @@
     <ClInclude Include="Inc\Common.h" />
     <ClInclude Include="Inc\Graphics.h" />
     <ClInclude Include="Inc\MeshBuffer.h" />
+    <ClInclude Include="Inc\MeshBuilder.h" />
     <ClInclude Include="Inc\MeshTypes.h" />
     <ClInclude Include="Inc\PixelShader.h" />
+    <ClInclude Include="Inc\Sampler.h" />
+    <ClInclude Include="Inc\Texture.h" />
     <ClInclude Include="Inc\VertexShader.h" />
     <ClInclude Include="Inc\VertexTypes.h" />
     <ClInclude Include="Src\Precompiled.h" />
@@ -154,11 +157,19 @@
     <ClCompile Include="Src\ConstantBuffer.cpp" />
     <ClCompile Include="Src\GraphicsSystem.cpp" />
     <ClCompile Include="Src\MeshBuffer.cpp" />
+    <ClCompile Include="Src\MeshBuilder.cpp" />
     <ClCompile Include="Src\PixelShader.cpp" />
     <ClCompile Include="Src\Precompiled.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Src\Sampler.cpp" />
+    <ClCompile Include="Src\Texture.cpp" />
     <ClCompile Include="Src\VertexShader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\External\DirectXTK\DirectXTK_Desktop_2019.vcxproj">
+      <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

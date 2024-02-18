@@ -18,10 +18,11 @@ void Camera::SetPosition(const Math::Vector3& position)
 
 void Camera::SetDirection(const Math::Vector3& direction)
 {
-	// Prevent setting direction straight up or down
 	auto dir = Math::Normalize(direction);
 	if (Math::Abs(Math::Dot(dir, Math::Vector3::YAxis)) < 0.995f)
+	{
 		mDirection = dir;
+	}
 }
 
 void Camera::SetLookAt(const Math::Vector3& target)
