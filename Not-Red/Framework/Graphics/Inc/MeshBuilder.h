@@ -14,9 +14,15 @@ namespace NotRed::Graphics
 
 		static MeshPC CreateVerticalPlanePC(uint32_t numRows, uint32_t numCols, float spacing);
 		static MeshPC CreateHorizontalPlanePC(uint32_t numRows, uint32_t numCols, float spacing);
+		static MeshPX CreateVerticalPlanePX(uint32_t numRows, uint32_t numCols, float spacing);
+		static MeshPX CreateHorizontalPlanePX(uint32_t numRows, uint32_t numCols, float spacing);
 
 		static MeshPC CreateCylinderPC(uint32_t slices, uint32_t rings);
 
 		static MeshPC CreateSpherePC(uint32_t slices, uint32_t rings, float radius);
+		static MeshPX CreateSpherePX(uint32_t slices, uint32_t rings, float radius);
+
+		static MeshPX CreateSkySpherePX(uint32_t slices, uint32_t rings, float radius);
+		static MeshPX CreateSkyBoxPX(float size);
 	};
 }

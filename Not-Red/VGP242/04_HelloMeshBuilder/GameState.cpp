@@ -79,16 +79,9 @@ void MainState::CreateShape()
 	mMesh = MeshBuilder::CreateVerticalPlanePC(10, 10, 1.0f);
 	mMesh = MeshBuilder::CreateHorizontalPlanePC(10, 10, 1.0f);
 	mMesh = MeshBuilder::CreateCylinderPC(100, 4);
-	mMesh = MeshBuilder::CreateSpherePC(100, 100, 1.0f);*/
-
-	mMesh.vertices.push_back({ {-1.0f, -1.0f, 0.0f}, {0.0f, 1.0f} });
-	mMesh.vertices.push_back({ {-1.0f,  1.0f, 0.0f}, {0.0f, 0.0f} });
-	mMesh.vertices.push_back({ { 1.0f,  1.0f, 0.0f}, {1.0f, 0.0f} });
-	mMesh.vertices.push_back({ { 1.0f, -1.0f, 0.0f}, {1.0f, 1.0f} });
-	mMesh.indices = {
-		0, 1, 2,
-		0, 2, 3
-	};
+	mMesh = MeshBuilder::CreateSpherePC(100, 100, 1.0f);
+	mMesh = MeshBuilder::CreateSkySpherePX(100, 100, 1.0f);*/
+	mMesh = MeshBuilder::CreateSkyBoxPX(100);
 }
 
 void MainState::Render()
