@@ -33,6 +33,7 @@ namespace NotRed::Graphics
 		void Initialize(const void* vertices, uint32_t vertexSize, uint32_t vertexCount, const uint32_t* indices, uint32_t indexCount);
 		void Terminate();
 		void SetTopology(Topology topology);
+		void Update(const void* vertices, uint32_t vertexCount);
 		void Render() const;
 
 	private:
