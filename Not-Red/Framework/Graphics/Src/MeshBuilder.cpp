@@ -436,11 +436,11 @@ MeshPX NotRed::Graphics::MeshBuilder::CreateSkyBoxPX(float size)
 {
     MeshPX mesh;
     const float hs = size * 0.5f;
-    const float q = 0.25f;
-    const float q2 = q * 2.0f;
+    const float q = 0.251f;
+    const float q2 = 0.487;
     const float q3 = q * 3.0f;
-    const float t = 0.3334f;
-    const float t2 = t * 2.0f;
+    const float t = 0.339f;
+    const float t2 = 0.662;
 
     mesh.vertices.push_back({ { hs, -hs, -hs}, {0.0f, t2} });
     mesh.vertices.push_back({ { hs,  hs, -hs}, {0.0f, t} });
