@@ -11,7 +11,7 @@ public:
 	void Render() override;
 
 protected:
-	void virtual CreateShape();
+	virtual void CreateShape() {};
 
 	NotRed::Graphics::Camera mCamera;
 };

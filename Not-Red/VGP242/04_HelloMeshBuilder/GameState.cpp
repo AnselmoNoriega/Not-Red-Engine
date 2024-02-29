@@ -83,8 +83,8 @@ namespace
 /// </summary>
 void ShapeTexture::Initialize()
 {
-	mCamera.SetPosition({ 0.0f, -20.0f, -3.0f });
-	mCamera.SetLookAt({ 0.0f, 0.0f, 0.0f });
+	mCamera.SetPosition({ 0.0f, 0.0f, 0.0f });
+	mCamera.SetLookAt({ 0.0f, 0.0f, 1.0f });
 
 	CreateShape();
 
