@@ -81,7 +81,8 @@ namespace
     {
         "None",
         "Sphere",
-        "AABB"
+        "AABB",
+        "FilledAABB"
     };
 }
 
@@ -108,22 +109,6 @@ void MainState::Update(float dt)
 void MainState::Render()
 {
     SimpleDraw::AddTransform(Math::Matrix4::Translation(shapePos));
-
-    switch (shapeType)
-    {
-    case 1:
-        SimpleDraw::AddSphere(10, 10, 10, shapeColor);
-        break;
-    case 2:
-        SimpleDraw::AddAABB(-5.0f, -5.0f, -5.0f, 5.0f, 5.0f, 5.0f, shapeColor);
-        break;
-    default:
-        break;
-    }
-    if (drawPlane)
-    {
-        SimpleDraw::AddGroundPlane(50, Colors::Gray);
-    }
     SimpleDraw::Render(mCamera);
 }
 
@@ -136,12 +121,43 @@ void MainState::DebugUI()
     {
         ImGui::Checkbox("Draw Plane", &drawPlane);
         ImGui::DragFloat3("Drag", &shapePos.x, 0.01f, -5.0f, 5.0f);
-        ImGui::Combo("ShapeType", &shapeType, shapeTypes, 3);
+        ImGui::Combo("ShapeType", &shapeType, shapeTypes, 4);
     }
     if (ImGui::CollapsingHeader("Shape Info", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::ColorEdit3("ShapeColor", &shapeColor.r);
         ImGui::DragFloat("Alpha", &shapeColor.a, 0.01f, 0.0f, 1.0f);
+    }
+
+    ImGui::LabelText("", "Shape Info");
+    switch (shapeType)
+    {
+    case 1:
+    {
+        SimpleDraw::AddSphere(shapeSize.x, shapeSize.y, shapeSize.z, shapeColor);
+        ImGui::DragFloat3("Sphere Info", &shapeSize.x, 1.00f, 1.0f, 50.0f);
+        break;
+    }
+    case 2:
+    {
+        SimpleDraw::AddAABB(minBoxSize.x, minBoxSize.y, minBoxSize.z, maxBoxSize.x, maxBoxSize.y, maxBoxSize.z, shapeColor);
+        ImGui::DragFloat3("Min Pos Info", &minBoxSize.x, 1.00f, -50.0f, 50.0f);
+        ImGui::DragFloat3("Max Pos Info", &maxBoxSize.x, 1.00f, -50.0f, 50.0f);
+        break;
+    }
+    case 3:
+    {
+        SimpleDraw::AddFilledAABB(minBoxSize.x, minBoxSize.y, minBoxSize.z, maxBoxSize.x, maxBoxSize.y, maxBoxSize.z, shapeColor);
+        ImGui::DragFloat3("Min Pos Info", &minBoxSize.x, 1.00f, -50.0f, 50.0f);
+        ImGui::DragFloat3("Max Pos Info", &maxBoxSize.x, 1.00f, -50.0f, 50.0f);
+        break;
+    }
+    default:
+        break;
+    }
+    if (drawPlane)
+    {
+        SimpleDraw::AddGroundPlane(50, Colors::Gray);
     }
 
     ImGui::End();

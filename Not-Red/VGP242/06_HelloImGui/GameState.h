@@ -21,4 +21,10 @@ private:
 	Math::Vector3 shapePos;
 
 	int shapeType = 1;
+
+	//sphere
+	Math::Vector3 shapeSize = {10.0f, 10.0f, 10.0f};
+	//AABB
+	Math::Vector3 minBoxSize = {-5.0f, -5.0f, -5.0f};
+	Math::Vector3 maxBoxSize = {5.0f, 5.0f, 5.0f};
 };
