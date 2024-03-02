@@ -49,31 +49,23 @@ namespace
 	{
 		if (InputSystem::Get()->IsKeyPressed(KeyCode::ONE))
 		{
-			MainApp().ChangeState("CubeState");
+			MainApp().ChangeState("Sphere");
 		}
 		else if (InputSystem::Get()->IsKeyPressed(KeyCode::TWO))
 		{
-			MainApp().ChangeState("RectState");
+			MainApp().ChangeState("Transform");
 		}
 		else if (InputSystem::Get()->IsKeyPressed(KeyCode::THREE))
 		{
-			MainApp().ChangeState("PlaneState");
+			MainApp().ChangeState("AABB");
 		}
 		else if (InputSystem::Get()->IsKeyPressed(KeyCode::FOUR))
 		{
-			MainApp().ChangeState("SphereState");
+			MainApp().ChangeState("FilledAABB");
 		}
 		else if (InputSystem::Get()->IsKeyPressed(KeyCode::FIVE))
 		{
-			MainApp().ChangeState("CylinderState");
-		}
-		else if (InputSystem::Get()->IsKeyPressed(KeyCode::SIX))
-		{
-			MainApp().ChangeState("SkyboxState");
-		}
-		else if (InputSystem::Get()->IsKeyPressed(KeyCode::SEVEN))
-		{
-			MainApp().ChangeState("SkysphereState");
+			MainApp().ChangeState("Line");
 		}
 	}
 }
@@ -94,12 +86,13 @@ void MainState::Terminate()
 
 void MainState::Update(float dt)
 {
-	CameraControllers(dt, mCamera);
+	CameraControllers(dt, mCamera); 
 	CheackStates();
 }
 
 void MainState::Render()
 {
-	SimpleDraw::AddGroundPlane(50, Colors::Green);
+	SimpleDraw::AddGroundPlane(50, Colors::Gray);
 	SimpleDraw::Render(mCamera);
+	DrawShape();
 }

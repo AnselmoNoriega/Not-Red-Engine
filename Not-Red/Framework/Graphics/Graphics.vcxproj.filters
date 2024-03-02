@@ -17,6 +17,8 @@
     <ClInclude Include="Inc\Texture.h" />
     <ClInclude Include="Inc\Sampler.h" />
     <ClInclude Include="Inc\SimpleDraw.h" />
+    <ClInclude Include="Inc\BlendState.h" />
+    <ClInclude Include="Inc\DebugUI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -30,5 +32,7 @@
     <ClCompile Include="Src\Texture.cpp" />
     <ClCompile Include="Src\Sampler.cpp" />
     <ClCompile Include="Src\SimpleDraw.cpp" />
+    <ClCompile Include="Src\BlendState.cpp" />
+    <ClCompile Include="Src\DebugUI.cpp" />
   </ItemGroup>
 </Project>
