@@ -128,6 +128,21 @@ void DebugUI::SetTheme(Theme theme)
 	case Theme::Custom:
 	{
 		ImGui::StyleColorsDark();
+		auto& style = ImGui::GetStyle();
+		style.WindowRounding = 10.0f;
+		style.Colors[ImGuiCol_WindowBg] = { 0.09f, 0.0f, 0.0f, 0.5f };
+		style.Colors[ImGuiCol_PopupBg] = { 0.09f, 0.0f, 0.0f, 0.9f };
+		style.Colors[ImGuiCol_ChildBg] = { 0.15f, 0.0f, 0.0f, 0.5f };
+		style.Colors[ImGuiCol_FrameBg] = { 0.35f, 0.0f, 0.15f, 0.5f };
+		style.Colors[ImGuiCol_Header] = { 0.8f, 0.1f, 0.0f, 0.5f };
+		style.Colors[ImGuiCol_CheckMark] = { 0.8f, 0.1f, 0.8f, 0.5f };
+		style.Colors[ImGuiCol_FrameBgHovered] = { 0.8f, 0.1f, 0.3f, 0.5f };
+		style.Colors[ImGuiCol_FrameBgActive] = { 0.8f, 0.1f, 0.4f, 0.6f };
+		style.Colors[ImGuiCol_HeaderHovered] = { 0.8f, 0.1f, 0.3f, 0.7f };
+		style.Colors[ImGuiCol_ResizeGrip] = { 0.35f, 0.0f, 0.0f, 0.7f };
+		style.Colors[ImGuiCol_TitleBgActive] = { 0.2f, 0.0f, 0.05f, 0.9f };
+		style.Colors[ImGuiCol_TitleBgCollapsed] = { 0.2f, 0.0f, 0.05f, 0.9f };
+		style.Colors[ImGuiCol_NavHighlight] = { 0.2f, 0.0f, 0.05f, 0.9f };
 		break;
 	}
 	}

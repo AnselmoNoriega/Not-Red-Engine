@@ -93,6 +93,8 @@ void MainState::Initialize()
 {
     mCamera.SetPosition({ 0.0f, 10.0f, -20.0f });
     mCamera.SetLookAt({ 0.0f, 5.0f, -9.0f });
+    
+    DebugUI::SetTheme(DebugUI::Theme::Custom);
 }
 
 void MainState::Terminate()
