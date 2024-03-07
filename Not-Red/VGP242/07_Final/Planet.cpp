@@ -47,8 +47,8 @@ void Planet::Render(const NotRed::Graphics::Camera& camera)
 	mTexture.BindPS(0);
 	mSampler.BindPS(0);
 
-	Math::Matrix4 matWorld = Transform();
-	Math::Matrix4 local = WorldRotation();
+	Math::Matrix4 matWorld = WorldRotation();
+	Math::Matrix4 local = Transform();
 	Math::Matrix4 matView = camera.GetViewMatrix();
 	Math::Matrix4 matProj = camera.GetProjectionMatrix();
 	Math::Matrix4 matFinal = matWorld * local * matView * matProj;

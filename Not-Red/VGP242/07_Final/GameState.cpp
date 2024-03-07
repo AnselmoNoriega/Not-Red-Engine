@@ -110,7 +110,7 @@ void MainState::Update(float dt)
 
     for (auto planet : mPlanets)
     {
-        planet->Update(dt, 0, 5);
+        planet->Update(dt, 1, 1);
     }
 }
 
