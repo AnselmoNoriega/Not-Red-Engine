@@ -143,6 +143,9 @@ void DebugUI::SetTheme(Theme theme)
 		style.Colors[ImGuiCol_TitleBgActive] = { 0.2f, 0.0f, 0.05f, 0.9f };
 		style.Colors[ImGuiCol_TitleBgCollapsed] = { 0.2f, 0.0f, 0.05f, 0.9f };
 		style.Colors[ImGuiCol_NavHighlight] = { 0.2f, 0.0f, 0.05f, 0.9f };
+		style.Colors[ImGuiCol_Border] = { 1.0f, 1.0f, 1.0f, 0.6f };
+		style.Colors[ImGuiCol_Button] = { 0.5f, 0.0f, 0.05f, 0.9f };
+		//style.Colors[ImGuiCol_Button] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		break;
 	}
 	}
