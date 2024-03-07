@@ -9,11 +9,12 @@ Planet::Planet(const std::string& texture, float size, float distance)
 	std::filesystem::path shaderFile = L"../../Assets/Shaders/Texture.fx";
 
 	mConstantBuffer.Initialize(sizeof(Math::Matrix4));
-	mMeshBuffer.Initialize(mMesh);
 	mVertexShader.Initialize<VertexPX>(shaderFile);
 	mPixelShader.Initialize(shaderFile);
-	mTexture.Initialize(texture);
 	mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
+	
+	mTexture.Initialize(texture);
+	mMeshBuffer.Initialize(mMesh);
 
 	mPosition = { 0.0f, 0.0f, distance };
 	mDirection = { 0.0f, 0.0f, 1.0f };

@@ -16,14 +16,14 @@ private:
 	Math::Matrix4 WorldRotation();
 
 private:
-	NotRed::Graphics::MeshPX mMesh;
 	NotRed::Graphics::ConstantBuffer mConstantBuffer;
-	NotRed::Graphics::MeshBuffer mMeshBuffer;
 	NotRed::Graphics::VertexShader mVertexShader;
 	NotRed::Graphics::PixelShader mPixelShader;
-
-	NotRed::Graphics::Texture mTexture;
 	NotRed::Graphics::Sampler mSampler;
+
+	NotRed::Graphics::MeshPX mMesh;
+	NotRed::Graphics::MeshBuffer mMeshBuffer;
+	NotRed::Graphics::Texture mTexture;
 
 	Math::Vector3 mPosition;
 	Math::Vector3 mDirection;

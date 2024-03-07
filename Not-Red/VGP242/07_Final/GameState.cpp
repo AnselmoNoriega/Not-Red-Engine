@@ -93,7 +93,17 @@ void MainState::Initialize()
     
     DebugUI::SetTheme(DebugUI::Theme::Custom);
 
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/sun.jpg", 2, 10));
+    float distance = 0;
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/sun.jpg", 5, distance += 5));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/mercury.jpg", 2, 5));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/venus.jpg", 2, 10));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/earth/earth.jpg", 2, 15));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/mars.jpg", 2, 20));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/jupiter.jpg", 2, 25));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/saturn.jpg", 2, 30));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/uranus.jpg", 2, 35));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/neptune.jpg", 2, 40));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/pluto.jpg", 2, 45));
 }
 
 void MainState::Terminate()
