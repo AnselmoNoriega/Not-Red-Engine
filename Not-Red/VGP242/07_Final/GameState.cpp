@@ -93,6 +93,13 @@ void MainState::Initialize()
     
     DebugUI::SetTheme(DebugUI::Theme::Custom);
 
+    std::filesystem::path shaderFile = L"../../Assets/Shaders/Texture.fx";
+
+    mConstantBuffer.Initialize(sizeof(Math::Matrix4));
+    mVertexShader.Initialize<VertexPX>(shaderFile);
+    mPixelShader.Initialize(shaderFile);
+    mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
+
     float distance = 0;
     mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/sun.jpg", 5, distance += 5));
     mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/mercury.jpg", 2, 5));
@@ -112,6 +119,11 @@ void MainState::Terminate()
     {
         planet->Terminate();
     }
+
+    mSampler.Terminate();
+    mPixelShader.Terminate();
+    mVertexShader.Terminate();
+    mConstantBuffer.Terminate();
 }
 
 void MainState::Update(float dt)
@@ -126,10 +138,15 @@ void MainState::Update(float dt)
 
 void MainState::Render()
 {
+    mVertexShader.Bind();
+    mPixelShader.Bind();
+    mSampler.BindPS(0);
+
     for(auto planet : mPlanets)
     {
-        planet->Render(mCamera);
+        planet->Render(mCamera, mConstantBuffer);
     }
+
     SimpleDraw::AddGroundPlane(50, Colors::Gray);
     SimpleDraw::Render(mCamera);
 }

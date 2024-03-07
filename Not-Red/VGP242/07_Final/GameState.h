@@ -18,4 +18,9 @@ private:
 	NotRed::Graphics::Camera mCamera;
 
 	std::vector<std::shared_ptr<Planet>> mPlanets;
+
+	NotRed::Graphics::ConstantBuffer mConstantBuffer;
+	NotRed::Graphics::VertexShader mVertexShader;
+	NotRed::Graphics::PixelShader mPixelShader;
+	NotRed::Graphics::Sampler mSampler;
 };

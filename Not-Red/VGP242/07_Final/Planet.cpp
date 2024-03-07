@@ -5,13 +5,6 @@ using namespace NotRed::Graphics;
 Planet::Planet(const std::string& texture, float size, float distance)
 {
 	mMesh = mMesh = NotRed::Graphics::MeshBuilder::CreateSpherePX(50, 50, size);
-
-	std::filesystem::path shaderFile = L"../../Assets/Shaders/Texture.fx";
-
-	mConstantBuffer.Initialize(sizeof(Math::Matrix4));
-	mVertexShader.Initialize<VertexPX>(shaderFile);
-	mPixelShader.Initialize(shaderFile);
-	mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 	
 	mTexture.Initialize(texture);
 	mMeshBuffer.Initialize(mMesh);
@@ -24,12 +17,8 @@ Planet::Planet(const std::string& texture, float size, float distance)
 
 void Planet::Terminate()
 {
-	mSampler.Terminate();
 	mTexture.Terminate();
-	mPixelShader.Terminate();
-	mVertexShader.Terminate();
 	mMeshBuffer.Terminate();
-	mConstantBuffer.Terminate();
 }
 
 void Planet::Update(float dt, float rotSpeed, float worldRot)
@@ -41,12 +30,9 @@ void Planet::Update(float dt, float rotSpeed, float worldRot)
 	mWorldDirection = Math::TransformNormal(mWorldDirection, matRotate);
 }
 
-void Planet::Render(const NotRed::Graphics::Camera& camera)
+void Planet::Render(const NotRed::Graphics::Camera& camera, NotRed::Graphics::ConstantBuffer& constantBuffer)
 {
-	mVertexShader.Bind();
-	mPixelShader.Bind();
 	mTexture.BindPS(0);
-	mSampler.BindPS(0);
 
 	Math::Matrix4 matWorld = WorldRotation();
 	Math::Matrix4 local = Transform();
@@ -55,8 +41,8 @@ void Planet::Render(const NotRed::Graphics::Camera& camera)
 	Math::Matrix4 matFinal = matWorld * local * matView * matProj;
 	Math::Matrix4 wvp = Transpose(matFinal);
 
-	mConstantBuffer.Update(&wvp);
-	mConstantBuffer.BindVS(0);
+	constantBuffer.Update(&wvp);
+	constantBuffer.BindVS(0);
 
 	mMeshBuffer.Render();
 }
