@@ -13,6 +13,7 @@ public:
 
 private:
 	void CreateShapes();
+	int GiveDistance(int& num);
 
 private:
 	NotRed::Graphics::Camera mCamera;
@@ -23,4 +24,6 @@ private:
 	NotRed::Graphics::VertexShader mVertexShader;
 	NotRed::Graphics::PixelShader mPixelShader;
 	NotRed::Graphics::Sampler mSampler;
+
+	std::pair<float, float> mPlanetSpeeds[10];
 };

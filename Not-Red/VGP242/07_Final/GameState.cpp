@@ -100,17 +100,23 @@ void MainState::Initialize()
     mPixelShader.Initialize(shaderFile);
     mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 
-    float distance = 0;
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/sun.jpg", 5, distance += 5));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/mercury.jpg", 2, 5));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/venus.jpg", 2, 10));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/earth/earth.jpg", 2, 15));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/mars.jpg", 2, 20));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/jupiter.jpg", 2, 25));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/saturn.jpg", 2, 30));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/uranus.jpg", 2, 35));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/neptune.jpg", 2, 40));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/pluto.jpg", 2, 45));
+    int distance = 0;
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/sun.jpg", 5, GiveDistance(distance)));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/mercury.jpg", 2, GiveDistance(distance)));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/venus.jpg", 2, GiveDistance(distance)));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/earth/earth.jpg", 2, GiveDistance(distance)));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/mars.jpg", 2, GiveDistance(distance)));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/jupiter.jpg", 2, GiveDistance(distance)));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/saturn.jpg", 2, GiveDistance(distance)));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/uranus.jpg", 2, GiveDistance(distance)));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/neptune.jpg", 2, GiveDistance(distance)));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/pluto.jpg", 2, GiveDistance(distance)));
+
+    for (int i = 0; i < 10; ++i)
+    {
+        mPlanetSpeeds[i].first = (rand() % 40 + 1) / (10.0f + (i * 3));
+        mPlanetSpeeds[i].second = (rand() % 50 + 1) / 10;
+    }
 }
 
 void MainState::Terminate()
@@ -130,9 +136,9 @@ void MainState::Update(float dt)
 {
     CameraControllers(dt, mCamera);
 
-    for (auto planet : mPlanets)
+    for (int i = 0; i < 10; ++i)
     {
-        planet->Update(dt, 1, 1);
+        mPlanets[i]->Update(dt, mPlanetSpeeds[i].first, mPlanetSpeeds[i].second);
     }
 }
 
@@ -162,4 +168,11 @@ void MainState::DebugUI()
 
 void MainState::CreateShapes()
 {
+}
+
+int MainState::GiveDistance(int& num)
+{
+    int hold = num;
+    num += 10;
+    return hold;
 }
