@@ -25,6 +25,10 @@ private:
 	NotRed::Graphics::PixelShader mPixelShader;
 	NotRed::Graphics::Sampler mSampler;
 
+	NotRed::Graphics::MeshPX mSkyboxMesh;
+	NotRed::Graphics::MeshBuffer mMeshBuffer;
+	NotRed::Graphics::Texture mSkyboxTexture;
+
 	std::pair<float, float> mPlanetSpeeds[10];
 	int mPlanetDistances[10];
 
