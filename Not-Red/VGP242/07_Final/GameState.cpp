@@ -90,7 +90,7 @@ void MainState::Initialize()
 {
     mCamera.SetPosition({ 0.0f, 10.0f, -20.0f });
     mCamera.SetLookAt({ 0.0f, 5.0f, -9.0f });
-    
+
     DebugUI::SetTheme(DebugUI::Theme::Custom);
 
     std::filesystem::path shaderFile = L"../../Assets/Shaders/Texture.fx";
@@ -138,7 +138,7 @@ void MainState::Update(float dt)
 
     for (int i = 0; i < 10; ++i)
     {
-        mPlanets[i]->Update(dt, mPlanetSpeeds[i].first, mPlanetSpeeds[i].second);
+        mPlanets[i]->Update(dt, mPlanetSpeeds[i].first * mTimeSpeed, mPlanetSpeeds[i].second * mTimeSpeed);
     }
 }
 
@@ -148,20 +148,36 @@ void MainState::Render()
     mPixelShader.Bind();
     mSampler.BindPS(0);
 
-    for(auto planet : mPlanets)
+    for (int i = 0; i < 10; ++i)
     {
-        planet->Render(mCamera, mConstantBuffer);
+        mPlanets[i]->Render(mCamera, mConstantBuffer);
+        if (mDrawRings)
+        {
+            SimpleDraw::AddGroundCircle(40, mPlanetDistances[i], Colors::Red);
+        }
     }
 
-    SimpleDraw::AddGroundPlane(50, Colors::Gray);
+    if (mDrawPlane)
+    {
+        SimpleDraw::AddGroundPlane(50, Colors::Gray);
+    }
+
     SimpleDraw::Render(mCamera);
 }
 
 void MainState::DebugUI()
 {
-    ImGui::Begin("DebugUI", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-    
-    
+    ImGui::Begin("Final", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+    if (ImGui::CollapsingHeader("World Info", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::Checkbox("Draw Rings", &mDrawRings);
+        ImGui::Checkbox("Draw Plane", &mDrawPlane);
+    }
+    if (ImGui::CollapsingHeader("Planets Info", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::DragFloat("Time Speed", &mTimeSpeed, 0.01f, 0.0f, 10.0f);
+    }
 
     ImGui::End();
 }
@@ -172,7 +188,11 @@ void MainState::CreateShapes()
 
 int MainState::GiveDistance(int& num)
 {
-    int hold = num;
-    num += 10;
-    return hold;
+    int increaseRate = 10;
+
+    int index = num / increaseRate;
+    mPlanetDistances[index] = num;
+    num += increaseRate;
+
+    return mPlanetDistances[index];
 }

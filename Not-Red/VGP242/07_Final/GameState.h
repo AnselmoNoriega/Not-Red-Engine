@@ -26,4 +26,10 @@ private:
 	NotRed::Graphics::Sampler mSampler;
 
 	std::pair<float, float> mPlanetSpeeds[10];
+	int mPlanetDistances[10];
+
+	bool mDrawRings = true;
+	bool mDrawPlane = true;
+
+	float mTimeSpeed = 1.0f;
 };
