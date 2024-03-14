@@ -14,7 +14,7 @@ public:
 	float GetDistance() { return mDistance; }
 
 	Math::Vector3 GetLookPosition();
-	Math::Vector3 GetLookDirection() { return mWorldDirection; }
+	Math::Vector3 GetLookDirection() { return -mWorldDirection; }
 
 private:
 	Math::Matrix4 Transform();
@@ -31,4 +31,5 @@ private:
 	Math::Vector3 mWorldDirection;
 
 	float mDistance;
+	float mSize;
 };

@@ -4,85 +4,57 @@ using namespace NotRed;
 using namespace NotRed::Graphics;
 using namespace NotRed::Input;
 
-
-namespace
+void MainState::CameraControllers(float dt)
 {
-    void CameraControllers(float dt, Camera& camera)
+    auto input = Input::InputSystem::Get();
+    const float moveSpeed = input->IsKeyDown(KeyCode::LSHIFT) ? 10.0f : 1.0f;
+    const float turnSpeed = 0.8f;
+
+    if (input->IsKeyDown(KeyCode::W))
     {
-        auto input = Input::InputSystem::Get();
-        const float moveSpeed = input->IsKeyDown(KeyCode::LSHIFT) ? 10.0f : 1.0f;
-        const float turnSpeed = 0.8f;
-
-        if (input->IsKeyDown(KeyCode::W))
-        {
-            camera.Walk(moveSpeed * dt);
-        }
-        if (input->IsKeyDown(KeyCode::A))
-        {
-            camera.Strafe(-moveSpeed * dt);
-        }
-        if (input->IsKeyDown(KeyCode::S))
-        {
-            camera.Walk(-moveSpeed * dt);
-        }
-        if (input->IsKeyDown(KeyCode::D))
-        {
-            camera.Strafe(moveSpeed * dt);
-        }
-        if (input->IsKeyDown(KeyCode::E))
-        {
-            camera.Rise(moveSpeed * dt);
-        }
-        if (input->IsKeyDown(KeyCode::Q))
-        {
-            camera.Rise(-moveSpeed * dt);
-        }
-
-        if (input->IsMouseDown(MouseButton::LBUTTON))
-        {
-            camera.Yaw(input->GetMouseMoveX() * turnSpeed * dt);
-            camera.Pitch(input->GetMouseMoveY() * turnSpeed * dt);
-        }
-
-        if (input->IsKeyDown(KeyCode::ONE))
-        {
-            //camera.SetPosition();
-            //camera.SetLookAt({ 0.0f, 5.0f, -9.0f });
-        }
+        mCamera.Walk(moveSpeed * dt);
+    }
+    if (input->IsKeyDown(KeyCode::A))
+    {
+        mCamera.Strafe(-moveSpeed * dt);
+    }
+    if (input->IsKeyDown(KeyCode::S))
+    {
+        mCamera.Walk(-moveSpeed * dt);
+    }
+    if (input->IsKeyDown(KeyCode::D))
+    {
+        mCamera.Strafe(moveSpeed * dt);
+    }
+    if (input->IsKeyDown(KeyCode::E))
+    {
+        mCamera.Rise(moveSpeed * dt);
+    }
+    if (input->IsKeyDown(KeyCode::Q))
+    {
+        mCamera.Rise(-moveSpeed * dt);
     }
 
-    void CheackStates()
+    if (input->IsMouseDown(MouseButton::LBUTTON))
     {
-        if (InputSystem::Get()->IsKeyPressed(KeyCode::ONE))
-        {
-            MainApp().ChangeState("CubeState");
-        }
-        else if (InputSystem::Get()->IsKeyPressed(KeyCode::TWO))
-        {
-            MainApp().ChangeState("RectState");
-        }
-        else if (InputSystem::Get()->IsKeyPressed(KeyCode::THREE))
-        {
-            MainApp().ChangeState("PlaneState");
-        }
-        else if (InputSystem::Get()->IsKeyPressed(KeyCode::FOUR))
-        {
-            MainApp().ChangeState("SphereState");
-        }
-        else if (InputSystem::Get()->IsKeyPressed(KeyCode::FIVE))
-        {
-            MainApp().ChangeState("CylinderState");
-        }
-        else if (InputSystem::Get()->IsKeyPressed(KeyCode::SIX))
-        {
-            MainApp().ChangeState("SkyboxState");
-        }
-        else if (InputSystem::Get()->IsKeyPressed(KeyCode::SEVEN))
-        {
-            MainApp().ChangeState("SkysphereState");
-        }
+        mCamera.Yaw(input->GetMouseMoveX() * turnSpeed * dt);
+        mCamera.Pitch(input->GetMouseMoveY() * turnSpeed * dt);
     }
 }
+
+const char* PlanetNames[] =
+{
+"None",
+"Mercury",
+"Venus",
+"Earth",
+"Mars",
+"Jupiter",
+"Saturn",
+"Uranus",
+"Neptune",
+"Pluto"
+};
 
 void MainState::Initialize()
 {
@@ -102,8 +74,8 @@ void MainState::Initialize()
 
     for (int i = 0; i < 10; ++i)
     {
-        mPlanetSpeeds[i].first = (rand() % 40 + 1) / (10.0f + (std::pow(i, 3)));
-        mPlanetSpeeds[i].second = (rand() % 50 + 1) / 10;
+        mPlanetSpeeds[i].first = ((rand() % 40) / 10.0f) + 1;
+        mPlanetSpeeds[i].second = ((rand() % 50) / 10) + 1;
     }
 }
 
@@ -124,7 +96,15 @@ void MainState::Terminate()
 
 void MainState::Update(float dt)
 {
-    CameraControllers(dt, mCamera);
+    if (!mLookAtPlanet)
+    {
+        CameraControllers(dt);
+    }
+    else
+    {
+        mCamera.SetPosition(mPlanets[mLookAtPlanet]->GetLookPosition());
+        mCamera.SetLookAt(mPlanets[mLookAtPlanet]->GetLookDirection());
+    }
 
     for (int i = 0; i < 10; ++i)
     {
@@ -169,6 +149,7 @@ void MainState::DebugUI()
     if (ImGui::CollapsingHeader("Planets Info", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::DragFloat("Time Speed", &mTimeSpeed, 0.01f, 0.0f, 10.0f);
+        ImGui::Combo("CheckPlanet", &mLookAtPlanet, PlanetNames, 10);
     }
 
     ImGui::End();

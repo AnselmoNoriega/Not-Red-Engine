@@ -14,7 +14,7 @@ public:
 
 private:
 	void CreateShapes();
-	int GiveDistance(int& num);
+	void CameraControllers(float dt);
 
 private:
 	NotRed::Graphics::Camera mCamera;
@@ -33,4 +33,5 @@ private:
 	bool mDrawPlane = true;
 
 	float mTimeSpeed = 1.0f;
+	int mLookAtPlanet = 0;
 };

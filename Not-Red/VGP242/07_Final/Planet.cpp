@@ -3,14 +3,14 @@
 using namespace NotRed::Graphics;
 
 Planet::Planet(const std::string& texture, float size, float distance)
+	:mSize(size), mDistance(distance)
 {
-	mMesh = mMesh = NotRed::Graphics::MeshBuilder::CreateSpherePX(50, 50, size);
+	mMesh = mMesh = NotRed::Graphics::MeshBuilder::CreateSpherePX(50, 50, mSize);
 	
 	mTexture.Initialize(texture);
 	mMeshBuffer.Initialize(mMesh);
 
-	mPosition = { 0.0f, 0.0f, distance };
-	mDistance = distance;
+	mPosition = { 0.0f, 0.0f, mDistance };
 	mDirection = { 0.0f, 0.0f, 1.0f };
 
 	mWorldDirection = { 0.0f, 0.0f, 1.0f };
@@ -24,7 +24,12 @@ void Planet::Terminate()
 
 void Planet::Update(float dt, float rotSpeed, float worldRot)
 {
-	Math::Matrix4 matRotate = Math::Matrix4::RotationY(1.0f * dt * rotSpeed);
+	float rotation = 1.0f * dt * rotSpeed;
+	if (mDistance)
+	{
+		rotation /= mDistance;
+	}
+	Math::Matrix4 matRotate = Math::Matrix4::RotationY(rotation);
 	mDirection = Math::TransformNormal(mDirection, matRotate);
 
 	matRotate = Math::Matrix4::RotationY(1.0f * dt * worldRot);
@@ -51,10 +56,10 @@ void Planet::Render(const NotRed::Graphics::Camera& camera, NotRed::Graphics::Co
 
 Math::Vector3 Planet::GetLookPosition()
 {
-	Math::Vector3 offset{ 1.0f, 0.0f, 0.0f };
-	Math::Vector3 position = mPosition + offset;
+	Math::Vector3 position = mPosition;
+	position.z += (4 * mSize);
 
-	const Math::Vector3 l = mWorldDirection;
+	const Math::Vector3 l = mDirection;
 	const Math::Vector3 r = Math::Normalize(Math::Cross(Math::Vector3::YAxis, l));
 	const Math::Vector3 u = Math::Normalize(Math::Cross(l, r));
 	const float x = -Math::Dot(r, position);
