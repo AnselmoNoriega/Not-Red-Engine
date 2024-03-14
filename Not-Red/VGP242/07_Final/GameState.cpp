@@ -43,6 +43,12 @@ namespace
             camera.Yaw(input->GetMouseMoveX() * turnSpeed * dt);
             camera.Pitch(input->GetMouseMoveY() * turnSpeed * dt);
         }
+
+        if (input->IsKeyDown(KeyCode::ONE))
+        {
+            //camera.SetPosition();
+            //camera.SetLookAt({ 0.0f, 5.0f, -9.0f });
+        }
     }
 
     void CheackStates()

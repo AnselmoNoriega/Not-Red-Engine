@@ -49,6 +49,21 @@ void Planet::Render(const NotRed::Graphics::Camera& camera, NotRed::Graphics::Co
 	mMeshBuffer.Render();
 }
 
+Math::Vector3 Planet::GetLookPosition()
+{
+	Math::Vector3 offset{ 1.0f, 0.0f, 0.0f };
+	Math::Vector3 position = mPosition + offset;
+
+	const Math::Vector3 l = mWorldDirection;
+	const Math::Vector3 r = Math::Normalize(Math::Cross(Math::Vector3::YAxis, l));
+	const Math::Vector3 u = Math::Normalize(Math::Cross(l, r));
+	const float x = -Math::Dot(r, position);
+	const float y = -Math::Dot(u, position);
+	const float z = -Math::Dot(l, position);
+
+	return { x, y, z };
+}
+
 Math::Matrix4 Planet::Transform()
 {
 	const Math::Vector3 l = mDirection;
