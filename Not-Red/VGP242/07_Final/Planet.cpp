@@ -10,6 +10,7 @@ Planet::Planet(const std::string& texture, float size, float distance)
 	mMeshBuffer.Initialize(mMesh);
 
 	mPosition = { 0.0f, 0.0f, distance };
+	mDistance = distance;
 	mDirection = { 0.0f, 0.0f, 1.0f };
 
 	mWorldDirection = { 0.0f, 0.0f, 1.0f };
@@ -36,6 +37,7 @@ void Planet::Render(const NotRed::Graphics::Camera& camera, NotRed::Graphics::Co
 
 	Math::Matrix4 matWorld = WorldRotation();
 	Math::Matrix4 local = Transform();
+
 	Math::Matrix4 matView = camera.GetViewMatrix();
 	Math::Matrix4 matProj = camera.GetProjectionMatrix();
 	Math::Matrix4 matFinal = matWorld * local * matView * matProj;

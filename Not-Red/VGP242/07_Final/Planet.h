@@ -11,6 +11,8 @@ public:
 	void Update(float dt, float rotSpeed, float worldRot);
 	void Render(const NotRed::Graphics::Camera& camera, NotRed::Graphics::ConstantBuffer& constantBuffer);
 
+	float GetDistance() { return mDistance; }
+
 private:
 	Math::Matrix4 Transform();
 	Math::Matrix4 WorldRotation();
@@ -24,4 +26,6 @@ private:
 	Math::Vector3 mDirection;
 
 	Math::Vector3 mWorldDirection;
+
+	float mDistance;
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Planet.h"
+#include "Galaxy.h"
 
 class MainState : public NotRed::AppState
 {
@@ -19,18 +20,14 @@ private:
 	NotRed::Graphics::Camera mCamera;
 
 	std::vector<std::shared_ptr<Planet>> mPlanets;
+	std::unique_ptr<Galaxy> mGalaxy;
 
 	NotRed::Graphics::ConstantBuffer mConstantBuffer;
 	NotRed::Graphics::VertexShader mVertexShader;
 	NotRed::Graphics::PixelShader mPixelShader;
 	NotRed::Graphics::Sampler mSampler;
 
-	NotRed::Graphics::MeshPX mSkyboxMesh;
-	NotRed::Graphics::MeshBuffer mMeshBuffer;
-	NotRed::Graphics::Texture mSkyboxTexture;
-
 	std::pair<float, float> mPlanetSpeeds[10];
-	int mPlanetDistances[10];
 
 	bool mDrawRings = true;
 	bool mDrawPlane = true;

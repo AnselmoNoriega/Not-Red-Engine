@@ -94,26 +94,13 @@ void MainState::Initialize()
     DebugUI::SetTheme(DebugUI::Theme::Custom);
 
     std::filesystem::path shaderFile = L"../../Assets/Shaders/Texture.fx";
-    mSkyboxMesh = NotRed::Graphics::MeshBuilder::CreateSkySpherePX(50, 50, 200);
 
     mConstantBuffer.Initialize(sizeof(Math::Matrix4));
-    mMeshBuffer.Initialize(mSkyboxMesh);
     mVertexShader.Initialize<VertexPX>(shaderFile);
     mPixelShader.Initialize(shaderFile);
-    mSkyboxTexture.Initialize("../../Assets/Images/skysphere/space.jpg");
     mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 
-    int distance = 0;
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/sun.jpg", 5, GiveDistance(distance)));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/mercury.jpg", 2, GiveDistance(distance)));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/venus.jpg", 2, GiveDistance(distance)));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/earth/earth.jpg", 2, GiveDistance(distance)));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/mars.jpg", 2, GiveDistance(distance)));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/jupiter.jpg", 2, GiveDistance(distance)));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/saturn.jpg", 2, GiveDistance(distance)));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/uranus.jpg", 2, GiveDistance(distance)));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/neptune.jpg", 2, GiveDistance(distance)));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/pluto.jpg", 2, GiveDistance(distance)));
+    CreateShapes();
 
     for (int i = 0; i < 10; ++i)
     {
@@ -124,16 +111,16 @@ void MainState::Initialize()
 
 void MainState::Terminate()
 {
+    mGalaxy->Terminate();
+
     for (auto planet : mPlanets)
     {
         planet->Terminate();
     }
 
     mSampler.Terminate();
-    mSkyboxTexture.Terminate();
     mPixelShader.Terminate();
     mVertexShader.Terminate();
-    mMeshBuffer.Terminate();
     mConstantBuffer.Terminate();
 }
 
@@ -151,26 +138,16 @@ void MainState::Render()
 {
     mVertexShader.Bind();
     mPixelShader.Bind();
-    mSkyboxTexture.BindPS(0);
     mSampler.BindPS(0);
 
-    Math::Matrix4 matWorld = Math::Matrix4::Identity;
-    Math::Matrix4 matView = mCamera.GetViewMatrix();
-    Math::Matrix4 matProj = mCamera.GetProjectionMatrix();
-    Math::Matrix4 matFinal = matWorld * matView * matProj;
-    Math::Matrix4 wvp = Transpose(matFinal);
-
-    mConstantBuffer.Update(&wvp);
-    mConstantBuffer.BindVS(0);
-
-    mMeshBuffer.Render();
+    mGalaxy->Render(mCamera, mConstantBuffer);
 
     for (int i = 0; i < 10; ++i)
     {
         mPlanets[i]->Render(mCamera, mConstantBuffer);
         if (mDrawRings)
         {
-            SimpleDraw::AddGroundCircle(40, mPlanetDistances[i], Colors::Red);
+            SimpleDraw::AddGroundCircle(40, mPlanets[i]->GetDistance(), Colors::Red);
         }
     }
 
@@ -201,15 +178,16 @@ void MainState::DebugUI()
 
 void MainState::CreateShapes()
 {
-}
+    mGalaxy = std::make_unique<Galaxy>("../../Assets/Images/skysphere/space.jpg", 500);
 
-int MainState::GiveDistance(int& num)
-{
-    int increaseRate = 10;
-
-    int index = num / increaseRate;
-    mPlanetDistances[index] = num;
-    num += increaseRate;
-
-    return mPlanetDistances[index];
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/sun.jpg", 40, 0));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/mercury.jpg", 1.5f, 50));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/venus.jpg", 2, 55));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/earth/earth.jpg", 2.5f, 60));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/mars.jpg", 3, 70));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/jupiter.jpg", 4, 90));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/saturn.jpg", 5, 100));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/uranus.jpg", 6, 120));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/neptune.jpg", 7, 140));
+    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/pluto.jpg", 0.5f, 160));
 }
