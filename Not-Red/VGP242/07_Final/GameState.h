@@ -19,7 +19,7 @@ private:
 private:
 	NotRed::Graphics::Camera mCamera;
 
-	std::vector<std::shared_ptr<Planet>> mPlanets;
+	std::vector<std::unique_ptr<Planet>> mPlanets;
 	std::unique_ptr<Galaxy> mGalaxy;
 
 	NotRed::Graphics::ConstantBuffer mConstantBuffer;

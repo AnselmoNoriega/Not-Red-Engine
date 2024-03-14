@@ -76,19 +76,11 @@ namespace
             MainApp().ChangeState("SkysphereState");
         }
     }
-
-    const char* shapeTypes[] =
-    {
-        "None",
-        "Sphere",
-        "AABB",
-        "FilledAABB"
-    };
 }
 
 void MainState::Initialize()
 {
-    mCamera.SetPosition({ 0.0f, 10.0f, -20.0f });
+    mCamera.SetPosition({ 0.0f, 30.0f, -90.0f });
     mCamera.SetLookAt({ 0.0f, 5.0f, -9.0f });
 
     DebugUI::SetTheme(DebugUI::Theme::Custom);
@@ -104,7 +96,7 @@ void MainState::Initialize()
 
     for (int i = 0; i < 10; ++i)
     {
-        mPlanetSpeeds[i].first = (rand() % 40 + 1) / (10.0f + (i * 3));
+        mPlanetSpeeds[i].first = (rand() % 40 + 1) / (10.0f + (std::pow(i, 3)));
         mPlanetSpeeds[i].second = (rand() % 50 + 1) / 10;
     }
 }
@@ -113,9 +105,9 @@ void MainState::Terminate()
 {
     mGalaxy->Terminate();
 
-    for (auto planet : mPlanets)
+    for (int i = 0; i < 10; ++i)
     {
-        planet->Terminate();
+        mPlanets[i]->Terminate();
     }
 
     mSampler.Terminate();
@@ -180,14 +172,14 @@ void MainState::CreateShapes()
 {
     mGalaxy = std::make_unique<Galaxy>("../../Assets/Images/skysphere/space.jpg", 500);
 
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/sun.jpg", 40, 0));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/mercury.jpg", 1.5f, 50));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/venus.jpg", 2, 55));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/earth/earth.jpg", 2.5f, 60));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/mars.jpg", 3, 70));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/jupiter.jpg", 4, 90));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/saturn.jpg", 5, 100));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/uranus.jpg", 6, 120));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/neptune.jpg", 7, 140));
-    mPlanets.push_back(std::make_shared<Planet>("../../Assets/Images/planets/pluto.jpg", 0.5f, 160));
+    mPlanets.push_back(std::make_unique<Planet>("../../Assets/Images/planets/sun.jpg", 40, 0));
+    mPlanets.push_back(std::make_unique<Planet>("../../Assets/Images/planets/mercury.jpg", 1.5f, 50));
+    mPlanets.push_back(std::make_unique<Planet>("../../Assets/Images/planets/venus.jpg", 2, 55));
+    mPlanets.push_back(std::make_unique<Planet>("../../Assets/Images/planets/earth/earth.jpg", 2.5f, 60));
+    mPlanets.push_back(std::make_unique<Planet>("../../Assets/Images/planets/mars.jpg", 3, 70));
+    mPlanets.push_back(std::make_unique<Planet>("../../Assets/Images/planets/jupiter.jpg", 4, 90));
+    mPlanets.push_back(std::make_unique<Planet>("../../Assets/Images/planets/saturn.jpg", 5, 100));
+    mPlanets.push_back(std::make_unique<Planet>("../../Assets/Images/planets/uranus.jpg", 6, 120));
+    mPlanets.push_back(std::make_unique<Planet>("../../Assets/Images/planets/neptune.jpg", 7, 140));
+    mPlanets.push_back(std::make_unique<Planet>("../../Assets/Images/planets/pluto.jpg", 0.5f, 160));
 }
