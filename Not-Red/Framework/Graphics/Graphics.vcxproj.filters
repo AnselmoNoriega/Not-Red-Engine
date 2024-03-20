@@ -19,6 +19,7 @@
     <ClInclude Include="Inc\SimpleDraw.h" />
     <ClInclude Include="Inc\BlendState.h" />
     <ClInclude Include="Inc\DebugUI.h" />
+    <ClInclude Include="Inc\RenderTarget.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -34,5 +35,6 @@
     <ClCompile Include="Src\SimpleDraw.cpp" />
     <ClCompile Include="Src\BlendState.cpp" />
     <ClCompile Include="Src\DebugUI.cpp" />
+    <ClCompile Include="Src\RenderTarget.cpp" />
   </ItemGroup>
 </Project>
