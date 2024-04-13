@@ -8,8 +8,8 @@ namespace NotRed::Graphics
 {
     void StandardEffect::Initialize(const std::filesystem::path& filePath)
     {
-        mConstantBuffer.Initialize(sizeof(Math::Matrix4));
-        mVertexShader.Initialize<VertexPX>(filePath);
+        mTransformBuffer.Initialize();
+        mVertexShader.Initialize<Vertex>(filePath);
         mPixelShader.Initialize(filePath);
         mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
     }
@@ -19,7 +19,7 @@ namespace NotRed::Graphics
         mVertexShader.Terminate();
         mPixelShader.Terminate();
         mSampler.Terminate();
-        mConstantBuffer.Terminate();
+        mTransformBuffer.Terminate();
     }
 
     void StandardEffect::Begin()
@@ -32,7 +32,8 @@ namespace NotRed::Graphics
         mSampler.BindVS(0);
         mSampler.BindPS(0);
 
-        mConstantBuffer.BindVS(0);
+        mTransformBuffer.BindVS(0);
+        mSettingsBuffer.
     }
 
     void StandardEffect::End()
@@ -46,10 +47,16 @@ namespace NotRed::Graphics
         const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
 
         Math::Matrix4 matFinal = matWorld * matView * matProj;
-        matFinal = Math::Transpose(matFinal);
-        mConstantBuffer.Update(&matFinal);
 
-        renderObject.texture.BindPS(0);
+        TransformData transformData;
+        transformData.wvp = Math::Transpose(matFinal);
+        mTransformBuffer.Update(transformData);
+
+        SettingsData settingsData;
+        settingsData.useDiffuseMap = renderObject.textureID > 0 && mSettingsData->useDiffuseMap > 0 ? 1 : 0;
+
+        TextureManager* tm = TextureManager::Get();
+        tm->BindPS(renderObject.textureID, 0);
         renderObject.meshBuffer.Render();
     }
 
@@ -62,7 +69,11 @@ namespace NotRed::Graphics
     {
         if (ImGui::CollapsingHeader("StandardEffect", ImGuiTreeNodeFlags_DefaultOpen))
         {
-
+            bool useDiffuseMap = mSettingsData->useDiffuseMap > 0;
+            if (ImGui::Checkbox("UseDiffuseMap", &useDiffuseMap))
+            {
+                mSettingsData->useDiffuseMap = useDiffuseMap ? 1 : 0;
+            }
         }
     }
 }

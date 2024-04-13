@@ -44,14 +44,15 @@ void MainState::CameraControllers(float dt)
 
 void MainState::Initialize()
 {
-    mCamera.SetPosition({ 0.0f, 30.0f, -90.0f });
+    TextureManager* tm = TextureManager::Get();
+    mCamera.SetPosition({ 0.0f, 0.0f, 5.0f });
     mCamera.SetLookAt({ 0.0f, 5.0f, -9.0f });
 
-    mMesh = MeshBuilder::CreateSpherePX(100, 100, 1.0f);
+    mMesh = MeshBuilder::CreateSphere(100, 100, 1.0f);
     mRenderObject.meshBuffer.Initialize(mMesh);
-    mRenderObject.texture.Initialize(L"../../Assets/Images/planets/earth/earth.jpg");
+    mRenderObject.textureID = tm->LoadTexture("planets/earth/earth.jpg");
 
-    std::filesystem::path shaderFilePath = L"../../Assets/Shaders/Texture.fx";
+    std::filesystem::path shaderFilePath = L"../../Assets/Shaders/Standard.fx";
     mStandardEffect.Initialize(shaderFilePath);
     mStandardEffect.SetCamera(mCamera);
 }

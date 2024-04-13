@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "MeshBuffer.h"
-#include "Texture.h"
+#include "TextureManager.h"
 #include "Transform.h"
 
 namespace NotRed::Graphics
@@ -12,6 +12,7 @@ namespace NotRed::Graphics
 
         Transform transform;
         MeshBuffer meshBuffer;
-        Texture texture;
+
+        TextureID textureID;
     };
 }

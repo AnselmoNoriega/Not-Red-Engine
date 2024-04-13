@@ -17,7 +17,7 @@ private:
 
 private:
 	NotRed::Graphics::Camera mCamera;
-	NotRed::Graphics::MeshPX mMesh;
+	NotRed::Graphics::Mesh mMesh;
 
 	NotRed::Graphics::RenderObject mRenderObject;
 	NotRed::Graphics::StandardEffect mStandardEffect;

@@ -19,4 +19,20 @@ namespace NotRed::Graphics
 	private:
 		ID3D11Buffer* mConstantBuffer = nullptr;
 	};
+
+	template<class DataType>
+	class TypedConstantBuffer final : public ConstantBuffer
+	{
+	public:
+		void Initialize()
+		{
+			static_assert(sizeof(DataType) % 16 == 0, "Data isnt aligned whith 16 bytes");
+			ConstantBuffer::Initialize(sizeof(DataType));
+		}
+
+		void Update(const DataType& data) const
+		{
+			ConstantBuffer::Update(&data);
+		}
+	};
 }

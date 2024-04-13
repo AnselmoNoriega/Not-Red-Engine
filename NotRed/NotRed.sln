@@ -45,6 +45,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{2E58C1B6-66A0-407E-8EBF-47BF64287221}"
 	ProjectSection(SolutionItems) = preProject
 		Assets\Shaders\Basic.fx = Assets\Shaders\Basic.fx
+		Assets\Shaders\Standard.fx = Assets\Shaders\Standard.fx
 		Assets\Shaders\Texture.fx = Assets\Shaders\Texture.fx
 		Assets\Shaders\Transform.fx = Assets\Shaders\Transform.fx
 	EndProjectSection

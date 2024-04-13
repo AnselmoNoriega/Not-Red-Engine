@@ -26,12 +26,27 @@ namespace NotRed::Graphics
         void DebugUI();
 
     private:
+        struct TransformData
+        {
+            Math::Matrix4 wvp;
+        };
 
-        ConstantBuffer mConstantBuffer;
+        struct SettingsData
+        {
+            int useDiffuseMap = 1;
+            float padding[3] = { 0.0f, 0.0f, 0.0f };
+        };
+
+        using TransformBuffer = TypedConstantBuffer<TransformData>;
+        using SettingsBuffer = TypedConstantBuffer<SettingsData>;
+
+        TransformBuffer mTransformBuffer;
+        SettingsBuffer mSettingsBuffer;
         Sampler mSampler;
         VertexShader mVertexShader;
         PixelShader mPixelShader;
 
+        SettingsData* mSettingsData;
         const Camera* mCamera;
     };
 }

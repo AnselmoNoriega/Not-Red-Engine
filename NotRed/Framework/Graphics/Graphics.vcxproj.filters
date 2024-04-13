@@ -23,6 +23,7 @@
     <ClInclude Include="Inc\StandardEffect.h" />
     <ClInclude Include="Inc\RenderObject.h" />
     <ClInclude Include="Inc\Transform.h" />
+    <ClInclude Include="Inc\TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="Src\RenderTarget.cpp" />
     <ClCompile Include="Src\StandardEffect.cpp" />
     <ClCompile Include="Src\RenderObject.cpp" />
+    <ClCompile Include="Src\TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
