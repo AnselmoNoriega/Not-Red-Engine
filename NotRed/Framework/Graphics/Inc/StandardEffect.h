@@ -26,6 +26,8 @@ namespace NotRed::Graphics
         void DebugUI();
 
     private:
+
+        ConstantBuffer mConstantBuffer;
         Sampler mSampler;
         VertexShader mVertexShader;
         PixelShader mPixelShader;

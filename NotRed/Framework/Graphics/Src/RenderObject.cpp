@@ -5,7 +5,7 @@ namespace NotRed::Graphics
 {
     void RenderObject::Terminate()
     {
-        mMeshBuffer.Terminate();
-        mTexture.Terminate();
+        meshBuffer.Terminate();
+        texture.Terminate();
     }
 }
