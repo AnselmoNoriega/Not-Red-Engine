@@ -20,6 +20,9 @@
     <ClInclude Include="Inc\BlendState.h" />
     <ClInclude Include="Inc\DebugUI.h" />
     <ClInclude Include="Inc\RenderTarget.h" />
+    <ClInclude Include="Inc\StandardEffect.h" />
+    <ClInclude Include="Inc\RenderObject.h" />
+    <ClInclude Include="Inc\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -36,5 +39,10 @@
     <ClCompile Include="Src\BlendState.cpp" />
     <ClCompile Include="Src\DebugUI.cpp" />
     <ClCompile Include="Src\RenderTarget.cpp" />
+    <ClCompile Include="Src\StandardEffect.cpp" />
+    <ClCompile Include="Src\RenderObject.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

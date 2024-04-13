@@ -17,16 +17,15 @@ private:
 	void CameraControllers(float dt);
 
 private:
-	NotRed::Graphics::Camera mCamera;
-
 	std::vector<std::unique_ptr<Planet>> mPlanets;
 	std::unique_ptr<Galaxy> mGalaxy;
 
+	NotRed::Graphics::Camera mCamera;
+	NotRed::Graphics::Mesh mMesh;
 	NotRed::Graphics::ConstantBuffer mConstantBuffer;
-	NotRed::Graphics::VertexShader mVertexShader;
-	NotRed::Graphics::RenderTarget mRenderTarget;
-	NotRed::Graphics::PixelShader mPixelShader;
-	NotRed::Graphics::Sampler mSampler;
+
+	NotRed::Graphics::RenderObject mRenderObject;
+	NotRed::Graphics::StandardEffect mStandardEffect;
 
 	std::pair<float, float> mPlanetSpeeds[10];
 
