@@ -10,7 +10,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
 	myApp.AddState<MainState>("MainState");
 
 	AppConfig config;
-	config.appName = L"This Shape";
+	config.appName = L"Hello Light";
 
 	myApp.Run(config);
 

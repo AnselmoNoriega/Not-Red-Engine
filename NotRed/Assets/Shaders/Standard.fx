@@ -3,9 +3,9 @@ cbuffer TranformBuffer : register(b0)
 {
     matrix wvp;
 }
-cbuffer TranformBuffer : register(b1)
+cbuffer SettingsBuffer : register(b1)
 {
-    matrix useDiffuseMap;
+    bool useDiffuseMap;
 }
 
 Texture2D textureMap : register(t0);

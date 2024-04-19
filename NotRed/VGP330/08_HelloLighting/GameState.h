@@ -12,7 +12,6 @@ public:
 	void DebugUI() override;
 
 private:
-	void CreateShapes();
 	void CameraControllers(float dt);
 
 private:

@@ -44,10 +44,10 @@ void MainState::CameraControllers(float dt)
 
 void MainState::Initialize()
 {
-    TextureManager* tm = TextureManager::Get();
     mCamera.SetPosition({ 0.0f, 0.0f, 5.0f });
     mCamera.SetLookAt({ 0.0f, 5.0f, -9.0f });
 
+    TextureManager* tm = TextureManager::Get();
     mMesh = MeshBuilder::CreateSphere(100, 100, 1.0f);
     mRenderObject.meshBuffer.Initialize(mMesh);
     mRenderObject.textureID = tm->LoadTexture("planets/earth/earth.jpg");
@@ -82,9 +82,4 @@ void MainState::DebugUI()
     mStandardEffect.DebugUI();
 
     ImGui::End();
-}
-
-void MainState::CreateShapes()
-{
-
 }

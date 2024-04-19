@@ -11,7 +11,7 @@ namespace NotRed::Graphics
 		void Initialize(uint32_t bufferSize);
 		void Terminate();
 
-		void Update(const void* data);
+		void Update(const void* data) const;
 
 		void BindVS(uint32_t slot) const;
 		void BindPS(uint32_t slot) const;

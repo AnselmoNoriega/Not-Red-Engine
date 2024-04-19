@@ -31,7 +31,8 @@ namespace NotRed::Graphics
         for (auto&[id, texture] : mInventory)
         {
             texture->Terminate();
-        }mInventory.clear();
+        }
+        mInventory.clear();
     }
 
     void TextureManager::SetRootDirectory(const std::filesystem::path& root)

@@ -9,6 +9,7 @@ namespace NotRed::Graphics
     void StandardEffect::Initialize(const std::filesystem::path& filePath)
     {
         mTransformBuffer.Initialize();
+        mSettingsBuffer.Initialize();
         mVertexShader.Initialize<Vertex>(filePath);
         mPixelShader.Initialize(filePath);
         mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
@@ -16,9 +17,10 @@ namespace NotRed::Graphics
 
     void StandardEffect::Terminate()
     {
-        mVertexShader.Terminate();
-        mPixelShader.Terminate();
         mSampler.Terminate();
+        mPixelShader.Terminate();
+        mVertexShader.Terminate();
+        mSettingsBuffer.Terminate();
         mTransformBuffer.Terminate();
     }
 
@@ -33,7 +35,7 @@ namespace NotRed::Graphics
         mSampler.BindPS(0);
 
         mTransformBuffer.BindVS(0);
-        mSettingsBuffer.
+        mSettingsBuffer.BindPS(1);
     }
 
     void StandardEffect::End()
@@ -53,10 +55,12 @@ namespace NotRed::Graphics
         mTransformBuffer.Update(transformData);
 
         SettingsData settingsData;
-        settingsData.useDiffuseMap = renderObject.textureID > 0 && mSettingsData->useDiffuseMap > 0 ? 1 : 0;
+        settingsData.useDiffuseMap = renderObject.textureID > 0 && mSettingsData.useDiffuseMap > 0 ? 1 : 0;
+        mSettingsBuffer.Update(settingsData);
 
         TextureManager* tm = TextureManager::Get();
         tm->BindPS(renderObject.textureID, 0);
+
         renderObject.meshBuffer.Render();
     }
 
@@ -69,10 +73,10 @@ namespace NotRed::Graphics
     {
         if (ImGui::CollapsingHeader("StandardEffect", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            bool useDiffuseMap = mSettingsData->useDiffuseMap > 0;
+            bool useDiffuseMap = mSettingsData.useDiffuseMap > 0;
             if (ImGui::Checkbox("UseDiffuseMap", &useDiffuseMap))
             {
-                mSettingsData->useDiffuseMap = useDiffuseMap ? 1 : 0;
+                mSettingsData.useDiffuseMap = static_cast<int>(useDiffuseMap);
             }
         }
     }

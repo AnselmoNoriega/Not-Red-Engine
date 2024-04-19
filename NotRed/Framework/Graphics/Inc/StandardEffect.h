@@ -34,7 +34,7 @@ namespace NotRed::Graphics
         struct SettingsData
         {
             int useDiffuseMap = 1;
-            float padding[3] = { 0.0f, 0.0f, 0.0f };
+            float padding[3] = { 0.0f };
         };
 
         using TransformBuffer = TypedConstantBuffer<TransformData>;
@@ -46,7 +46,7 @@ namespace NotRed::Graphics
         VertexShader mVertexShader;
         PixelShader mPixelShader;
 
-        SettingsData* mSettingsData;
-        const Camera* mCamera;
+        SettingsData mSettingsData;
+        const Camera* mCamera = nullptr;
     };
 }
