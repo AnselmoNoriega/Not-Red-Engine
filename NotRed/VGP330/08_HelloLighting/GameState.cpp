@@ -55,9 +55,9 @@ void MainState::Initialize()
     TextureManager* tm = TextureManager::Get();
     mMesh = MeshBuilder::CreateSphere(100, 100, 1.0f);
     mRenderObject.meshBuffer.Initialize(mMesh);
-    mRenderObject.diffuseMapID = tm->LoadTexture("planets/earth/earth.jpg");
-    mRenderObject.specMapID = tm->LoadTexture("planets/earth/earth_spec.jpg");
-    mRenderObject.normalMapID = tm->LoadTexture("planets/earth/earth_normal.jpg");
+    mRenderObject.diffuseMapID = tm->LoadTexture("materials/Stone/TCom_Wall_Stone3_2x2_4K_albedo.tif");
+    mRenderObject.specMapID = tm->LoadTexture("materials/Stone/TCom_Wall_Stone3_2x2_4K_ao.tif");
+    mRenderObject.normalMapID = tm->LoadTexture("materials/Stone/TCom_Wall_Stone3_2x2_4K_normal.tif");
 
     std::filesystem::path shaderFilePath = L"../../Assets/Shaders/Standard.fx";
     mStandardEffect.Initialize(shaderFilePath);
