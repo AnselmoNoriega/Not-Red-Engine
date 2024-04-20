@@ -11,6 +11,7 @@ namespace NotRed::Graphics
         mTransformBuffer.Initialize();
         mSettingsBuffer.Initialize();
         mLightBuffer.Initialize();
+        mMaterialBuffer.Initialize();
         mVertexShader.Initialize<Vertex>(filePath);
         mPixelShader.Initialize(filePath);
         mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
@@ -21,6 +22,7 @@ namespace NotRed::Graphics
         mSampler.Terminate();
         mPixelShader.Terminate();
         mVertexShader.Terminate();
+        mMaterialBuffer.Terminate();
         mLightBuffer.Terminate();
         mSettingsBuffer.Terminate();
         mTransformBuffer.Terminate();
@@ -43,6 +45,8 @@ namespace NotRed::Graphics
 
         mLightBuffer.BindVS(2);
         mLightBuffer.BindPS(2);
+
+        mMaterialBuffer.BindPS(3);
     }
 
     void StandardEffect::End()
@@ -71,6 +75,7 @@ namespace NotRed::Graphics
         mSettingsBuffer.Update(settingsData);
 
         mLightBuffer.Update(*mDirectionalLight);
+        mMaterialBuffer.Update(renderObject.material);
 
         TextureManager* tm = TextureManager::Get();
         tm->BindPS(renderObject.diffuseMapID, 0);

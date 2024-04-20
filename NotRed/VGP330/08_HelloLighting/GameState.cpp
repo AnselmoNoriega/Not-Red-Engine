@@ -99,6 +99,16 @@ void MainState::DebugUI()
         ImGui::ColorEdit4("Specular##Light", &mDirectionalLight.specular.r);
     }
 
+    if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::ColorEdit4("Ambient##Material", &mRenderObject.material.ambient.r);
+        ImGui::ColorEdit4("Diffuse##Material", &mRenderObject.material.diffuse.r);
+        ImGui::ColorEdit4("Specular##Material", &mRenderObject.material.specular.r);
+        ImGui::ColorEdit4("Emissive##Material", &mRenderObject.material.emissive.r);
+
+        ImGui::DragFloat("Emissive##Material", &mRenderObject.material.power, 1.0f, 1.0f, 100.0f);
+    }
+
     mStandardEffect.DebugUI();
 
     ImGui::End();

@@ -4,6 +4,7 @@
 #include "LightTypes.h"
 #include "PixelShader.h"
 #include "Sampler.h"
+#include "Material.h"
 #include "VertexShader.h"
 
 namespace NotRed::Graphics
@@ -47,10 +48,12 @@ namespace NotRed::Graphics
         using TransformBuffer = TypedConstantBuffer<TransformData>;
         using SettingsBuffer = TypedConstantBuffer<SettingsData>;
         using LightBuffer = TypedConstantBuffer<DirectionalLight>;
+        using MaterialBuffer = TypedConstantBuffer<Material>;
 
         TransformBuffer mTransformBuffer;
         SettingsBuffer mSettingsBuffer;
         LightBuffer mLightBuffer;
+        MaterialBuffer mMaterialBuffer;
         Sampler mSampler;
         VertexShader mVertexShader;
         PixelShader mPixelShader;
