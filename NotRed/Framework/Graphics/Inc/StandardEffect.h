@@ -39,7 +39,9 @@ namespace NotRed::Graphics
         struct SettingsData
         {
             int useDiffuseMap = 1;
-            float padding[3] = { 0.0f };
+            int useNormalMap = 1;
+            int useSpecMap = 1;
+            int useLighting = 1;
         };
 
         using TransformBuffer = TypedConstantBuffer<TransformData>;

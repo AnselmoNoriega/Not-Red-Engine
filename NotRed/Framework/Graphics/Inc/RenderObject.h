@@ -13,6 +13,8 @@ namespace NotRed::Graphics
         Transform transform;
         MeshBuffer meshBuffer;
 
-        TextureID textureID;
+        TextureID diffuseMapID;
+        TextureID normalMapID;
+        TextureID specMapID;
     };
 }

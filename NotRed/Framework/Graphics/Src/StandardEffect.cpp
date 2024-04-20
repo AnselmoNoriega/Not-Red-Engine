@@ -29,6 +29,7 @@ namespace NotRed::Graphics
     void StandardEffect::Begin()
     {
         ASSERT(mCamera != nullptr, "No camera passed!");
+        ASSERT(mDirectionalLight != nullptr, "No light passed!");
 
         mVertexShader.Bind();
         mPixelShader.Bind();
@@ -63,13 +64,18 @@ namespace NotRed::Graphics
         mTransformBuffer.Update(transformData);
 
         SettingsData settingsData;
-        settingsData.useDiffuseMap = renderObject.textureID > 0 && mSettingsData.useDiffuseMap > 0 ? 1 : 0;
+        settingsData.useDiffuseMap = renderObject.diffuseMapID > 0 && mSettingsData.useDiffuseMap > 0 ? 1 : 0;
+        settingsData.useNormalMap = renderObject.normalMapID > 0 && mSettingsData.useNormalMap > 0 ? 1 : 0;
+        settingsData.useSpecMap = renderObject.specMapID > 0 && mSettingsData.useSpecMap > 0 ? 1 : 0;
+        settingsData.useLighting = mSettingsData.useLighting;
         mSettingsBuffer.Update(settingsData);
 
         mLightBuffer.Update(*mDirectionalLight);
 
         TextureManager* tm = TextureManager::Get();
-        tm->BindPS(renderObject.textureID, 0);
+        tm->BindPS(renderObject.diffuseMapID, 0);
+        tm->BindPS(renderObject.normalMapID, 1);
+        tm->BindPS(renderObject.specMapID, 2);
 
         renderObject.meshBuffer.Render();
     }
@@ -92,6 +98,21 @@ namespace NotRed::Graphics
             if (ImGui::Checkbox("UseDiffuseMap", &useDiffuseMap))
             {
                 mSettingsData.useDiffuseMap = static_cast<int>(useDiffuseMap);
+            }
+            bool useNormalMap = mSettingsData.useNormalMap > 0;
+            if (ImGui::Checkbox("UseNormalMap", &useNormalMap))
+            {
+                mSettingsData.useNormalMap = static_cast<int>(useNormalMap);
+            }
+            bool useSpecMap = mSettingsData.useSpecMap > 0;
+            if (ImGui::Checkbox("UseSpecMap", &useSpecMap))
+            {
+                mSettingsData.useSpecMap = static_cast<int>(useSpecMap);
+            }
+            bool useLighting = mSettingsData.useLighting > 0;
+            if (ImGui::Checkbox("UseLighting", &useLighting))
+            {
+                mSettingsData.useLighting = static_cast<int>(useLighting);
             }
         }
     }
