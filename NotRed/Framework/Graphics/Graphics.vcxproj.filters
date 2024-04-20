@@ -24,6 +24,7 @@
     <ClInclude Include="Inc\RenderObject.h" />
     <ClInclude Include="Inc\Transform.h" />
     <ClInclude Include="Inc\TextureManager.h" />
+    <ClInclude Include="Inc\LightTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />

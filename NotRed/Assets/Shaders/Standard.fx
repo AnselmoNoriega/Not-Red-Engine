@@ -7,6 +7,13 @@ cbuffer SettingsBuffer : register(b1)
 {
     bool useDiffuseMap;
 }
+cbuffer LightBuffer : register(b2)
+{
+    float4 lightAmbient;
+    float4 lightDiffuse;
+    float4 lightSpecular;
+    float3 lightDirection;
+}
 
 Texture2D textureMap : register(t0);
 SamplerState textureSampler : register(s0);

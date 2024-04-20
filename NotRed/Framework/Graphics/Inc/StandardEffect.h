@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ConstantBuffer.h"
+#include "LightTypes.h"
 #include "PixelShader.h"
 #include "Sampler.h"
 #include "VertexShader.h"
@@ -22,6 +23,7 @@ namespace NotRed::Graphics
         void Render(const RenderObject& renderObject);
 
         void SetCamera(const Camera& camera);
+        void SetDirectionalLight(const DirectionalLight& directionalLight);
 
         void DebugUI();
 
@@ -39,14 +41,17 @@ namespace NotRed::Graphics
 
         using TransformBuffer = TypedConstantBuffer<TransformData>;
         using SettingsBuffer = TypedConstantBuffer<SettingsData>;
+        using LightBuffer = TypedConstantBuffer<DirectionalLight>;
 
         TransformBuffer mTransformBuffer;
         SettingsBuffer mSettingsBuffer;
+        LightBuffer mLightBuffer;
         Sampler mSampler;
         VertexShader mVertexShader;
         PixelShader mPixelShader;
 
         SettingsData mSettingsData;
         const Camera* mCamera = nullptr;
+        const DirectionalLight* mDirectionalLight = nullptr;
     };
 }

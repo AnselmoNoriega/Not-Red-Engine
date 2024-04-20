@@ -15,6 +15,7 @@ private:
 	void CameraControllers(float dt);
 
 private:
+	NotRed::Graphics::DirectionalLight mDirectionalLight;
 	NotRed::Graphics::Camera mCamera;
 	NotRed::Graphics::Mesh mMesh;
 
