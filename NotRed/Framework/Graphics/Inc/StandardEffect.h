@@ -31,6 +31,9 @@ namespace NotRed::Graphics
         struct TransformData
         {
             Math::Matrix4 wvp;
+            Math::Matrix4 world;
+            Math::Vector3 viewPos;
+            float padding = 0.0f;
         };
 
         struct SettingsData

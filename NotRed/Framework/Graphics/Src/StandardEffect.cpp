@@ -37,7 +37,10 @@ namespace NotRed::Graphics
         mSampler.BindPS(0);
 
         mTransformBuffer.BindVS(0);
+
         mSettingsBuffer.BindPS(1);
+
+        mLightBuffer.BindVS(2);
         mLightBuffer.BindPS(2);
     }
 
@@ -55,6 +58,8 @@ namespace NotRed::Graphics
 
         TransformData transformData;
         transformData.wvp = Math::Transpose(matFinal);
+        transformData.world = Math::Transpose(matWorld);
+        transformData.viewPos = mCamera->GetPosition();
         mTransformBuffer.Update(transformData);
 
         SettingsData settingsData;
