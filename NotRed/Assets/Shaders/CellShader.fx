@@ -93,19 +93,30 @@ float4 PS(VS_OUTPUT input) : SV_Target
         
         float3 light = normalize(input.dirToLight);
         float3 view = normalize(input.dirToView);
-    
-        float4 emissive = materialEmissive;
         
         float4 ambient = lightAmbient * materialAmbient;
-    
+        
+        float stepThreshholdMin = 0.005f;
+        float stepThreshholdMax = 0.01f;
+        
         float d = saturate(dot(light, n));
-        float4 diffuse = d * lightDiffuse * materialDiffuse;
+        float dIntencity = smoothstep(stepThreshholdMin, stepThreshholdMax, d);
+        float4 diffuse = dIntencity * lightDiffuse * materialDiffuse;
     
         float3 r = reflect(-light, n);
         float base = saturate(dot(r, view));
         float s = pow(base, materialPower);
         float4 specular = s * lightSpecular * materialSpecular;
     
+        float edgeThickness = 0.85f;
+        float edgeThreshhold = 0.01f;
+        float edgeStep = 0.01f;
+        float e = 1.0f - saturate(dot(view, n));
+        float eIntencity = e;// * pow(d, edgeThreshhold);
+        eIntencity = smoothstep(edgeThickness - edgeStep, edgeThickness + edgeStep, eIntencity);
+        float4 emissive = eIntencity * materialEmissive;
+        
+        
         float4 diffuseMapColor = (useDiffuseMap) ? diffuseMap.Sample(textureSampler, input.texCoord) : 1.0f;
         float4 specMapColor = (useSpecMap) ? specMap.Sample(textureSampler, input.texCoord).r : 1.0f;
     
