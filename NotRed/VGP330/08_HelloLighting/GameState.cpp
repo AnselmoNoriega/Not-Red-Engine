@@ -58,6 +58,7 @@ void MainState::Initialize()
     mRenderObject.diffuseMapID = tm->LoadTexture("materials/Stone/TCom_Wall_Stone3_2x2_4K_albedo.tif");
     mRenderObject.specMapID = tm->LoadTexture("materials/Stone/TCom_Wall_Stone3_2x2_4K_ao.tif");
     mRenderObject.normalMapID = tm->LoadTexture("materials/Stone/TCom_Wall_Stone3_2x2_4K_normal.tif");
+    mRenderObject.bumpMapID = tm->LoadTexture("materials/Stone/TCom_Wall_Stone3_2x2_4K_height.tif");
 
     std::filesystem::path shaderFilePath = L"../../Assets/Shaders/Standard.fx";
     mStandardEffect.Initialize(shaderFilePath);

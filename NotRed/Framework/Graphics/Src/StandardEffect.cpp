@@ -41,6 +41,7 @@ namespace NotRed::Graphics
 
         mTransformBuffer.BindVS(0);
 
+        mSettingsBuffer.BindVS(1);
         mSettingsBuffer.BindPS(1);
 
         mLightBuffer.BindVS(2);
@@ -72,6 +73,8 @@ namespace NotRed::Graphics
         settingsData.useNormalMap = renderObject.normalMapID > 0 && mSettingsData.useNormalMap > 0 ? 1 : 0;
         settingsData.useSpecMap = renderObject.specMapID > 0 && mSettingsData.useSpecMap > 0 ? 1 : 0;
         settingsData.useLighting = mSettingsData.useLighting;
+        settingsData.useBumpMap = renderObject.bumpMapID > 0 && mSettingsData.useBumpMap > 0;
+        settingsData.bumpWeight = mSettingsData.bumpWeight;
         mSettingsBuffer.Update(settingsData);
 
         mLightBuffer.Update(*mDirectionalLight);
@@ -81,6 +84,7 @@ namespace NotRed::Graphics
         tm->BindPS(renderObject.diffuseMapID, 0);
         tm->BindPS(renderObject.normalMapID, 1);
         tm->BindPS(renderObject.specMapID, 2);
+        tm->BindVS(renderObject.bumpMapID, 3);
 
         renderObject.meshBuffer.Render();
     }
@@ -118,6 +122,16 @@ namespace NotRed::Graphics
             if (ImGui::Checkbox("UseLighting", &useLighting))
             {
                 mSettingsData.useLighting = static_cast<int>(useLighting);
+            }
+            bool useBumpMap = mSettingsData.useBumpMap > 0;
+            if (ImGui::Checkbox("UseBumpMap", &useBumpMap))
+            {
+                mSettingsData.useBumpMap = static_cast<int>(useBumpMap);
+            }
+            float bumpWeight = mSettingsData.bumpWeight;
+            if (ImGui::DragFloat("BumpWeight", &bumpWeight, 0.1f, 0.0f, 10.0f))
+            {
+                mSettingsData.bumpWeight = bumpWeight;
             }
         }
     }

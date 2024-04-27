@@ -19,5 +19,6 @@ namespace NotRed::Graphics
         TextureID diffuseMapID;
         TextureID normalMapID;
         TextureID specMapID;
+        TextureID bumpMapID;
     };
 }
