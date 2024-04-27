@@ -26,6 +26,7 @@
     <ClInclude Include="Inc\TextureManager.h" />
     <ClInclude Include="Inc\LightTypes.h" />
     <ClInclude Include="Inc\Material.h" />
+    <ClInclude Include="Inc\Model.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
