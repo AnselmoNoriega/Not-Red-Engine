@@ -19,7 +19,7 @@ namespace NotRed::Graphics
             std::string diffuseMapName;
             std::string normalMapName;
             std::string specularMapName;
-            std::string bumpeMapName;
+            std::string bumpMapName;
         };
 
         std::vector<MeshData> meshData;
