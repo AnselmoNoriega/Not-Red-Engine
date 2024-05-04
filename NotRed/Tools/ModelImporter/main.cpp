@@ -15,6 +15,23 @@ struct Arguments
     float scale = 1.0f;
 };
 
+Vector3 ToVector3(const aiVector3D& v)
+{
+    return {
+        static_cast<float>(v.x),
+        static_cast<float>(v.y),
+        static_cast<float>(v.z)
+    };
+}
+
+Vector2 ToTexCoord(const aiVector3D& v)
+{
+    return {
+        static_cast<float>(v.x),
+        static_cast<float>(v.y)
+    };
+}
+
 std::optional<Arguments> ParseArgs(int argc, char* argv[])
 {
     if (argc < 3)
@@ -57,6 +74,69 @@ int main(int argc, char* argv[])
     }
 
     printf("Importing %s...\n", args.inputFileName.string().c_str());
+
+    Model model;
+    if (scene->HasMeshes())
+    {
+        printf("Reading Mesh Data...\n");
+        for (int i = 0; i < scene->mNumMeshes; ++i)
+        {
+            const aiMesh* assimpMesh = scene->mMeshes[i]; 
+            if (assimpMesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE)
+            {
+                continue;
+            }
+
+            const uint32_t numVertices = assimpMesh->mNumVertices;
+            const uint32_t numFaces = assimpMesh->mNumFaces;
+            const uint32_t numIndices = numFaces * 3;
+
+            Model::MeshData& meshData = model.meshData.emplace_back();
+
+            printf("Reading Material Index...\n");
+            meshData.materialIndex = assimpMesh->mMaterialIndex;
+
+            printf("Reading Vertices...\n");
+            Mesh& mesh = meshData.mesh;
+            mesh.vertices.reserve(numVertices);
+
+            const aiVector3D* positions = assimpMesh->mVertices;
+            const aiVector3D* normals = assimpMesh->mNormals;
+            const aiVector3D* tangents = assimpMesh->HasTangentsAndBitangents() ? assimpMesh->mTangents : nullptr;
+            const aiVector3D* texCoord = assimpMesh->HasTextureCoords(0) ? assimpMesh->mTextureCoords[0] : nullptr;
+
+            for (int v = 0; v < numVertices; ++v)
+            {
+                Vertex& vertex = mesh.vertices.emplace_back();
+                vertex.position = ToVector3(positions[v]) * args.scale;
+                vertex.normal = ToVector3(normals[v]);
+                vertex.tangent = tangents ? ToVector3(tangents[v]) : Vector3::Zero;
+                vertex.uvCoord = texCoord ? ToTexCoord(texCoord[v]) : Vector2::Zero;
+            }
+
+            printf("Reading Indices...\n");
+            mesh.indices.reserve(numIndices);
+            const aiFace* aiFaces = assimpMesh->mFaces;
+            for (uint32_t f = 0; f < numFaces; ++f)
+            {
+                const aiFace& assimpFace = aiFaces[f];
+                for (uint32_t j = 0; j < 3; ++j)
+                {
+                    mesh.indices.push_back(assimpFace.mIndices[j]);
+                }
+            }
+        }
+    }
+
+    printf("Saving Model...\n");
+    if (ModelIO::SaveModel(args.outputFileName, model))
+    {
+        printf("Model saved [%s]...\n", args.outputFileName.string().c_str());
+    }
+    else
+    {
+        printf("Failed to save Model data [%s]...\n", args.outputFileName.string().c_str());
+    }
 
     return 0;
 }
