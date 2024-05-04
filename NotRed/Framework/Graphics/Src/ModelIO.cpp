@@ -97,4 +97,44 @@ namespace NotRed::Graphics
 		fclose(file);
 		return true;
 	}
+
+	bool ModelIO::SaveMaterial(std::filesystem::path filePath, const Model& model)
+	{
+		if (model.meterialData.empty())
+		{
+			return false;
+		}
+		filePath.replace_extension("material");
+
+		FILE* file = nullptr;
+		fopen_s(&file, filePath.string().c_str(), "w");
+		if (file == nullptr)
+		{
+			return false;
+		}
+
+		uint32_t materialCount = static_cast<uint32_t>(model.meshData.size());
+		fprintf_s(file, "MaterialCount: %d\n", materialCount);
+		for (const Model::MeterialData& materialData : model.meterialData)
+		{
+			const Material& m = materialData.material;
+			fprintf_s(file, "%f %f %f %f\n", m.ambient.r, m.ambient.g, m.ambient.b, m.ambient.a);
+			fprintf_s(file, "%f %f %f %f\n", m.diffuse.r, m.diffuse.g, m.diffuse.b, m.diffuse.a);
+			fprintf_s(file, "%f %f %f %f\n", m.emissive.r, m.emissive.g, m.emissive.b, m.emissive.a);
+			fprintf_s(file, "%f %f %f %f\n", m.specular.r, m.specular.g, m.specular.b, m.specular.a);
+			fprintf_s(file, "Power: %f\n", m.power);
+
+			fprintf_s(file, "%s\n", materialData.diffuseMapName.empty() ? "<none>" : materialData.diffuseMapName.c_str());
+			fprintf_s(file, "%s\n", materialData.normalMapName.empty() ? "<none>" : materialData.normalMapName.c_str());
+			fprintf_s(file, "%s\n", materialData.bumpMapName.empty() ? "<none>" : materialData.bumpMapName.c_str());
+			fprintf_s(file, "%s\n", materialData.specularMapName.empty() ? "<none>" : materialData.specularMapName.c_str());
+		}
+		fclose(file);
+		return true;
+	}
+
+	bool ModelIO::LoadMaterial(std::filesystem::path filePath, Model& model)
+	{
+		return false;
+	}
 }
