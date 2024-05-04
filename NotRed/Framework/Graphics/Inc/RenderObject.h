@@ -7,6 +7,8 @@
 
 namespace NotRed::Graphics
 {
+    struct Model;
+
     struct RenderObject
     {
         void Terminate();
@@ -21,4 +23,17 @@ namespace NotRed::Graphics
         TextureID specMapID;
         TextureID bumpMapID;
     };
+
+    using RenderGroup = std::vector<RenderObject>;
+    [[nodiscard]] RenderGroup CreateRenderGropu(const Model& model);
+    void CleanRenderGroup(RenderGroup& renderGroup);
+
+    template<class Effect>
+    void DrawRenderGroup(Effect& effect, const RenderGroup& renderGroup)
+    {
+        for (const RenderObject& renderObject : renderGroup)
+        {
+            effect.Render(renderObject);
+        }
+    }
 }
