@@ -53,6 +53,7 @@ void MainState::Initialize()
     mDirectionalLight.specular = { 1.0f, 1.0f, 1.0f, 1.0f };
 
     Model model;
+    ModelIO::LoadModel("../../Assets/Models/Paladin/Paladin.model", model);
     ModelIO::LoadMaterial("../../Assets/Models/Paladin/Paladin.model", model);
     mRenderGroup = CreateRenderGroup(model);
 
