@@ -54,7 +54,7 @@ std::optional<Arguments> ParseArgs(int argc, char* argv[])
     args.outputFileName = argv[argc - 1];
     for (int i = 1; i + 2 < argc; ++i)
     {
-        if (strcmp(argv[i], "-scale") == 0) 
+        if (strcmp(argv[i], "-scale") == 0)
         {
             args.scale = atof(argv[i + 1]);
             ++i;
@@ -80,8 +80,9 @@ void ExportEmbeddedTexture(const aiTexture* texture, const Arguments& args, cons
         return;
     }
 
-    size_t written = fwrite(texture->pcData, 1, texture->mWidth, file);////////////////////////
-    ASSERT(written = texture->mWidth, "ERROR");
+    size_t written = fwrite(texture->pcData, 1, texture->mWidth, file);
+    ASSERT(written == texture->mWidth, "Error: failed to extract embedded texture");
+    fclose(file);
 }
 
 std::string FindTexture(const aiScene* scene, const aiMaterial* aiMaterial,
@@ -128,7 +129,7 @@ std::string FindTexture(const aiScene* scene, const aiMaterial* aiMaterial,
             }
 
             ExportEmbeddedTexture(embeddedTexture, args, fileName);
-            printf("Adding textuer s%...\n", textureName.c_str());
+            printf("Adding textuer s%...\n", fileName.c_str());
             textureName = fileName;
         }
         else if (auto embeddedTeture = scene->GetEmbeddedTexture(texturePath.C_Str()); embeddedTeture)
@@ -153,6 +154,7 @@ std::string FindTexture(const aiScene* scene, const aiMaterial* aiMaterial,
             textureName = fileName;
         }
     }
+    return textureName.filename().string();
 }
 
 int main(int argc, char* argv[])
@@ -161,7 +163,7 @@ int main(int argc, char* argv[])
     if (argOpt.has_value() == false)
     {
         printf("No arguments!");
-            return -1;
+        return -1;
     }
 
     const Arguments& args = argOpt.value();
@@ -182,7 +184,7 @@ int main(int argc, char* argv[])
         printf("Reading Mesh Data...\n");
         for (int i = 0; i < scene->mNumMeshes; ++i)
         {
-            const aiMesh* assimpMesh = scene->mMeshes[i]; 
+            const aiMesh* assimpMesh = scene->mMeshes[i];
             if (assimpMesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE)
             {
                 continue;
@@ -228,7 +230,7 @@ int main(int argc, char* argv[])
             }
         }
     }
-    
+
     if (scene->HasMaterials())
     {
         printf("Reading Material Data...");

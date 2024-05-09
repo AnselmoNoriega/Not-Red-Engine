@@ -113,7 +113,7 @@ namespace NotRed::Graphics
 			return false;
 		}
 
-		uint32_t materialCount = static_cast<uint32_t>(model.meshData.size());
+		uint32_t materialCount = static_cast<uint32_t>(model.meterialData.size());
 		fprintf_s(file, "MaterialCount: %d\n", materialCount);
 		for (const Model::MeterialData& materialData : model.meterialData)
 		{
@@ -135,6 +135,44 @@ namespace NotRed::Graphics
 
 	bool ModelIO::LoadMaterial(std::filesystem::path filePath, Model& model)
 	{
-		return false;
+		filePath.replace_extension("material");
+
+		FILE* file = nullptr;
+		fopen_s(&file, filePath.string().c_str(), "r");
+		if (file == nullptr)
+		{
+			return false;
+		}
+
+		auto TryReadTextureName = [&](auto& fileName)
+			{
+				char buffer[MAX_PATH];
+				fscanf_s(file, "%s\n", &buffer, (uint32_t)sizeof(buffer));
+				if (strcmp(buffer, "<none>") != 0)
+				{
+					fileName = filePath.replace_filename(buffer).string();
+				}
+			};
+
+		uint32_t materialCount = 0;
+		fscanf_s(file, "MaterialCount: %d\n", &materialCount);
+		model.meterialData.resize(materialCount);
+
+		for (Model::MeterialData& materialData : model.meterialData)
+		{
+			Material& m = materialData.material;
+			fscanf_s(file, "%f %f %f %f\n", &m.ambient.r, &m.ambient.g, &m.ambient.b, &m.ambient.a);
+			fscanf_s(file, "%f %f %f %f\n", &m.diffuse.r, &m.diffuse.g, &m.diffuse.b, &m.diffuse.a);
+			fscanf_s(file, "%f %f %f %f\n", &m.emissive.r, &m.emissive.g, &m.emissive.b, &m.emissive.a);
+			fscanf_s(file, "%f %f %f %f\n", &m.specular.r, &m.specular.g, &m.specular.b, &m.specular.a);
+			fscanf_s(file, "Power: %f\n", &m.power);
+
+			TryReadTextureName(materialData.diffuseMapName);
+			TryReadTextureName(materialData.normalMapName);
+			TryReadTextureName(materialData.bumpMapName);
+			TryReadTextureName(materialData.specularMapName);
+		}
+		fclose(file);
+		return true;
 	}
 }

@@ -53,8 +53,8 @@ void MainState::Initialize()
     mDirectionalLight.specular = { 1.0f, 1.0f, 1.0f, 1.0f };
 
     Model model;
-    ModelIO::LoadModel("../../Assets/Models/Paladin.model", model);
-    mRenderGroup = CreateRenderGropu(model);
+    ModelIO::LoadMaterial("../../Assets/Models/Paladin/Paladin.model", model);
+    mRenderGroup = CreateRenderGroup(model);
 
     std::filesystem::path shaderFilePath = L"../../Assets/Shaders/CellShader.fx";
     mStandardEffect.Initialize(shaderFilePath);
@@ -77,6 +77,11 @@ void MainState::Render()
     mStandardEffect.Begin();
     DrawRenderGroup(mStandardEffect, mRenderGroup);
     mStandardEffect.End();
+
+    SimpleDraw::AddGroundPlane(50, Colors::Gray);
+
+
+    SimpleDraw::Render(mCamera);
 }
 
 void MainState::DebugUI()

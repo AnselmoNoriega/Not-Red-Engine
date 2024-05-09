@@ -25,7 +25,7 @@ namespace NotRed::Graphics
     };
 
     using RenderGroup = std::vector<RenderObject>;
-    [[nodiscard]] RenderGroup CreateRenderGropu(const Model& model);
+    [[nodiscard]] RenderGroup CreateRenderGroup(const Model& model);
     void CleanRenderGroup(RenderGroup& renderGroup);
 
     template<class Effect>
