@@ -18,6 +18,10 @@ private:
 	NotRed::Graphics::DirectionalLight mDirectionalLight;
 	NotRed::Graphics::Camera mCamera;
 
-	NotRed::Graphics::RenderGroup mRenderGroup;
+	NotRed::Graphics::RenderGroup mRenderGroupA;
+	Math::Matrix4 mPositionA;
+	NotRed::Graphics::RenderGroup mRenderGroupB;
+	Math::Matrix4 mPositionB;
+
 	NotRed::Graphics::StandardEffect mStandardEffect;
 };

@@ -21,7 +21,7 @@ namespace NotRed::Graphics
         void Begin();
         void End();
 
-        void Render(const RenderObject& renderObject);
+        void Render(const RenderObject& renderObject, const Math::Matrix4& pos);
 
         void SetCamera(const Camera& camera);
         void SetDirectionalLight(const DirectionalLight& directionalLight);

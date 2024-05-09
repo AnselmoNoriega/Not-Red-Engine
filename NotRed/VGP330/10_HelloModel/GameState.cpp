@@ -42,6 +42,24 @@ void MainState::CameraControllers(float dt)
     }
 }
 
+Math::Matrix4 GetMatrix(const Math::Vector3& position)
+{
+    const Math::Vector3 l = { 0.0f, 0.0f, 1.0f };
+    const Math::Vector3 r = Math::Normalize(Math::Cross(Math::Vector3::YAxis, l));
+    const Math::Vector3 u = Math::Normalize(Math::Cross(l, r));
+    const float x = -Math::Dot(r, position);
+    const float y = -Math::Dot(u, position);
+    const float z = -Math::Dot(l, position);
+
+    return
+    {
+        r.x, u.x, l.x, 0.0f,
+        r.y, u.y, l.y, 0.0f,
+        r.z, u.z, l.z, 0.0f,
+        x,   y,   z,   1.0f
+    };
+}
+
 void MainState::Initialize()
 {
     mCamera.SetPosition({ 0.0f, 0.0f, 5.0f });
@@ -52,15 +70,26 @@ void MainState::Initialize()
     mDirectionalLight.diffuse = { 0.8f, 0.8f, 0.8f, 1.0f };
     mDirectionalLight.specular = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-    Model model;
-    ModelIO::LoadModel("../../Assets/Models/Paladin/Paladin.model", model);
-    ModelIO::LoadMaterial("../../Assets/Models/Paladin/Paladin.model", model);
-    mRenderGroup = CreateRenderGroup(model);
+    {
+        Model modelA;
+        ModelIO::LoadModel("../../Assets/Models/Maw/Maw.model", modelA);
+        ModelIO::LoadMaterial("../../Assets/Models/Maw/Maw.model", modelA);
+        mRenderGroupA = CreateRenderGroup(modelA);
+    }
+    {
+        Model modelB;
+        ModelIO::LoadModel("../../Assets/Models/Paladin/Paladin.model", modelB);
+        ModelIO::LoadMaterial("../../Assets/Models/Paladin/Paladin.model", modelB);
+        mRenderGroupB = CreateRenderGroup(modelB);
+    }
 
-    std::filesystem::path shaderFilePath = L"../../Assets/Shaders/CellShader.fx";
+    std::filesystem::path shaderFilePath = L"../../Assets/Shaders/Standard.fx";
     mStandardEffect.Initialize(shaderFilePath);
     mStandardEffect.SetCamera(mCamera);
     mStandardEffect.SetDirectionalLight(mDirectionalLight);
+
+    mPositionA = GetMatrix({ 1.0f, 0.0f, 0.0f });
+    mPositionB = GetMatrix({ -1.0f, 0.0f, 0.0f });
 }
 
 void MainState::Terminate()
@@ -76,7 +105,8 @@ void MainState::Update(float dt)
 void MainState::Render()
 {
     mStandardEffect.Begin();
-    DrawRenderGroup(mStandardEffect, mRenderGroup);
+    DrawRenderGroup(mStandardEffect, mRenderGroupA, mPositionA);
+    DrawRenderGroup(mStandardEffect, mRenderGroupB, mPositionB);
     mStandardEffect.End();
 
     SimpleDraw::AddGroundPlane(50, Colors::Gray);

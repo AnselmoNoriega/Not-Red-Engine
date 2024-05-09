@@ -54,13 +54,13 @@ namespace NotRed::Graphics
     {
     }
 
-    void StandardEffect::Render(const RenderObject& renderObject)
+    void StandardEffect::Render(const RenderObject& renderObject, const Math::Matrix4& pos)
     {
         const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
         const Math::Matrix4 matView = mCamera->GetViewMatrix();
         const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
 
-        Math::Matrix4 matFinal = matWorld * matView * matProj;
+        Math::Matrix4 matFinal = pos * matWorld * matView * matProj;
 
         TransformData transformData;
         transformData.wvp = Math::Transpose(matFinal);

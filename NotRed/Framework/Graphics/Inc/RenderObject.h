@@ -29,11 +29,11 @@ namespace NotRed::Graphics
     void CleanRenderGroup(RenderGroup& renderGroup);
 
     template<class Effect>
-    void DrawRenderGroup(Effect& effect, const RenderGroup& renderGroup)
+    void DrawRenderGroup(Effect& effect, const RenderGroup& renderGroup, const Math::Matrix4& pos)
     {
         for (const RenderObject& renderObject : renderGroup)
         {
-            effect.Render(renderObject);
+            effect.Render(renderObject, pos);
         }
     }
 }
