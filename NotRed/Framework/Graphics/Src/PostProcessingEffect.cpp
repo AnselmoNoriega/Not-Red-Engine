@@ -40,18 +40,25 @@ void PostPricessingEffect::End()
 {
 	for (uint32_t i = 0; i < mTextures.size(); ++i)
 	{
-
+		Texture::UnbindPS(i);
 	}
 }
 
 void PostPricessingEffect::Render(const RenderObject& renderObject)
 {
+	renderObject.meshBuffer.Render();
 }
 
 void PostPricessingEffect::DebugUI()
 {
+	if (ImGui::CollapsingHeader("PostProcessingEffect", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+
+	}
 }
 
 void PostPricessingEffect::SetTexture(const Texture* texture, uint32_t slot)
 {
+	ASSERT(slot < mTextures.size(), "Invalid slot Index");
+	mTextures[slot] = texture;
 }

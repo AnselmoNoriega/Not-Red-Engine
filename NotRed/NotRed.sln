@@ -46,6 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{2E58
 	ProjectSection(SolutionItems) = preProject
 		Assets\Shaders\Basic.fx = Assets\Shaders\Basic.fx
 		Assets\Shaders\CellShader.fx = Assets\Shaders\CellShader.fx
+		Assets\Shaders\PostProcessing.fx = Assets\Shaders\PostProcessing.fx
 		Assets\Shaders\Standard.fx = Assets\Shaders\Standard.fx
 		Assets\Shaders\Texture.fx = Assets\Shaders\Texture.fx
 		Assets\Shaders\Transform.fx = Assets\Shaders\Transform.fx

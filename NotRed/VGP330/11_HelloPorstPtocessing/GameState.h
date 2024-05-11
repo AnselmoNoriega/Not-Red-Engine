@@ -18,12 +18,14 @@ private:
 	NotRed::Graphics::DirectionalLight mDirectionalLight;
 	NotRed::Graphics::Camera mCamera;
 
+	NotRed::Graphics::StandardEffect mStandardEffect;
+	NotRed::Graphics::PostPricessingEffect mPostPricessingEffect;
+
 	NotRed::Graphics::RenderGroup mRenderGroupA;
 	Math::Matrix4 mPositionA;
 	NotRed::Graphics::RenderGroup mRenderGroupB;
 	Math::Matrix4 mPositionB;
 
-	NotRed::Graphics::StandardEffect mStandardEffect;
 	NotRed::Graphics::RenderObject mGround;
 	NotRed::Graphics::RenderObject mScreenQuad;
 

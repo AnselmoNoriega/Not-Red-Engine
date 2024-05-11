@@ -95,6 +95,10 @@ void MainState::Initialize()
     mStandardEffect.SetCamera(mCamera);
     mStandardEffect.SetDirectionalLight(mDirectionalLight);
 
+    shaderFilePath = L"../../Assets/Shaders/PostProcessing.fx";
+    mPostPricessingEffect.Initialize(shaderFilePath);
+    mPostPricessingEffect.SetTexture(&mRenderTarget);
+
     GraphicsSystem* gs = GraphicsSystem::Get();
     const uint32_t screenWidth = gs->GetBackBufferWidth();
     const uint32_t screenHeight = gs->GetBackBufferHeight();
@@ -134,6 +138,9 @@ void MainState::Render()
 
     SimpleDraw::Render(mCamera);
     mRenderTarget.EndRender();
+    mPostPricessingEffect.Begin();
+    mPostPricessingEffect.Render(mScreenQuad);
+    mPostPricessingEffect.End();
 }
 
 void MainState::DebugUI()
@@ -164,6 +171,7 @@ void MainState::DebugUI()
     );
 
     mStandardEffect.DebugUI();
+    mPostPricessingEffect.DebugUI();
 
     ImGui::End();
 }

@@ -578,10 +578,10 @@ MeshPX NotRed::Graphics::MeshBuilder::CreateSkyBoxPX(float size)
 MeshPX NotRed::Graphics::MeshBuilder::CreateScreenQuad()
 {
     MeshPX mesh;
-    mesh.vertices.push_back({ {-1.0f,1.0f,0.0f},{0.0f,0.0f} });
-    mesh.vertices.push_back({ {1.0f,1.0f,0.0f},{1.0f,0.0f} });
-    mesh.vertices.push_back({ {1.0f,-1.0f,0.0f},{1.0f,1.0f} });
-    mesh.vertices.push_back({ {-1.0f,-1.0f,0.0f},{0.0f,1.0f} });
+    mesh.vertices.push_back({ {-1.0f, 1.0f,0.0f}, {0.0f,0.0f} });
+    mesh.vertices.push_back({ { 1.0f, 1.0f,0.0f}, {1.0f,0.0f} });
+    mesh.vertices.push_back({ { 1.0f,-1.0f,0.0f}, {1.0f,1.0f} });
+    mesh.vertices.push_back({ {-1.0f,-1.0f,0.0f}, {0.0f,1.0f} });
     mesh.indices = { 0, 1, 3, 1, 2, 3 };
 
     return mesh;
