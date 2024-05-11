@@ -7,6 +7,12 @@
 using namespace NotRed;
 using namespace NotRed::Graphics;
 
+void NotRed::Graphics::Texture::UnbindPS(uint32_t slot)
+{
+    static ID3D11ShaderResourceView* dummy = nullptr;
+    GraphicsSystem::Get()->GetContext()->PSSetShaderResources(slot, 1, &dummy);
+}
+
 Texture::~Texture()
 {
     ASSERT(mShaderResourceView == nullptr, "Texture: This is not empty (Call Terminate before)");

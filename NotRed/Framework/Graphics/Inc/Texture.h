@@ -11,6 +11,8 @@ namespace NotRed::Graphics
 			RGBA_U32
 		};
 
+		static void UnbindPS(uint32_t slot = 0);
+
 		Texture() = default;
 		virtual ~Texture();
 
