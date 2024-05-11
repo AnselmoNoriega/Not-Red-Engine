@@ -42,7 +42,7 @@ namespace
 
 Sampler::~Sampler()
 {
-	ASSERT(mSampler == nullptr, "Sampler: Terminate must be called");
+	ASSERT(mSampler != nullptr, "Sampler: Terminate must be called");
 }
 
 void Sampler::Initialize(Filter filter, AddressMode addressMode)

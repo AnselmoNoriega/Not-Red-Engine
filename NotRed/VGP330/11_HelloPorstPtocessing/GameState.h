@@ -29,5 +29,7 @@ private:
 	NotRed::Graphics::RenderObject mGround;
 	NotRed::Graphics::RenderObject mScreenQuad;
 
+	NotRed::Graphics::Texture mTexture;
+
 	NotRed::Graphics::RenderTarget mRenderTarget;
 };

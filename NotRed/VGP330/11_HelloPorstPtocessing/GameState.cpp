@@ -99,10 +99,14 @@ void MainState::Initialize()
     mPostPricessingEffect.Initialize(shaderFilePath);
     mPostPricessingEffect.SetTexture(&mRenderTarget);
 
+    mPostPricessingEffect.SetTexture(&mTexture, 1);
+
     GraphicsSystem* gs = GraphicsSystem::Get();
     const uint32_t screenWidth = gs->GetBackBufferWidth();
     const uint32_t screenHeight = gs->GetBackBufferHeight();
     mRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+
+    mTexture.Initialize("../../Assets/Images/misc/concrete.jpg");
 
     mPositionA = GetMatrix({ 1.0f, 0.0f, 0.0f });
     mPositionB = GetMatrix({ -1.0f, 0.0f, 0.0f });
@@ -113,6 +117,7 @@ void MainState::Terminate()
     mScreenQuad.Terminate();
     mRenderTarget.Terminate();
     mStandardEffect.Terminate();
+    mPostPricessingEffect.Terminate();
     mGround.Terminate();
 
     CleanRenderGroup(mRenderGroupA);
