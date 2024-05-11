@@ -114,6 +114,7 @@ void MainState::Initialize()
 
 void MainState::Terminate()
 {
+    mTexture.Terminate();
     mScreenQuad.Terminate();
     mRenderTarget.Terminate();
     mStandardEffect.Terminate();
