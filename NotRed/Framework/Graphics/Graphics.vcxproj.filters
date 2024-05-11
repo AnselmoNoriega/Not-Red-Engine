@@ -28,6 +28,7 @@
     <ClInclude Include="Inc\Material.h" />
     <ClInclude Include="Inc\Model.h" />
     <ClInclude Include="Inc\ModelIO.h" />
+    <ClInclude Include="Inc\PostProcessingEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -48,6 +49,7 @@
     <ClCompile Include="Src\RenderObject.cpp" />
     <ClCompile Include="Src\TextureManager.cpp" />
     <ClCompile Include="Src\ModelIO.cpp" />
+    <ClCompile Include="Src\PostProcessingEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

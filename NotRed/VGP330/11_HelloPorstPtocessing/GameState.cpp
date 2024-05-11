@@ -83,10 +83,22 @@ void MainState::Initialize()
         mRenderGroupB = CreateRenderGroup(modelB);
     }
 
+    Mesh groundMesh = MeshBuilder::CreateHorizontalPlane(20, 20, 1.0f);
+    mGround.meshBuffer.Initialize(groundMesh);
+    mGround.diffuseMapID = TextureManager::Get()->LoadTexture("misc/concrete.jpg");
+
+    MeshPX screenQuad = MeshBuilder::CreateScreenQuad();
+    mScreenQuad.meshBuffer.Initialize(screenQuad);
+
     std::filesystem::path shaderFilePath = L"../../Assets/Shaders/Standard.fx";
     mStandardEffect.Initialize(shaderFilePath);
     mStandardEffect.SetCamera(mCamera);
     mStandardEffect.SetDirectionalLight(mDirectionalLight);
+
+    GraphicsSystem* gs = GraphicsSystem::Get();
+    const uint32_t screenWidth = gs->GetBackBufferWidth();
+    const uint32_t screenHeight = gs->GetBackBufferHeight();
+    mRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 
     mPositionA = GetMatrix({ 1.0f, 0.0f, 0.0f });
     mPositionB = GetMatrix({ -1.0f, 0.0f, 0.0f });
@@ -94,7 +106,13 @@ void MainState::Initialize()
 
 void MainState::Terminate()
 {
+    mScreenQuad.Terminate();
+    mRenderTarget.Terminate();
     mStandardEffect.Terminate();
+    mGround.Terminate();
+
+    CleanRenderGroup(mRenderGroupA);
+    CleanRenderGroup(mRenderGroupB);
 }
 
 void MainState::Update(float dt)
@@ -104,15 +122,18 @@ void MainState::Update(float dt)
 
 void MainState::Render()
 {
+    mRenderTarget.BeginRender();
     mStandardEffect.Begin();
-    DrawRenderGroup(mStandardEffect, mRenderGroupA, mPositionA);
-    DrawRenderGroup(mStandardEffect, mRenderGroupB, mPositionB);
+        DrawRenderGroup(mStandardEffect, mRenderGroupA, mPositionA);
+        DrawRenderGroup(mStandardEffect, mRenderGroupB, mPositionB);
+        mStandardEffect.Render(mGround, Math::Matrix4::Identity);
     mStandardEffect.End();
 
     SimpleDraw::AddGroundPlane(50, Colors::Gray);
 
 
     SimpleDraw::Render(mCamera);
+    mRenderTarget.EndRender();
 }
 
 void MainState::DebugUI()
@@ -130,6 +151,17 @@ void MainState::DebugUI()
         ImGui::ColorEdit4("Diffuse##Light", &mDirectionalLight.diffuse.r);
         ImGui::ColorEdit4("Specular##Light", &mDirectionalLight.specular.r);
     }
+
+    ImGui::Separator();
+    ImGui::Text("RenderTarget:");
+    ImGui::Image(
+        mRenderTarget.GetRawData(),
+        { 128, 128 },
+        { 0, 0 },
+        { 1, 1 },
+        { 1, 1, 1, 1 },
+        { 1, 1, 1, 1 }
+    );
 
     mStandardEffect.DebugUI();
 

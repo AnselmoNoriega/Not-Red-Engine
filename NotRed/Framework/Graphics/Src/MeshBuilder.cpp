@@ -298,6 +298,42 @@ MeshPX NotRed::Graphics::MeshBuilder::CreateHorizontalPlanePX(uint32_t numRows, 
     return mesh;
 }
 
+Mesh NotRed::Graphics::MeshBuilder::CreateHorizontalPlane(uint32_t numRows, uint32_t numCols, float spacing)
+{
+    Mesh mesh;
+
+    const Math::Vector3 up = Math::Vector3::YAxis;
+    const Math::Vector3 right = Math::Vector3::XAxis;
+    const float hpw = static_cast<float>(numCols) * spacing * 0.5f;
+    const float hph = static_cast<float>(numRows) * spacing * 0.5f;
+    const float uInc = 1.0f / static_cast<float>(numCols);
+    const float vInc = 1.0f / static_cast<float>(numRows);
+
+    float x = -hpw;
+    float z = -hph;
+    float u = 0.0f;
+    float v = 1.0f;
+
+    for (uint32_t r = 0; r <= numRows; ++r)
+    {
+        for (uint32_t c = 0; c <= numCols; ++c)
+        {
+            mesh.vertices.push_back({ {x, 0.0f, z}, up, right, {u, v} });
+            x += spacing;
+            u += uInc;
+        }
+
+        x = -hpw;
+        z += spacing;
+        u = 0.0f;
+        v += (-vInc);
+    }
+
+    CreatePlaneIndices(mesh.indices, numRows, numCols);
+
+    return mesh;
+}
+
 MeshPC MeshBuilder::CreateCylinderPC(uint32_t slices, uint32_t rings)
 {
     srand(time(nullptr));
@@ -535,6 +571,18 @@ MeshPX NotRed::Graphics::MeshBuilder::CreateSkyBoxPX(float size)
         22, 21, 20,
         22, 20, 23
     };
+
+    return mesh;
+}
+
+MeshPX NotRed::Graphics::MeshBuilder::CreateScreenQuad()
+{
+    MeshPX mesh;
+    mesh.vertices.push_back({ {-1.0f,1.0f,0.0f},{0.0f,0.0f} });
+    mesh.vertices.push_back({ {1.0f,1.0f,0.0f},{1.0f,0.0f} });
+    mesh.vertices.push_back({ {1.0f,-1.0f,0.0f},{1.0f,1.0f} });
+    mesh.vertices.push_back({ {-1.0f,-1.0f,0.0f},{0.0f,1.0f} });
+    mesh.indices = { 0, 1, 3, 1, 2, 3 };
 
     return mesh;
 }

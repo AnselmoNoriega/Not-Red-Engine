@@ -24,4 +24,8 @@ private:
 	Math::Matrix4 mPositionB;
 
 	NotRed::Graphics::StandardEffect mStandardEffect;
+	NotRed::Graphics::RenderObject mGround;
+	NotRed::Graphics::RenderObject mScreenQuad;
+
+	NotRed::Graphics::RenderTarget mRenderTarget;
 };
