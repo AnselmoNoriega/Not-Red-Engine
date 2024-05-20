@@ -34,6 +34,8 @@ namespace NotRed::Graphics
 		void Render(const RenderObject& renderObject);
 		void DebugUI();
 
+		void SetMode(Mode mode);
+
 		void SetTexture(const Texture* texture, uint32_t slot = 0);
 
 	private:

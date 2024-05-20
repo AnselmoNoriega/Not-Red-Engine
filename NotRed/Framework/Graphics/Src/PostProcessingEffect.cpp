@@ -114,6 +114,11 @@ void PostPricessingEffect::DebugUI()
 	}
 }
 
+void PostPricessingEffect::SetMode(Mode mode)
+{
+	mMode = mode;
+}
+
 void PostPricessingEffect::SetTexture(const Texture* texture, uint32_t slot)
 {
 	ASSERT(slot < mTextures.size(), "Invalid slot Index");
