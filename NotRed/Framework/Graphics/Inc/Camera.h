@@ -25,6 +25,7 @@ namespace NotRed::Graphics
 
 		// Orthographic params
 		void SetSize(float width, float height);
+		float GetSize() const { return mWidth; }
 
 		void SetNearPlane(float nearPlane);
 		void SetFarPlane(float farPlane);

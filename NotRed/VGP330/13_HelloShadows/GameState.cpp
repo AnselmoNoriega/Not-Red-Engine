@@ -62,70 +62,44 @@ Math::Matrix4 GetMatrix(const Math::Vector3& position)
 
 void MainState::Initialize()
 {
-    mCamera.SetPosition({ 0.0f, 0.0f, 5.0f });
-    mCamera.SetLookAt({ 0.0f, 5.0f, -9.0f });
+    mCamera.SetPosition({ 0.0f, 1.0f, -3.0f });
+    mCamera.SetLookAt({ 0.0f, 0.0f,0.0f });
 
     mDirectionalLight.direction = Math::Normalize({ 1.0f, -1.0f, 1.0f });
-    mDirectionalLight.ambient = { 0.3f, 0.3f, 0.3f, 1.0f };
-    mDirectionalLight.diffuse = { 0.8f, 0.8f, 0.8f, 1.0f };
+    mDirectionalLight.ambient = { 0.5f, 0.5f,0.5f, 1.0f };
+    mDirectionalLight.diffuse = { 0.8f, 0.8f, 0.8f, 0.1f };
     mDirectionalLight.specular = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-    {
-        Model modelA;
-        ModelIO::LoadModel("../../Assets/Models/Maw/Maw.model", modelA);
-        ModelIO::LoadMaterial("../../Assets/Models/Maw/Maw.model", modelA);
-        mRenderGroupA = CreateRenderGroup(modelA);
-    }
-    {
-        Model modelB;
-        ModelIO::LoadModel("../../Assets/Models/Paladin/Paladin.model", modelB);
-        ModelIO::LoadMaterial("../../Assets/Models/Paladin/Paladin.model", modelB);
-        mRenderGroupB = CreateRenderGroup(modelB);
-    }
+    Model model;
+    ModelIO::LoadModel("../../Assets/Models/Maw/Maw.model", model);
+    ModelIO::LoadMaterial("../../Assets/Models/Maw/Maw.model", model);
+    mCharacter = CreateRenderGroup(model);
 
     Mesh groundMesh = MeshBuilder::CreateHorizontalPlane(20, 20, 1.0f);
     mGround.meshBuffer.Initialize(groundMesh);
     mGround.diffuseMapID = TextureManager::Get()->LoadTexture("misc/concrete.jpg");
 
-    MeshPX screenQuad = MeshBuilder::CreateScreenQuad();
-    mScreenQuad.meshBuffer.Initialize(screenQuad);
-
-    std::filesystem::path shaderFilePath = L"../../Assets/Shaders/Standard.fx";
+    std::filesystem::path shaderFilePath = (L"../../Assets/Shaders/Standard.fx");
     mStandardEffect.Initialize(shaderFilePath);
     mStandardEffect.SetCamera(mCamera);
     mStandardEffect.SetDirectionalLight(mDirectionalLight);
+    mStandardEffect.SetLightCamera(mShadowEffect.GetLightCamera());
+    mStandardEffect.SetShadowMap(mShadowEffect.GetDepthMap());
+    mStandardEffect.SetShadowMapFar(mShadowEffect.GetDepthMap());
 
-    shaderFilePath = L"../../Assets/Shaders/PostProcessing.fx";
-    mPostPricessingEffect.Initialize(shaderFilePath);
-    mPostPricessingEffect.SetTexture(&mRenderTarget);
-    mPostPricessingEffect.SetTexture(&mGaussianBlurEffect.GetResultTexture(), 1);
-    mPostPricessingEffect.SetMode(PostPricessingEffect::Mode::Combine2);
+    mShadowEffect.Initialize();
+    mShadowEffect.SetDirectionalLight(mDirectionalLight);
 
-    mGaussianBlurEffect.Initialize();
-    mGaussianBlurEffect.SetSourceTexture(mBlurRenderTarget);
-
-    GraphicsSystem* gs = GraphicsSystem::Get();
-    const uint32_t screenWidth = gs->GetBackBufferWidth();
-    const uint32_t screenHeight = gs->GetBackBufferHeight();
-    mRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
-    mBlurRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
-
-    mPositionA = GetMatrix({ 1.0f, 0.0f, 0.0f });
-    mPositionB = GetMatrix({ -1.0f, 0.0f, 0.0f });
+    mCharacterPos = GetMatrix({ 1.0f, 0.0f, 0.0f });
+    mGroundPos = GetMatrix({ 0.0f, 0.0f, 0.0f });
 }
 
 void MainState::Terminate()
 {
-    mBlurRenderTarget.Terminate();
-    mRenderTarget.Terminate();
-    mGaussianBlurEffect.Terminate();
+    mShadowEffect.Terminate();
     mStandardEffect.Terminate();
     mGround.Terminate();
-    mScreenQuad.Terminate();
-    mPostPricessingEffect.Terminate();
-
-    CleanRenderGroup(mRenderGroupA);
-    CleanRenderGroup(mRenderGroupB);
+    CleanRenderGroup(mCharacter);
 }
 
 void MainState::Update(float dt)
@@ -135,60 +109,32 @@ void MainState::Update(float dt)
 
 void MainState::Render()
 {
-    mRenderTarget.BeginRender();
-        mStandardEffect.Begin();
-            DrawRenderGroup(mStandardEffect, mRenderGroupA, mPositionA);
-            DrawRenderGroup(mStandardEffect, mRenderGroupB, mPositionB);
-            mStandardEffect.Render(mGround, Math::Matrix4::Identity);
-        mStandardEffect.End();
-    mRenderTarget.EndRender();
+    mShadowEffect.Begin();
+		DrawRenderGroup(mShadowEffect, mCharacter, mCharacterPos);
+	mShadowEffect.End();
 
-    mBlurRenderTarget.BeginRender();
-        mStandardEffect.Begin();
-            DrawRenderGroup(mStandardEffect, mRenderGroupA, mPositionA);
-            DrawRenderGroup(mStandardEffect, mRenderGroupB, mPositionB);
-        mStandardEffect.End();
-    mBlurRenderTarget.EndRender();
-
-    mGaussianBlurEffect.Begin();
-        mGaussianBlurEffect.Render(mScreenQuad);
-    mGaussianBlurEffect.End();
-
-    mPostPricessingEffect.Begin();
-        mPostPricessingEffect.Render(mScreenQuad);
-    mPostPricessingEffect.End();
+	mStandardEffect.Begin();
+		DrawRenderGroup(mStandardEffect, mCharacter, mCharacterPos);
+		mStandardEffect.Render(mGround, mGroundPos);
+	mStandardEffect.End();
 }
 
 void MainState::DebugUI()
 {
     ImGui::Begin("Debug Controls", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-
     if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
     {
         if (ImGui::DragFloat3("Direction", &mDirectionalLight.direction.x, 0.01f))
         {
             mDirectionalLight.direction = Math::Normalize(mDirectionalLight.direction);
         }
-
         ImGui::ColorEdit4("Ambient##Light", &mDirectionalLight.ambient.r);
         ImGui::ColorEdit4("Diffuse##Light", &mDirectionalLight.diffuse.r);
         ImGui::ColorEdit4("Specular##Light", &mDirectionalLight.specular.r);
     }
 
-    ImGui::Separator();
-    ImGui::Text("RenderTarget:");
-    ImGui::Image(
-        mRenderTarget.GetRawData(),
-        { 128, 128 },
-        { 0, 0 },
-        { 1, 1 },
-        { 1, 1, 1, 1 },
-        { 1, 1, 1, 1 }
-    );
-
     mStandardEffect.DebugUI();
-    mPostPricessingEffect.DebugUI();
-    mGaussianBlurEffect.DebugUI();
+    mShadowEffect.DebugUI();
 
     ImGui::End();
 }

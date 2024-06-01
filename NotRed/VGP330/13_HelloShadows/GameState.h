@@ -19,17 +19,10 @@ private:
 	NotRed::Graphics::Camera mCamera;
 
 	NotRed::Graphics::StandardEffect mStandardEffect;
-	NotRed::Graphics::PostPricessingEffect mPostPricessingEffect;
-	NotRed::Graphics::GaussianBlur mGaussianBlurEffect;
+	NotRed::Graphics::ShadowEffect mShadowEffect;
 
-	NotRed::Graphics::RenderGroup mRenderGroupA;
-	Math::Matrix4 mPositionA;
-	NotRed::Graphics::RenderGroup mRenderGroupB;
-	Math::Matrix4 mPositionB;
-
+	NotRed::Graphics::RenderGroup mCharacter; 
+	Math::Matrix4 mCharacterPos;
 	NotRed::Graphics::RenderObject mGround;
-	NotRed::Graphics::RenderObject mScreenQuad;
-
-	NotRed::Graphics::RenderTarget mRenderTarget;
-	NotRed::Graphics::RenderTarget mBlurRenderTarget;
+	Math::Matrix4 mGroundPos;
 };

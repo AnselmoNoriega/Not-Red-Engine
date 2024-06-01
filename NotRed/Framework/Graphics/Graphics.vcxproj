@@ -158,6 +158,7 @@
     <ClInclude Include="Inc\RenderObject.h" />
     <ClInclude Include="Inc\RenderTarget.h" />
     <ClInclude Include="Inc\Sampler.h" />
+    <ClInclude Include="Inc\ShadowEffect.h" />
     <ClInclude Include="Inc\SimpleDraw.h" />
     <ClInclude Include="Inc\Texture.h" />
     <ClInclude Include="Inc\Transform.h" />
@@ -185,6 +186,7 @@
     <ClCompile Include="Src\RenderObject.cpp" />
     <ClCompile Include="Src\RenderTarget.cpp" />
     <ClCompile Include="Src\Sampler.cpp" />
+    <ClCompile Include="Src\ShadowEffect.cpp" />
     <ClCompile Include="Src\SimpleDraw.cpp" />
     <ClCompile Include="Src\Texture.cpp" />
     <ClCompile Include="Src\VertexShader.cpp" />

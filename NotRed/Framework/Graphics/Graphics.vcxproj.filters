@@ -30,6 +30,7 @@
     <ClInclude Include="Inc\ModelIO.h" />
     <ClInclude Include="Inc\PostProcessingEffect.h" />
     <ClInclude Include="Inc\GaussianBlur.h" />
+    <ClInclude Include="Inc\ShadowEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -52,6 +53,7 @@
     <ClCompile Include="Src\ModelIO.cpp" />
     <ClCompile Include="Src\PostProcessingEffect.cpp" />
     <ClCompile Include="Src\GaussianBlur.cpp" />
+    <ClCompile Include="Src\ShadowEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

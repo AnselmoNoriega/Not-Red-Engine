@@ -84,7 +84,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
         case 5:
         {
             float4 finalColor1 = textureMap0.Sample(textureSampler, input.texCoord);
-            float4 finalColor2 = textureMap1.Sample(textureSampler, input.texCoord);
+            float4 finalColor2 = textureMap1.Sample(textureSampler, float2(input.texCoord.x + param0, input.texCoord.y));
             finalColor = (finalColor1 + finalColor2) / 2;
         }
         break;
