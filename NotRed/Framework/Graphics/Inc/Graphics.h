@@ -9,6 +9,7 @@
 #include "ConstantBuffer.h"
 #include "DebugUI.h"
 #include "GaussianBlur.h"
+#include "GeometryShader.h"
 #include "LightTypes.h"
 #include "Material.h"
 #include "MeshBuffer.h"

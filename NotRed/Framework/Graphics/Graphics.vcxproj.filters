@@ -33,6 +33,7 @@
     <ClInclude Include="Inc\ShadowEffect.h" />
     <ClInclude Include="Inc\Terrain.h" />
     <ClInclude Include="Inc\TerrainEffect.h" />
+    <ClInclude Include="Inc\GeometryShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -58,6 +59,7 @@
     <ClCompile Include="Src\ShadowEffect.cpp" />
     <ClCompile Include="Src\Terrain.cpp" />
     <ClCompile Include="Src\TerrainEffect.cpp" />
+    <ClCompile Include="Src\Geometry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
