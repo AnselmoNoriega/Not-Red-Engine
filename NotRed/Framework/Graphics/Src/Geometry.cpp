@@ -5,7 +5,7 @@
 using namespace NotRed;
 using namespace NotRed::Graphics;
 
-void GeometryShader::Initialize(const std::filesystem::path& filePath, const char* entryPoint)
+void GeometryShader::Initialize(const std::filesystem::path& filePath)
 {
 	auto device = GraphicsSystem::Get()->GetDevice();
 
@@ -17,7 +17,7 @@ void GeometryShader::Initialize(const std::filesystem::path& filePath, const cha
 		filePath.c_str(),
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE,
-		entryPoint, "ps_5_0",
+		"GS", "gs_5_0",
 		shaderFlags, 0,
 		&shaderBlob,
 		&errorBlob

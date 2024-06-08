@@ -31,3 +31,4 @@
 #include "TextureManager.h"
 #include "VertexTypes.h"
 #include "VertexShader.h"
+#include "WaterEffect.h"

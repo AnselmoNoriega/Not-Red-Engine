@@ -167,6 +167,7 @@
     <ClInclude Include="Inc\Transform.h" />
     <ClInclude Include="Inc\VertexShader.h" />
     <ClInclude Include="Inc\VertexTypes.h" />
+    <ClInclude Include="Inc\WaterEffect.h" />
     <ClInclude Include="Src\Precompiled.h" />
     <ClInclude Include="Inc\StandardEffect.h" />
     <ClInclude Include="Inc\TextureManager.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="Src\VertexShader.cpp" />
     <ClCompile Include="Src\StandardEffect.cpp" />
     <ClCompile Include="Src\TextureManager.cpp" />
+    <ClCompile Include="Src\WaterEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\External\DirectXTK\DirectXTK_Desktop_2019.vcxproj">
