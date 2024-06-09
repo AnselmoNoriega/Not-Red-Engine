@@ -76,22 +76,20 @@ void MainState::Initialize()
         ModelIO::LoadMaterial("../../Assets/Models/Maw/Maw.model", model);
         mCharacter = CreateRenderGroup(model);
     }
-
     {
-        mTerrain.Initialize("../../Assets/Images/terrain/heightmap_512x512.raw", 20.0f);
-        const Mesh& m = mTerrain.GetMesh();
-        mGround.meshBuffer.Initialize(
+        const Mesh& m = NotRed::Graphics::MeshBuilder::CreateHorizontalPlane(5, 5, 1);
+        mWater.meshBuffer.Initialize(
             nullptr,
             static_cast<uint32_t>(sizeof(Vertex)),
             static_cast<uint32_t>(m.vertices.size()),
             m.indices.data(),
             static_cast<uint32_t>(m.indices.size())
         );
-        mGround.meshBuffer.Update(m.vertices.data(), m.vertices.size());
-        mGround.diffuseMapID = TextureManager::Get()->LoadTexture("terrain/dirt_seamless.jpg");
-        mGround.bumpMapID = TextureManager::Get()->LoadTexture("terrain/grass_2048.jpg");
+        mWater.meshBuffer.Update(m.vertices.data(), m.vertices.size());
+        mWater.diffuseMapID = TextureManager::Get()->LoadTexture("terrain/dirt_seamless.jpg");
+        //Check the others later
+        //mWater.bumpMapID = TextureManager::Get()->LoadTexture("terrain/grass_2048.jpg");
     }
-
     {
         std::filesystem::path shaderFilePath = (L"../../Assets/Shaders/Standard.fx");
         mStandardEffect.Initialize(shaderFilePath);
@@ -112,7 +110,7 @@ void MainState::Initialize()
     mShadowEffect.SetDirectionalLight(mDirectionalLight);
 
     mCharacterPos = GetMatrix({ 1.0f, 0.0f, 0.0f });
-    mGroundPos = GetMatrix({ 100.0f, 40.0f, 100.0f });
+    mWaterPos = GetMatrix({ 1.0f, -0.2f, 0.0f });
 }
 
 void MainState::Terminate()
@@ -120,7 +118,7 @@ void MainState::Terminate()
     mShadowEffect.Terminate();
     mTerrainEffect.Terminate();
     mStandardEffect.Terminate();
-    mGround.Terminate();
+    mWater.Terminate();
     CleanRenderGroup(mCharacter);
 }
 
@@ -131,22 +129,19 @@ void MainState::Update(float dt)
 
 void MainState::Render()
 {
-    SimpleDraw::AddGroundPlane(10.0f, Colors::Black);
+    SimpleDraw::AddGroundPlane(10.0f, Colors::White);
     SimpleDraw::Render(mCamera);
 
     mShadowEffect.SetFocus(mCamera.GetPosition());
 
     mShadowEffect.Begin();
         DrawRenderGroup(mShadowEffect, mCharacter, mCharacterPos);
-        mShadowEffect.Render(mGround, mGroundPos);
+        //mShadowEffect.Render(mWater, mWaterPos);
     mShadowEffect.End();
-
-    mTerrainEffect.Begin();
-        mTerrainEffect.Render(mGround, mGroundPos);
-    mTerrainEffect.End();
 
     mStandardEffect.Begin();
         DrawRenderGroup(mStandardEffect, mCharacter, mCharacterPos);
+        mStandardEffect.Render(mWater, mWaterPos);
     mStandardEffect.End();
 }
 
@@ -164,18 +159,6 @@ void MainState::DebugUI()
         ImGui::ColorEdit4("Ambient##Light", &mDirectionalLight.ambient.r);
         ImGui::ColorEdit4("Diffuse##Light", &mDirectionalLight.diffuse.r);
         ImGui::ColorEdit4("Specular##Light", &mDirectionalLight.specular.r);
-    }
-
-    if (ImGui::CollapsingHeader("Terrain", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        ImGui::Checkbox("On Terrain", &mOnTerrain);
-        float heightScale = mTerrain.GetHeightScale();
-        if (ImGui::DragFloat("HeightScale", &heightScale, 0.1f, 1.0f, 100.0f))
-        {
-            mTerrain.SetHeightScale(heightScale);
-            const Mesh& m = mTerrain.GetMesh();
-            mGround.meshBuffer.Update(m.vertices.data(), m.vertices.size());
-        }
     }
 
     mStandardEffect.DebugUI();

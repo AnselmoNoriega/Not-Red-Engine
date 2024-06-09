@@ -22,11 +22,8 @@ private:
 	NotRed::Graphics::ShadowEffect mShadowEffect;
 	NotRed::Graphics::TerrainEffect mTerrainEffect;
 
-	NotRed::Graphics::Terrain mTerrain;
 	NotRed::Graphics::RenderGroup mCharacter;
 	Math::Matrix4 mCharacterPos;
-	NotRed::Graphics::RenderObject mGround;
-	Math::Matrix4 mGroundPos;
-
-	bool mOnTerrain = false;
+	NotRed::Graphics::RenderObject mWater;
+	Math::Matrix4 mWaterPos;
 };
