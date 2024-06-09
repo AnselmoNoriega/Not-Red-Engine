@@ -20,7 +20,7 @@ private:
 
 	NotRed::Graphics::StandardEffect mStandardEffect;
 	NotRed::Graphics::ShadowEffect mShadowEffect;
-	NotRed::Graphics::TerrainEffect mTerrainEffect;
+	NotRed::Graphics::WaterEffect mWaterEffect;
 
 	NotRed::Graphics::RenderGroup mCharacter;
 	Math::Matrix4 mCharacterPos;

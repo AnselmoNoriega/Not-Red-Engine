@@ -100,11 +100,11 @@ void MainState::Initialize()
     mStandardEffect.SetLightCamera(mShadowEffect.GetLightCamera());
     mStandardEffect.SetShadowMap(mShadowEffect.GetDepthMap());
 
-    mTerrainEffect.Initialize();
-    mTerrainEffect.SetCamera(mCamera);
-    mTerrainEffect.SetDirectionalLight(mDirectionalLight);
-    mTerrainEffect.SetLightCamera(mShadowEffect.GetLightCamera());
-    mTerrainEffect.SetShadowMap(mShadowEffect.GetDepthMap());
+    mWaterEffect.Initialize();
+    mWaterEffect.SetCamera(mCamera);
+    mWaterEffect.SetDirectionalLight(mDirectionalLight);
+    mWaterEffect.SetLightCamera(mShadowEffect.GetLightCamera());
+    mWaterEffect.SetShadowMap(mShadowEffect.GetDepthMap());
 
     mShadowEffect.Initialize();
     mShadowEffect.SetDirectionalLight(mDirectionalLight);
@@ -116,7 +116,7 @@ void MainState::Initialize()
 void MainState::Terminate()
 {
     mShadowEffect.Terminate();
-    mTerrainEffect.Terminate();
+    mWaterEffect.Terminate();
     mStandardEffect.Terminate();
     mWater.Terminate();
     CleanRenderGroup(mCharacter);
@@ -141,8 +141,11 @@ void MainState::Render()
 
     mStandardEffect.Begin();
         DrawRenderGroup(mStandardEffect, mCharacter, mCharacterPos);
-        mStandardEffect.Render(mWater, mWaterPos);
     mStandardEffect.End();
+
+    mWaterEffect.Begin();
+        mWaterEffect.Render(mWater, mWaterPos);
+    mWaterEffect.End();
 }
 
 void MainState::DebugUI()
@@ -162,7 +165,7 @@ void MainState::DebugUI()
     }
 
     mStandardEffect.DebugUI();
-    mTerrainEffect.DebugUI();
+    mWaterEffect.DebugUI();
     mShadowEffect.DebugUI();
     ImGui::End();
 }
