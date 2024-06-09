@@ -32,27 +32,32 @@ namespace NotRed::Graphics
 		void SetShadowMap(const Texture& shadowMap);
 
 	private:
-		struct TransformData
-		{
-			Math::Matrix4 wvp;
-			Math::Matrix4 lwvp;
-			Math::Matrix4 world;
+        struct TransformData
+        {
+            Math::Matrix4 wvp;
+            Math::Matrix4 lwvp;
+            Math::Matrix4 lfwvp;
+            Math::Matrix4 world;
+            Math::Vector3 viewPos;
 			Math::Vector3 viewPosition;
-			float padding = 0.0f;
-		};
+            float padding[2];
+        };
 
-		struct SettingsData
-		{
-			int useNormalMap = 0;
-			int useSpecMap = 0;
-			int useShadowMap = 0;
-			int useBlend = 0;
-		};
+        struct SettingsData
+        {
+            int useDiffuseMap = 1;
+            //int useNormalMap = 1;
+            int useSpecMap = 1;
+            //int useLighting = 1;
+            int useShadowMap = 1;
+            float depthBias = 0.0f;
+            float padding[2];
+        };
 
-		using TransformBuffer = TypedConstantBuffer<TransformData>;
-		using SettingsBuffer = TypedConstantBuffer<SettingsData>;
-		using LightBuffer = TypedConstantBuffer<DirectionalLight>;
-		using MaterialBuffer = TypedConstantBuffer<Material>;
+        using TransformBuffer = TypedConstantBuffer<TransformData>;
+        using SettingsBuffer = TypedConstantBuffer<SettingsData>;
+        using LightBuffer = TypedConstantBuffer<DirectionalLight>;
+        using MaterialBuffer = TypedConstantBuffer<Material>;
 
 		TransformBuffer mTransformBuffer;
 		SettingsBuffer mSettingsBuffer;

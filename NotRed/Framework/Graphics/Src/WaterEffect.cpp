@@ -64,7 +64,6 @@ namespace NotRed::Graphics
 	void WaterEffect::Render(const RenderObject& renderObject, const Math::Matrix4& position)
 	{
 		SettingsData settingsData;
-		settingsData.useNormalMap = renderObject.normalMapID > 0 && mSettingsData.useNormalMap > 0 ? 1 : 0;
 		mSettingsBuffer.Update(settingsData);
 
 
@@ -104,12 +103,6 @@ namespace NotRed::Graphics
 	{
 		if (ImGui::CollapsingHeader("StandardEffect", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-
-			bool useNormalMap = mSettingsData.useNormalMap > 0;
-			if (ImGui::Checkbox("UseNormalMap##Terrain", &useNormalMap))
-			{
-				mSettingsData.useNormalMap = useNormalMap ? 1 : 0;
-			}
 			bool useSpecMap = mSettingsData.useSpecMap > 0;
 			if (ImGui::Checkbox("UseSpecMap##Terrain", &useSpecMap))
 			{
@@ -119,12 +112,6 @@ namespace NotRed::Graphics
 			if (ImGui::Checkbox("UseShadowMap##Terrain", &useShadowMap))
 			{
 				mSettingsData.useShadowMap = useShadowMap ? 1 : 0;
-			}
-
-			bool useBlend = mSettingsData.useBlend > 0;
-			if (ImGui::Checkbox("UseBlend##Terrain", &useBlend))
-			{
-				mSettingsData.useBlend = useBlend ? 1 : 0;
 			}
 		}
 	}
