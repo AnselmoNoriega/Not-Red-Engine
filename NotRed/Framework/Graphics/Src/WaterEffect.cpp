@@ -20,12 +20,14 @@ namespace NotRed::Graphics
 		mLightBuffer.Initialize();
 		mMaterialBuffer.Initialize();
 		mWaveBuffer.Initialize();
+		mBlendState.Initialize(BlendState::Mode::AlphaBlend);
 		mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 	}
 
 	void WaterEffect::Terminate()
 	{
 		mSampler.Terminate();
+		mBlendState.Terminate();
 		mWaveBuffer.Terminate();
 		mMaterialBuffer.Terminate();
 		mLightBuffer.Terminate();
@@ -45,6 +47,8 @@ namespace NotRed::Graphics
 	{
 		mVertexShader.Bind();
 		mPixelShader.Bind();
+
+		mBlendState.Set();
 
 		mTransformBuffer.BindVS(0);
 

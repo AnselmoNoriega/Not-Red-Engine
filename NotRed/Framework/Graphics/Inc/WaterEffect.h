@@ -7,6 +7,7 @@
 #include "GeometryShader.h"
 #include "Sampler.h"
 #include "VertexShader.h"
+#include "BlendState.h"
 
 namespace NotRed::Graphics
 {
@@ -55,12 +56,12 @@ namespace NotRed::Graphics
 
         struct WaterData
         {
-            float waveHeight = 0.5f;
-            float waveStrength = 2.0f;
+            float waveHeight = 0.2f;
+            float waveStrength = 1.9f;
 			float waveMovementTime = 0.0f;
 			float padding;
         };
-
+		
         using TransformBuffer = TypedConstantBuffer<TransformData>;
         using SettingsBuffer = TypedConstantBuffer<SettingsData>;
         using LightBuffer = TypedConstantBuffer<DirectionalLight>;
@@ -76,6 +77,8 @@ namespace NotRed::Graphics
 		VertexShader mVertexShader;
 		PixelShader mPixelShader;
 		GeometryShader mGeometryShader;
+
+		BlendState mBlendState;
 		Sampler mSampler;
 
 		SettingsData mSettingsData;
@@ -86,6 +89,6 @@ namespace NotRed::Graphics
 		const DirectionalLight* mDirectionalLight = nullptr;
 		const Texture* mShadowMap = nullptr;
 
-		float mTimeMultiplier = 1.0f;
+		float mTimeMultiplier = 1.75f;
 	};
 }
