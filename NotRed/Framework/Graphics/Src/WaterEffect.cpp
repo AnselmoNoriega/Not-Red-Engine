@@ -19,12 +19,14 @@ namespace NotRed::Graphics
 		mSettingsBuffer.Initialize();
 		mLightBuffer.Initialize();
 		mMaterialBuffer.Initialize();
+		mWaveBuffer.Initialize();
 		mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 	}
 
 	void WaterEffect::Terminate()
 	{
 		mSampler.Terminate();
+		mWaveBuffer.Terminate();
 		mMaterialBuffer.Terminate();
 		mLightBuffer.Terminate();
 		mSettingsBuffer.Terminate();
@@ -32,6 +34,11 @@ namespace NotRed::Graphics
 		mGeometryShader.Terminate();
 		mPixelShader.Terminate();
 		mVertexShader.Terminate();
+	}
+
+	void WaterEffect::Update(float dt)
+	{
+		mWaterData.waveMovementTime += dt * mTimeMultiplier;
 	}
 
 	void WaterEffect::Begin()
@@ -49,6 +56,8 @@ namespace NotRed::Graphics
 
 		mMaterialBuffer.BindPS(3);
 
+		mWaveBuffer.BindVS(4);
+
 		mSampler.BindVS(0);
 		mSampler.BindPS(0);
 	}
@@ -63,9 +72,8 @@ namespace NotRed::Graphics
 
 	void WaterEffect::Render(const RenderObject& renderObject, const Math::Matrix4& position)
 	{
-		SettingsData settingsData;
-		mSettingsBuffer.Update(settingsData);
-
+		mSettingsBuffer.Update(mSettingsData);
+		mWaveBuffer.Update(mWaterData);
 
 		const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
 		const Math::Matrix4 matView = mCamera->GetViewMatrix();
@@ -77,7 +85,7 @@ namespace NotRed::Graphics
 		transformData.wvp = Math::Transpose(matFinal);
 		transformData.world = Math::Transpose(matWorld);
 		transformData.viewPosition = mCamera->GetPosition();
-		if (settingsData.useShadowMap > 0)
+		if (mSettingsData.useShadowMap > 0)
 		{
 			const Math::Matrix4 matLightView = mLightCamera->GetViewMatrix();
 			const Math::Matrix4 matLightProj = mLightCamera->GetProjectionMatrix();
@@ -101,7 +109,7 @@ namespace NotRed::Graphics
 
 	void WaterEffect::DebugUI()
 	{
-		if (ImGui::CollapsingHeader("StandardEffect", ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::CollapsingHeader("WaveLookEffect", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			bool useSpecMap = mSettingsData.useSpecMap > 0;
 			if (ImGui::Checkbox("UseSpecMap##Terrain", &useSpecMap))
@@ -113,6 +121,20 @@ namespace NotRed::Graphics
 			{
 				mSettingsData.useShadowMap = useShadowMap ? 1 : 0;
 			}
+		}
+		if (ImGui::CollapsingHeader("WaveEffect", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			float waveHeight = mWaterData.waveHeight;
+			if (ImGui::DragFloat("waveHeight##Wave", &waveHeight, 0.05f, 0.0f, 10.0f))
+			{
+				mWaterData.waveHeight = waveHeight;
+			}
+			float waveStrength = mWaterData.waveStrength;
+			if (ImGui::DragFloat("waveStrength##Wave", &waveStrength, 0.05f, 0.0f, 10.0f))
+			{
+				mWaterData.waveStrength = waveStrength;
+			}
+			ImGui::DragFloat("mTimeMultiplier##Wave", &mTimeMultiplier, 0.05f, 0.0f, 10.0f);
 		}
 	}
 

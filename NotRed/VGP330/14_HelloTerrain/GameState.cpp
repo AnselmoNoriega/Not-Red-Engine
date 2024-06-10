@@ -125,6 +125,7 @@ void MainState::Terminate()
 void MainState::Update(float dt)
 {
     CameraControllers(dt);
+    mWaterEffect.Update(dt);
 }
 
 void MainState::Render()

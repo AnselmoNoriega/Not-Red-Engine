@@ -23,6 +23,8 @@ namespace NotRed::Graphics
 		void End();
 		void Terminate();
 
+		void Update(float dt);
+
 		void Render(const RenderObject& renderObject, const Math::Matrix4& position);
 		void DebugUI();
 
@@ -46,22 +48,30 @@ namespace NotRed::Graphics
         struct SettingsData
         {
             int useDiffuseMap = 1;
-            //int useNormalMap = 1;
             int useSpecMap = 1;
-            //int useLighting = 1;
             int useShadowMap = 1;
             float depthBias = 0.0f;
+        };
+
+        struct WaterData
+        {
+            float waveHeight = 0.5f;
+            float waveStrength = 2.0f;
+			float waveMovementTime = 0.0f;
+			float padding;
         };
 
         using TransformBuffer = TypedConstantBuffer<TransformData>;
         using SettingsBuffer = TypedConstantBuffer<SettingsData>;
         using LightBuffer = TypedConstantBuffer<DirectionalLight>;
         using MaterialBuffer = TypedConstantBuffer<Material>;
+        using WaveBuffer = TypedConstantBuffer<WaterData>;
 
 		TransformBuffer mTransformBuffer;
 		SettingsBuffer mSettingsBuffer;
 		LightBuffer mLightBuffer;
 		MaterialBuffer mMaterialBuffer;
+		WaveBuffer mWaveBuffer;
 
 		VertexShader mVertexShader;
 		PixelShader mPixelShader;
@@ -69,9 +79,13 @@ namespace NotRed::Graphics
 		Sampler mSampler;
 
 		SettingsData mSettingsData;
+		WaterData mWaterData;
+
 		const Camera* mCamera = nullptr;
 		const Camera* mLightCamera = nullptr;
 		const DirectionalLight* mDirectionalLight = nullptr;
 		const Texture* mShadowMap = nullptr;
+
+		float mTimeMultiplier = 1.0f;
 	};
 }

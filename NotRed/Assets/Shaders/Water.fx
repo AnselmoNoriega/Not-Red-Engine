@@ -29,6 +29,12 @@ cbuffer MaterialBuffer : register(b3)
     float4 materialEmissive;
     float materialPower;
 }
+cbuffer WaterBuffer : register(b4)
+{
+    float waveHeight;
+    float waveStrength;
+    float waveMovementTime;
+}
 
 Texture2D diffuseMap : register(t0);
 Texture2D shadowMap : register(t1);
@@ -58,8 +64,8 @@ struct VS_OUTPUT
 VS_OUTPUT VS(VS_INPUT input)
 {
     float3 localPos = input.position;
-    localPos.yz += sin(input.position.x * 2) * 0.5;
-    localPos.x += sin(input.position.z * 2) * 0.5;
+    localPos.yz += sin((input.position.x * waveStrength) + waveMovementTime) * waveHeight;
+    localPos.x += sin((input.position.z * waveStrength) + waveMovementTime) * waveHeight;
     VS_OUTPUT output;
     
     float3 worldPos = mul(float4(localPos, 1.0f), world).xyz;
@@ -136,6 +142,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
             }
         }
     }
+
     return finalColor;
 }
 
