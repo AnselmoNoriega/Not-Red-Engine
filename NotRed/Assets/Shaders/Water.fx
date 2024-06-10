@@ -39,7 +39,7 @@ struct VS_INPUT
 
 struct VS_OUTPUT
 {
-    float4 position : SV_Position;
+    float4 position : POSITION;
     float3 worldNormal : NORMAL;
     float3 worldTangent : TANGENT;
     float2 texCoord : TEXCOORD0;
@@ -47,6 +47,12 @@ struct VS_OUTPUT
     float3 dirToView : TEXCOORD2;
     float4 lightNDCPosition : TEXCOORD3;
     float4 lightFarNDCPosition : TEXCOORD4;
+};
+
+struct GS_OUTPUT
+{
+    float4 position : SV_Position;
+    float3 normal : NORMAL;
 };
 
 VS_OUTPUT VS(VS_INPUT input)
@@ -68,18 +74,26 @@ VS_OUTPUT VS(VS_INPUT input)
     return output;
 }
 
-float4 PS(VS_OUTPUT input) : SV_Target
-{
-    float4 color = diffuseMap.Sample(textureSampler, input.texCoord);
-    color.a = 0.5f;
-    return color;
-}
-
 [maxvertexcount(3)]
-void GS(triangle VS_OUTPUT input[3], inout TriangleStream<VS_OUTPUT> output)
+void GS(triangle VS_OUTPUT input[3], inout TriangleStream<GS_OUTPUT> output)
 {
+    float3 AB = input[1].position - input[0].position;
+    float3 AC = input[2].position - input[0].position;
+    
     for (int i = 0; i < 3; ++i)
     {
-        output.Append(input[i]);
+        GS_OUTPUT outputData;
+        outputData.position = input[i].position;
+        outputData.normal = normalize(cross(AB, AC));
+        output.Append(outputData);
     }
+    output.RestartStrip();
+}
+
+float4 PS(GS_OUTPUT gsInput) : SV_Target
+{
+    float4 color;
+    color.xyz = gsInput.normal;
+    color.a = 0.5f;
+    return color;
 }

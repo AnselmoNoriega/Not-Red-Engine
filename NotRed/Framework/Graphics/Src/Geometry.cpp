@@ -50,3 +50,9 @@ void GeometryShader::Bind()
 
 	context->GSSetShader(mGeometryShader, nullptr, 0);
 }
+
+void GeometryShader::Unbind()
+{
+	static ID3D11ShaderResourceView* dummy = nullptr;
+	GraphicsSystem::Get()->GetContext()->GSSetShader(nullptr, nullptr, 0);
+}
