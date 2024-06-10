@@ -40,13 +40,6 @@ struct VS_INPUT
 struct VS_OUTPUT
 {
     float4 position : POSITION;
-    float3 worldNormal : NORMAL;
-    float3 worldTangent : TANGENT;
-    float2 texCoord : TEXCOORD0;
-    float3 dirToLight : TEXCOORD1;
-    float3 dirToView : TEXCOORD2;
-    float4 lightNDCPosition : TEXCOORD3;
-    float4 lightFarNDCPosition : TEXCOORD4;
 };
 
 struct GS_OUTPUT
@@ -55,22 +48,28 @@ struct GS_OUTPUT
     float3 normal : NORMAL;
 };
 
+float3 GerstnerWave(float4 wave, float3 p)
+{
+    float steepness = wave.z;
+    float wavelength = wave.w;
+    float k = 2 * 3.14159265 / wavelength;
+    float c = sqrt(9.8 / k);
+    float2 d = normalize(wave.xy);
+    float f = k * (dot(d, p.xz) - c * waveMovementTime);
+    float a = steepness / k;
+    
+    return float3(d.x * (a * cos(f)), a * sin(f), d.y * (a * cos(f)));
+}
+
 VS_OUTPUT VS(VS_INPUT input)
 {
+    float3 p = input.position;
+    p += GerstnerWave(float4(1, 0, 0.5, 10), input.position);
+    p += GerstnerWave(float4(0, 1, 0.25, 20), input.position);
+    p += GerstnerWave(float4(0, 1, 0.25, 20), input.position);
+    
     VS_OUTPUT output;
-    
-    float3 localPos = input.position;
-    localPos.yz += sin((input.position.x * waveStrength) + waveMovementTime) * waveHeight;
-    localPos.x += cos((input.position.z * waveStrength) + waveMovementTime) * waveHeight;
-    
-    float3 worldPos = mul(float4(localPos, 1.0f), world).xyz;
-    output.position = mul(float4(localPos, 1.0f), wvp);
-    output.worldNormal = mul(input.noraml, (float3x3) world);
-    output.worldTangent = mul(input.tangent, (float3x3) world);
-    output.texCoord = input.texCoord;
-    output.dirToLight = -lightDirection;
-    output.dirToView = normalize(viewPos - worldPos);
-    
+    output.position = mul(float4(p, 1.0f), wvp);
     return output;
 }
 
