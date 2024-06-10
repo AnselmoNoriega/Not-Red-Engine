@@ -51,7 +51,6 @@ namespace NotRed::Graphics
             //int useLighting = 1;
             int useShadowMap = 1;
             float depthBias = 0.0f;
-            float padding[2];
         };
 
         using TransformBuffer = TypedConstantBuffer<TransformData>;

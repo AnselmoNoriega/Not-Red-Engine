@@ -77,7 +77,7 @@ void MainState::Initialize()
         mCharacter = CreateRenderGroup(model);
     }
     {
-        const Mesh& m = NotRed::Graphics::MeshBuilder::CreateHorizontalPlane(5, 5, 1);
+        const Mesh& m = NotRed::Graphics::MeshBuilder::CreateHorizontalPlane(500, 500, 0.05f);
         mWater.meshBuffer.Initialize(
             nullptr,
             static_cast<uint32_t>(sizeof(Vertex)),

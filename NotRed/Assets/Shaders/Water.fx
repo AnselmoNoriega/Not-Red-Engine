@@ -58,6 +58,8 @@ struct VS_OUTPUT
 VS_OUTPUT VS(VS_INPUT input)
 {
     float3 localPos = input.position;
+    localPos.yz += sin(input.position.x * 2) * 0.5;
+    localPos.x += sin(input.position.z * 2) * 0.5;
     VS_OUTPUT output;
     
     float3 worldPos = mul(float4(localPos, 1.0f), world).xyz;
