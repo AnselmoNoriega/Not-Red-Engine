@@ -21,9 +21,9 @@ cbuffer MaterialBuffer : register(b3)
 }
 cbuffer WaterBuffer : register(b4)
 {
-    float waveHeight;
-    float waveStrength;
+    float4 wavePattern[3];
     float waveMovementTime;
+    float waveStrength;
 }
 
 Texture2D diffuseMap : register(t0);
@@ -64,9 +64,10 @@ float3 GerstnerWave(float4 wave, float3 p)
 VS_OUTPUT VS(VS_INPUT input)
 {
     float3 p = input.position;
-    p += GerstnerWave(float4(1, 0, 0.5, 10), input.position);
-    p += GerstnerWave(float4(0, 1, 0.25, 20), input.position);
-    p += GerstnerWave(float4(0, 1, 0.25, 20), input.position);
+    for (int i = 0; i < 3; ++i)
+    {
+        p += GerstnerWave(wavePattern[i], input.position * waveStrength);
+    }
     
     VS_OUTPUT output;
     output.position = mul(float4(p, 1.0f), wvp);

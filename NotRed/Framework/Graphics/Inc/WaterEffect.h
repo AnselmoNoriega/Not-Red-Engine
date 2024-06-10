@@ -56,10 +56,12 @@ namespace NotRed::Graphics
 
         struct WaterData
         {
-            float waveHeight = 0.2f;
-            float waveStrength = 1.9f;
+			Math::Vector4 waves[3] = {{0.85f, 0.8f, 0.20f, 9},
+									  {2.35f, 1.0f, 0.25f, 20},
+									  {2.75f, 1.1f, 0.05f, 3}};
 			float waveMovementTime = 0.0f;
-			float padding;
+			float waveStrength = 1.35f;
+			float padding[2];
         };
 		
         using TransformBuffer = TypedConstantBuffer<TransformData>;

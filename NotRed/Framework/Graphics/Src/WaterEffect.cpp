@@ -131,17 +131,15 @@ namespace NotRed::Graphics
         }
         if (ImGui::CollapsingHeader("WaveEffect", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            float waveHeight = mWaterData.waveHeight;
-            if (ImGui::DragFloat("waveHeight##Wave", &waveHeight, 0.05f, 0.0f, 10.0f))
+            if (ImGui::CollapsingHeader("WavePatterns", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                mWaterData.waveHeight = waveHeight;
+                ImGui::DragFloat4("Wave1##Wave", &mWaterData.waves[0].x, 0.05f, 0.0f, 10.0f);
+                ImGui::DragFloat4("Wave2##Wave", &mWaterData.waves[1].x, 0.05f, 0.0f, 10.0f);
+                ImGui::DragFloat4("Wave3##Wave", &mWaterData.waves[2].x, 0.05f, 0.0f, 10.0f);
             }
-            float waveStrength = mWaterData.waveStrength;
-            if (ImGui::DragFloat("waveStrength##Wave", &waveStrength, 0.05f, 0.0f, 10.0f))
-            {
-                mWaterData.waveStrength = waveStrength;
-            }
+
             ImGui::DragFloat("mTimeMultiplier##Wave", &mTimeMultiplier, 0.05f, 0.0f, 10.0f);
+            ImGui::DragFloat("waveStrength##Wave", &mWaterData.waveStrength, 0.05f, 0.0f, 10.0f);
         }
     }
 
