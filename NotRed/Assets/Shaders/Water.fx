@@ -92,13 +92,7 @@ void GS(triangle VS_OUTPUT input[3], inout TriangleStream<GS_OUTPUT> output)
 
 float4 PS(GS_OUTPUT gsInput) : SV_Target
 {
-    float ratio = 1.00 / 1.33;
-    float3 I = normalize(gsInput.position.xyz - viewPos);
-    float3 R = refract(I, gsInput.normal, ratio);
-    
     float4 color;
-    color = vec4(texture(skybox, R).rgb, 1.0);
-    
     color.xyz = gsInput.normal;
     color.a = 0.5f;
     return color;
