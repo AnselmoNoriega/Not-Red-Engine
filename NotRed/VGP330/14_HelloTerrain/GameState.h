@@ -26,4 +26,13 @@ private:
 	Math::Matrix4 mCharacterPos;
 	NotRed::Graphics::RenderObject mWater;
 	Math::Matrix4 mWaterPos;
+
+	//PostProcessing
+	NotRed::Graphics::RenderTarget mRenderTarget;
+
+	//NotRed::Graphics::WaterBlur mGaussianBlurEffect;
+	NotRed::Graphics::RenderTarget mWaterTarget;
+
+	//ScreenQuad
+	NotRed::Graphics::RenderObject mScreenQuad;
 };

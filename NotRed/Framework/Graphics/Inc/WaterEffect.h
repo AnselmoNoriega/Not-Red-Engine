@@ -20,6 +20,7 @@ namespace NotRed::Graphics
 	public:
 		void Initialize();
 		void Begin();
+		void RenderEffect(const RenderObject& renderObject);
 
 		void End();
 		void Terminate();
@@ -33,6 +34,8 @@ namespace NotRed::Graphics
 		void SetLightCamera(const Camera& camera);
 		void SetDirectionalLight(const DirectionalLight& directionalLight);
 		void SetShadowMap(const Texture& shadowMap);
+
+		void SetTexture(const Texture* texture, uint32_t slot = 0);
 
 	private:
         struct TransformData
@@ -77,8 +80,11 @@ namespace NotRed::Graphics
 		WaveBuffer mWaveBuffer;
 
 		VertexShader mVertexShader;
-		PixelShader mPixelShader;
 		GeometryShader mGeometryShader;
+		PixelShader mPixelShader;
+
+		VertexShader mEffectVertexShader;
+		PixelShader mEffectPixelShader;
 
 		BlendState mBlendState;
 		Sampler mSampler;
@@ -90,6 +96,8 @@ namespace NotRed::Graphics
 		const Camera* mLightCamera = nullptr;
 		const DirectionalLight* mDirectionalLight = nullptr;
 		const Texture* mShadowMap = nullptr;
+
+		std::array<const Texture*, 4> mTextures;
 
 		float mTimeMultiplier = 1.75f;
 	};

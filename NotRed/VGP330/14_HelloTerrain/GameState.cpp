@@ -95,6 +95,9 @@ void MainState::Initialize()
         mStandardEffect.Initialize(shaderFilePath);
     }
 
+    MeshPX screenQuad = MeshBuilder::CreateScreenQuad();
+    mScreenQuad.meshBuffer.Initialize(screenQuad);
+
     mStandardEffect.SetCamera(mCamera);
     mStandardEffect.SetDirectionalLight(mDirectionalLight);
     mStandardEffect.SetLightCamera(mShadowEffect.GetLightCamera());
@@ -109,12 +112,18 @@ void MainState::Initialize()
     mShadowEffect.Initialize();
     mShadowEffect.SetDirectionalLight(mDirectionalLight);
 
+    //PostProcessing
+    mWaterEffect.SetTexture(&mRenderTarget);
+    mWaterEffect.SetTexture(&mWaterTarget, 1);
+
     mCharacterPos = GetMatrix({ 1.0f, 0.0f, 0.0f });
     mWaterPos = GetMatrix({ 1.0f, -0.2f, 0.0f });
 }
 
 void MainState::Terminate()
 {
+    mRenderTarget.Terminate();
+    mWaterTarget.Terminate();
     mShadowEffect.Terminate();
     mWaterEffect.Terminate();
     mStandardEffect.Terminate();
@@ -140,13 +149,19 @@ void MainState::Render()
         //mShadowEffect.Render(mWater, mWaterPos);
     mShadowEffect.End();
 
-    mStandardEffect.Begin();
-        DrawRenderGroup(mStandardEffect, mCharacter, mCharacterPos);
-    mStandardEffect.End();
+    mRenderTarget.BeginRender();
+        mStandardEffect.Begin();
+            DrawRenderGroup(mStandardEffect, mCharacter, mCharacterPos);
+        mStandardEffect.End();
+    mRenderTarget.EndRender();
 
-    mWaterEffect.Begin();
-        mWaterEffect.Render(mWater, mWaterPos);
-    mWaterEffect.End();
+    mWaterTarget.BeginRender();
+        mWaterEffect.Begin();
+            mWaterEffect.Render(mWater, mWaterPos);
+        mWaterEffect.End();
+    mWaterTarget.EndRender();
+
+    mWaterEffect.RenderEffect(mScreenQuad);
 }
 
 void MainState::DebugUI()

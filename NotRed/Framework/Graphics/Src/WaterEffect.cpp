@@ -22,6 +22,10 @@ namespace NotRed::Graphics
         mWaveBuffer.Initialize();
         mBlendState.Initialize(BlendState::Mode::AlphaBlend);
         mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
+
+        shaderFile = "../../Assets/Shaders/Refraction.fx";
+        mEffectVertexShader.Initialize<VertexPX>(shaderFile);
+        mEffectPixelShader.Initialize(shaderFile);
     }
 
     void WaterEffect::Terminate()
@@ -65,6 +69,28 @@ namespace NotRed::Graphics
 
         mSampler.BindVS(0);
         mSampler.BindPS(0);
+    }
+
+    void WaterEffect::RenderEffect(const RenderObject& renderObject)
+    {
+        mEffectVertexShader.Bind();
+        mEffectPixelShader.Bind();
+        mSampler.BindPS(0);
+
+        for (uint32_t i = 0; i < mTextures.size(); ++i)
+        {
+            if (mTextures[i] != nullptr) 
+            {
+                mTextures[i]->BindPS(i);
+            }
+        }
+
+        renderObject.meshBuffer.Render();
+
+        for (uint32_t i = 0; i < mTextures.size(); ++i)
+        {
+            Texture::UnbindPS(i);
+        }
     }
 
     void WaterEffect::End()
@@ -161,5 +187,11 @@ namespace NotRed::Graphics
     void WaterEffect::SetShadowMap(const Texture& shadowMap)
     {
         mShadowMap = &shadowMap;
+    }
+
+    void WaterEffect::SetTexture(const Texture* texture, uint32_t slot)
+    {
+        ASSERT(slot < mTextures.size(), "Invalid slot Index");
+        mTextures[slot] = texture;
     }
 }
