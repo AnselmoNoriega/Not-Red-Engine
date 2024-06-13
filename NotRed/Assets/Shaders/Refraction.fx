@@ -31,5 +31,12 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float4 finalColor = 1.0f;
     finalColor = textureMap1.Sample(textureSampler, input.texCoord);
     
+    if(finalColor.a < 1.0f)
+    {
+        finalColor = textureMap0.Sample(textureSampler, input.texCoord);
+    }
+    
+    finalColor = (finalColor + textureMap0.Sample(textureSampler, input.texCoord)) / 2;
+    
     return finalColor;
 }

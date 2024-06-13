@@ -116,6 +116,12 @@ void MainState::Initialize()
     mWaterEffect.SetTexture(&mRenderTarget);
     mWaterEffect.SetTexture(&mWaterTarget, 1);
 
+    GraphicsSystem* gs = GraphicsSystem::Get();
+    const uint32_t screenWidth = gs->GetBackBufferWidth();
+    const uint32_t screenHeight = gs->GetBackBufferHeight();
+    mRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+    mWaterTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+
     mCharacterPos = GetMatrix({ 1.0f, 0.0f, 0.0f });
     mWaterPos = GetMatrix({ 1.0f, -0.2f, 0.0f });
 }
