@@ -128,6 +128,7 @@ void MainState::Initialize()
 
 void MainState::Terminate()
 {
+    mDepthBuffer.Terminate();
     mRenderTarget.Terminate();
     mShadowEffect.Terminate();
     mWaterEffect.Terminate();
