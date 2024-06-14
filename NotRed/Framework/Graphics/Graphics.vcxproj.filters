@@ -35,6 +35,7 @@
     <ClInclude Include="Inc\TerrainEffect.h" />
     <ClInclude Include="Inc\GeometryShader.h" />
     <ClInclude Include="Inc\WaterEffect.h" />
+    <ClInclude Include="Inc\DepthEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -62,6 +63,7 @@
     <ClCompile Include="Src\TerrainEffect.cpp" />
     <ClCompile Include="Src\Geometry.cpp" />
     <ClCompile Include="Src\WaterEffect.cpp" />
+    <ClCompile Include="Src\DepthEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

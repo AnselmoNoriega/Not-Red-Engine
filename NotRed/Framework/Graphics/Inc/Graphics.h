@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "Colors.h"
 #include "ConstantBuffer.h"
+#include "DepthEffect.h"
 #include "DebugUI.h"
 #include "GaussianBlur.h"
 #include "GeometryShader.h"

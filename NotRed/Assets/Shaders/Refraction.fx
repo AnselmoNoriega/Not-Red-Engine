@@ -35,8 +35,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
     float4 color = 1.0f;
     
-    float4 finalColor = textureMap1.Sample(textureSampler, input.texCoord);
-    float4 finalColor2 = textureMap0.Sample(textureSampler, input.texCoord);
+    float4 finalColor = depth.Sample(textureSampler, input.texCoord);
     
     //if(finalColor.a < 1.0f)
     //{
@@ -51,17 +50,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
     //    float blendFactor = 0.5;
     //    color = lerp(color, finalColor, blendFactor);
     //}
-    float4 pos1 = textureMap1.Sample(textureSampler, input.texCoord);
-    float4 pos0 = textureMap0.Sample(textureSampler, input.texCoord);
-    if (pos1.a <= 0.75f && pos1.a >= 0.749f)
-    {
-        color = float4(0.5, 0.9, 1, 1);
-    }
-    else
-    {
-        color = pos0;
-    }
-
+    color = finalColor;
     
     return color;
 }

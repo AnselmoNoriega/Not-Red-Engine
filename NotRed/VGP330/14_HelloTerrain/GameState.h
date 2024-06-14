@@ -27,6 +27,8 @@ private:
 	NotRed::Graphics::RenderObject mWater;
 	Math::Matrix4 mWaterPos;
 
+	NotRed::Graphics::DepthEffect mDepthEffect;
+
 	//PostProcessing
 	NotRed::Graphics::RenderTarget mRenderTarget;
 	NotRed::Graphics::RenderTarget mDepthBuffer;

@@ -141,6 +141,7 @@
     <ClInclude Include="Inc\Camera.h" />
     <ClInclude Include="Inc\ConstantBuffer.h" />
     <ClInclude Include="Inc\DebugUI.h" />
+    <ClInclude Include="Inc\DepthEffect.h" />
     <ClInclude Include="Inc\GaussianBlur.h" />
     <ClInclude Include="Inc\GeometryShader.h" />
     <ClInclude Include="Inc\GraphicsSystem.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="Src\Camera.cpp" />
     <ClCompile Include="Src\ConstantBuffer.cpp" />
     <ClCompile Include="Src\DebugUI.cpp" />
+    <ClCompile Include="Src\DepthEffect.cpp" />
     <ClCompile Include="Src\GaussianBlur.cpp" />
     <ClCompile Include="Src\Geometry.cpp" />
     <ClCompile Include="Src\GraphicsSystem.cpp" />

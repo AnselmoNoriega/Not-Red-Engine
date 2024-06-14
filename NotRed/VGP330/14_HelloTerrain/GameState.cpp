@@ -101,6 +101,9 @@ void MainState::Initialize()
     mStandardEffect.SetLightCamera(mShadowEffect.GetLightCamera());
     mStandardEffect.SetShadowMap(mShadowEffect.GetDepthMap());
 
+    mDepthEffect.Initialize();
+    mDepthEffect.SetCamera(mCamera);
+
     mWaterEffect.Initialize();
     mWaterEffect.SetCamera(mCamera);
     mWaterEffect.SetDirectionalLight(mDirectionalLight);
@@ -117,6 +120,7 @@ void MainState::Initialize()
     const uint32_t screenWidth = gs->GetBackBufferWidth();
     const uint32_t screenHeight = gs->GetBackBufferHeight();
     mRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+    mDepthBuffer.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 
     mCharacterPos = GetMatrix({ 1.0f, 0.0f, 0.0f });
     mWaterPos = GetMatrix({ 1.0f, -0.2f, 0.0f });
@@ -127,6 +131,7 @@ void MainState::Terminate()
     mRenderTarget.Terminate();
     mShadowEffect.Terminate();
     mWaterEffect.Terminate();
+    mDepthEffect.Terminate();
     mStandardEffect.Terminate();
     mWater.Terminate();
     CleanRenderGroup(mCharacter);
@@ -155,6 +160,12 @@ void MainState::Render()
             DrawRenderGroup(mStandardEffect, mCharacter, mCharacterPos);
         mStandardEffect.End();
     mRenderTarget.EndRender();
+
+    mDepthBuffer.BeginRender();
+        mDepthEffect.Begin();
+            DrawRenderGroup(mDepthEffect, mCharacter, mCharacterPos);
+        mDepthEffect.End();
+    mDepthBuffer.EndRender();
 
     mWaterEffect.Begin();
         mWaterEffect.Render(mWater, mWaterPos);
