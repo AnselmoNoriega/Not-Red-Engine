@@ -38,6 +38,8 @@ namespace NotRed::Graphics
 
 		void SetTextures(const Texture* renderTarget, const Texture* depthbuffer);
 
+		void RenderDepth(const RenderObject& renderObject, const Math::Matrix4& position);
+
 	private:
         struct TransformData
         {
@@ -49,6 +51,15 @@ namespace NotRed::Graphics
 			Math::Vector3 viewPosition;
             float padding[2];
         };
+
+		struct DepthTransform
+		{
+			Math::Matrix4 wvp;
+			Math::Vector3 position;
+			float nearPlane = 0.01;
+			float farPlane = 10000.0f;
+			float padding[3];
+		};
 
         struct SettingsData
         {
@@ -69,12 +80,14 @@ namespace NotRed::Graphics
         };
 		
         using TransformBuffer = TypedConstantBuffer<TransformData>;
+        using DepthTransformBuffer = TypedConstantBuffer<DepthTransform>;
         using SettingsBuffer = TypedConstantBuffer<SettingsData>;
         using LightBuffer = TypedConstantBuffer<DirectionalLight>;
         using MaterialBuffer = TypedConstantBuffer<Material>;
         using WaveBuffer = TypedConstantBuffer<WaterData>;
 
 		TransformBuffer mTransformBuffer;
+		DepthTransformBuffer mDepthTransformBuffer;
 		SettingsBuffer mSettingsBuffer;
 		LightBuffer mLightBuffer;
 		MaterialBuffer mMaterialBuffer;
@@ -83,6 +96,9 @@ namespace NotRed::Graphics
 		VertexShader mVertexShader;
 		GeometryShader mGeometryShader;
 		PixelShader mPixelShader;
+
+		VertexShader mDepthVertexShader;
+		PixelShader mDepthPixelShader;
 
 		VertexShader mEffectVertexShader;
 		PixelShader mEffectPixelShader;

@@ -168,6 +168,8 @@ void MainState::Render()
         mDepthEffect.End();
     mDepthBuffer.EndRender();
 
+    mWaterEffect.RenderDepth(mWater, mWaterPos);
+
     mWaterEffect.Begin();
         mWaterEffect.Render(mWater, mWaterPos);
     mWaterEffect.End();

@@ -21,14 +21,20 @@ namespace NotRed::Graphics
         mLightBuffer.Initialize();
         mMaterialBuffer.Initialize();
         mWaveBuffer.Initialize();
+        mDepthTransformBuffer.Initialize();
         mBlendState.Initialize(BlendState::Mode::AlphaBlend);
         mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
+
+        shaderFile = "../../Assets/Shaders/WaterDepth.fx";
+        mDepthVertexShader.Initialize<VertexPX>(shaderFile);
+        mDepthPixelShader.Initialize(shaderFile);
 
         shaderFile = "../../Assets/Shaders/Refraction.fx";
         mEffectVertexShader.Initialize<VertexPX>(shaderFile);
         mEffectPixelShader.Initialize(shaderFile);
 
         mTextures[0] = &mWaterTarget;
+        mTextures[3] = &mWaterDepth;
         GraphicsSystem* gs = GraphicsSystem::Get();
         const uint32_t screenWidth = gs->GetBackBufferWidth();
         const uint32_t screenHeight = gs->GetBackBufferHeight();
@@ -42,6 +48,7 @@ namespace NotRed::Graphics
         mWaterTarget.Terminate();
         mSampler.Terminate();
         mBlendState.Terminate();
+        mDepthTransformBuffer.Terminate();
         mWaveBuffer.Terminate();
         mMaterialBuffer.Terminate();
         mLightBuffer.Terminate();
@@ -50,11 +57,49 @@ namespace NotRed::Graphics
         mPixelShader.Terminate();
         mGeometryShader.Terminate();
         mVertexShader.Terminate();
+
+        mEffectPixelShader.Terminate();
+        mEffectVertexShader.Terminate();
+        mDepthPixelShader.Terminate();
+        mDepthVertexShader.Terminate();
+        mPixelShader.Terminate();
+        mGeometryShader.Terminate();
+        mVertexShader.Terminate();
     }
 
     void WaterEffect::Update(float dt)
     {
         mWaterData.waveMovementTime += dt * mTimeMultiplier;
+    }
+
+    void WaterEffect::RenderDepth(const RenderObject& renderObject, const Math::Matrix4& position)
+    {
+        mWaterDepth.BeginRender();
+
+        mDepthVertexShader.Bind();
+        mDepthPixelShader.Bind();
+        mDepthTransformBuffer.BindVS(0);
+        mWaveBuffer.BindVS(1);
+        mSampler.BindVS(0);
+        mSampler.BindPS(0);
+
+        mSettingsBuffer.Update(mSettingsData);
+        mWaveBuffer.Update(mWaterData);
+
+        const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
+        const Math::Matrix4 matView = mCamera->GetViewMatrix();
+        const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
+
+        Math::Matrix4 matFinal = position * matWorld * matView * matProj;
+
+        DepthTransform transformData;
+        transformData.wvp = Math::Transpose(matFinal);
+        transformData.position = mCamera->GetPosition();
+        mDepthTransformBuffer.Update(transformData);
+
+        renderObject.meshBuffer.Render();
+
+        mWaterDepth.EndRender();
     }
 
     void WaterEffect::Begin()
@@ -81,42 +126,6 @@ namespace NotRed::Graphics
 
         mSampler.BindVS(0);
         mSampler.BindPS(0);
-    }
-
-    void WaterEffect::RenderEffect(const RenderObject& renderObject)
-    {
-        mEffectVertexShader.Bind();
-        mEffectPixelShader.Bind();
-        mSampler.BindPS(0);
-
-        mBlendState.Set();
-
-        for (uint32_t i = 0; i < mTextures.size(); ++i)
-        {
-            if (mTextures[i] != nullptr) 
-            {
-                mTextures[i]->BindPS(i);
-            }
-        }
-
-        renderObject.meshBuffer.Render();
-
-        for (uint32_t i = 0; i < mTextures.size(); ++i)
-        {
-            Texture::UnbindPS(i);
-        }
-    }
-
-    void WaterEffect::End()
-    {
-        mGeometryShader.Unbind();
-
-        if (mShadowMap != nullptr)
-        {
-            Texture::UnbindPS(4);
-        }
-
-        mWaterTarget.EndRender();
     }
 
     void WaterEffect::Render(const RenderObject& renderObject, const Math::Matrix4& position)
@@ -154,6 +163,42 @@ namespace NotRed::Graphics
         tm->BindPS(renderObject.bumpMapID, 3);
 
         renderObject.meshBuffer.Render();
+    }
+
+    void WaterEffect::RenderEffect(const RenderObject& renderObject)
+    {
+        mEffectVertexShader.Bind();
+        mEffectPixelShader.Bind();
+        mSampler.BindPS(0);
+
+        mBlendState.Set();
+
+        for (uint32_t i = 0; i < mTextures.size(); ++i)
+        {
+            if (mTextures[i] != nullptr)
+            {
+                mTextures[i]->BindPS(i);
+            }
+        }
+
+        renderObject.meshBuffer.Render();
+
+        for (uint32_t i = 0; i < mTextures.size(); ++i)
+        {
+            Texture::UnbindPS(i);
+        }
+    }
+
+    void WaterEffect::End()
+    {
+        mGeometryShader.Unbind();
+
+        if (mShadowMap != nullptr)
+        {
+            Texture::UnbindPS(4);
+        }
+
+        mWaterTarget.EndRender();
     }
 
     void WaterEffect::DebugUI()

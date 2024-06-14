@@ -35,7 +35,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
     float4 color = 1.0f;
     
-    float4 finalColor = depth.Sample(textureSampler, input.texCoord);
+    float4 finalColor = waterDepth.Sample(textureSampler, input.texCoord);
     
     //if(finalColor.a < 1.0f)
     //{

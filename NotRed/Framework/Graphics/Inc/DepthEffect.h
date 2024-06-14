@@ -32,7 +32,9 @@ namespace NotRed::Graphics
         {
             Math::Matrix4 wvp;
             Math::Vector3 position;
-            float padding;
+            float nearPlane = 0.01;
+            float farPlane = 10000.0f;
+            float padding[3];
         };
 
         using TransformBuffer = TypedConstantBuffer<Transform>;
