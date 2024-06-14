@@ -1,8 +1,8 @@
 
-Texture2D textureMap0 : register(t0);
-Texture2D textureMap1 : register(t1);
-Texture2D textureMap2 : register(t2);
-Texture2D textureMap3 : register(t3);
+Texture2D water : register(t0);
+Texture2D targets : register(t1);
+Texture2D depth : register(t2);
+Texture2D waterDepth : register(t3);
 
 SamplerState textureSampler : register(s0);
 
@@ -18,6 +18,11 @@ struct VS_OUTPUT
     float2 texCoord : TEXCOORD;
 };
 
+cbuffer TransformBuffer : register(b0)
+{
+    matrix wvp;
+}
+
 VS_OUTPUT VS(VS_INPUT input)
 {
     VS_OUTPUT output;
@@ -28,15 +33,35 @@ VS_OUTPUT VS(VS_INPUT input)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    float4 finalColor = 1.0f;
-    finalColor = textureMap1.Sample(textureSampler, input.texCoord);
+    float4 color = 1.0f;
     
-    if(finalColor.a < 1.0f)
+    float4 finalColor = textureMap1.Sample(textureSampler, input.texCoord);
+    float4 finalColor2 = textureMap0.Sample(textureSampler, input.texCoord);
+    
+    //if(finalColor.a < 1.0f)
+    //{
+    //    float2 offset = finalColor.xz * 0.1f;
+    //
+    //    float2 refractedUV = input.texCoord + offset;
+    //    
+    //    color = textureMap0.Sample(textureSampler, refractedUV);
+    //    
+    //    float4 blueColor = float4(0.5, 0.9, 1, 1);
+    //
+    //    float blendFactor = 0.5;
+    //    color = lerp(color, finalColor, blendFactor);
+    //}
+    float4 pos1 = textureMap1.Sample(textureSampler, input.texCoord);
+    float4 pos0 = textureMap0.Sample(textureSampler, input.texCoord);
+    if (pos1.a <= 0.75f && pos1.a >= 0.749f)
     {
-        finalColor = textureMap0.Sample(textureSampler, input.texCoord);
+        color = float4(0.5, 0.9, 1, 1);
     }
+    else
+    {
+        color = pos0;
+    }
+
     
-    finalColor = (finalColor + textureMap0.Sample(textureSampler, input.texCoord)) / 2;
-    
-    return finalColor;
+    return color;
 }

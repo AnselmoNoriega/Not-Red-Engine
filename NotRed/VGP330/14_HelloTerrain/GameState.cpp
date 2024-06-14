@@ -87,8 +87,6 @@ void MainState::Initialize()
         );
         mWater.meshBuffer.Update(m.vertices.data(), m.vertices.size());
         mWater.diffuseMapID = TextureManager::Get()->LoadTexture("terrain/dirt_seamless.jpg");
-        //Check the others later
-        //mWater.bumpMapID = TextureManager::Get()->LoadTexture("terrain/grass_2048.jpg");
     }
     {
         std::filesystem::path shaderFilePath = (L"../../Assets/Shaders/Standard.fx");
@@ -113,14 +111,12 @@ void MainState::Initialize()
     mShadowEffect.SetDirectionalLight(mDirectionalLight);
 
     //PostProcessing
-    mWaterEffect.SetTexture(&mRenderTarget);
-    mWaterEffect.SetTexture(&mWaterTarget, 1);
+    mWaterEffect.SetTextures(&mRenderTarget, &mDepthBuffer);
 
     GraphicsSystem* gs = GraphicsSystem::Get();
     const uint32_t screenWidth = gs->GetBackBufferWidth();
     const uint32_t screenHeight = gs->GetBackBufferHeight();
     mRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
-    mWaterTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 
     mCharacterPos = GetMatrix({ 1.0f, 0.0f, 0.0f });
     mWaterPos = GetMatrix({ 1.0f, -0.2f, 0.0f });
@@ -129,7 +125,6 @@ void MainState::Initialize()
 void MainState::Terminate()
 {
     mRenderTarget.Terminate();
-    mWaterTarget.Terminate();
     mShadowEffect.Terminate();
     mWaterEffect.Terminate();
     mStandardEffect.Terminate();
@@ -161,11 +156,9 @@ void MainState::Render()
         mStandardEffect.End();
     mRenderTarget.EndRender();
 
-    mWaterTarget.BeginRender();
-        mWaterEffect.Begin();
-            mWaterEffect.Render(mWater, mWaterPos);
-        mWaterEffect.End();
-    mWaterTarget.EndRender();
+    mWaterEffect.Begin();
+        mWaterEffect.Render(mWater, mWaterPos);
+    mWaterEffect.End();
 
     mWaterEffect.RenderEffect(mScreenQuad);
 }

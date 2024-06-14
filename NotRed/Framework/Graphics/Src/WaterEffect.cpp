@@ -5,6 +5,7 @@
 #include "RenderObject.h"
 #include "RenderTarget.h"
 #include "VertexTypes.h"
+#include "GraphicsSystem.h"
 
 namespace NotRed::Graphics
 {
@@ -26,10 +27,19 @@ namespace NotRed::Graphics
         shaderFile = "../../Assets/Shaders/Refraction.fx";
         mEffectVertexShader.Initialize<VertexPX>(shaderFile);
         mEffectPixelShader.Initialize(shaderFile);
+
+        mTextures[0] = &mWaterTarget;
+        GraphicsSystem* gs = GraphicsSystem::Get();
+        const uint32_t screenWidth = gs->GetBackBufferWidth();
+        const uint32_t screenHeight = gs->GetBackBufferHeight();
+        mWaterTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8); 
+        mWaterDepth.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
     }
 
     void WaterEffect::Terminate()
     {
+        mWaterDepth.Terminate();
+        mWaterTarget.Terminate();
         mSampler.Terminate();
         mBlendState.Terminate();
         mWaveBuffer.Terminate();
@@ -49,6 +59,8 @@ namespace NotRed::Graphics
 
     void WaterEffect::Begin()
     {
+        mWaterTarget.BeginRender();
+
         mVertexShader.Bind();
         mGeometryShader.Bind();
         mPixelShader.Bind();
@@ -77,6 +89,8 @@ namespace NotRed::Graphics
         mEffectPixelShader.Bind();
         mSampler.BindPS(0);
 
+        mBlendState.Set();
+
         for (uint32_t i = 0; i < mTextures.size(); ++i)
         {
             if (mTextures[i] != nullptr) 
@@ -101,6 +115,8 @@ namespace NotRed::Graphics
         {
             Texture::UnbindPS(4);
         }
+
+        mWaterTarget.EndRender();
     }
 
     void WaterEffect::Render(const RenderObject& renderObject, const Math::Matrix4& position)
@@ -189,9 +205,9 @@ namespace NotRed::Graphics
         mShadowMap = &shadowMap;
     }
 
-    void WaterEffect::SetTexture(const Texture* texture, uint32_t slot)
+    void WaterEffect::SetTextures(const Texture* renderTarget, const Texture* depthbuffer)
     {
-        ASSERT(slot < mTextures.size(), "Invalid slot Index");
-        mTextures[slot] = texture;
+        mTextures[1] = renderTarget;
+        mTextures[2] = depthbuffer;
     }
 }

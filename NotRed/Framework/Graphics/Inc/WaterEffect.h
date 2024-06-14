@@ -8,6 +8,7 @@
 #include "Sampler.h"
 #include "VertexShader.h"
 #include "BlendState.h"
+#include "RenderTarget.h"
 
 namespace NotRed::Graphics
 {
@@ -35,7 +36,7 @@ namespace NotRed::Graphics
 		void SetDirectionalLight(const DirectionalLight& directionalLight);
 		void SetShadowMap(const Texture& shadowMap);
 
-		void SetTexture(const Texture* texture, uint32_t slot = 0);
+		void SetTextures(const Texture* renderTarget, const Texture* depthbuffer);
 
 	private:
         struct TransformData
@@ -91,6 +92,9 @@ namespace NotRed::Graphics
 
 		SettingsData mSettingsData;
 		WaterData mWaterData;
+
+		RenderTarget mWaterTarget;
+		RenderTarget mWaterDepth;
 
 		const Camera* mCamera = nullptr;
 		const Camera* mLightCamera = nullptr;

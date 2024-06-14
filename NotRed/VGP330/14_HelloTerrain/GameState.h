@@ -29,9 +29,7 @@ private:
 
 	//PostProcessing
 	NotRed::Graphics::RenderTarget mRenderTarget;
-
-	//NotRed::Graphics::WaterBlur mGaussianBlurEffect;
-	NotRed::Graphics::RenderTarget mWaterTarget;
+	NotRed::Graphics::RenderTarget mDepthBuffer;
 
 	//ScreenQuad
 	NotRed::Graphics::RenderObject mScreenQuad;
