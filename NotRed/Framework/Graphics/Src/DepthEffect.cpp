@@ -34,6 +34,7 @@ namespace NotRed::Graphics
         mSampler.BindPS(0);
 
         mTransformBuffer.BindVS(0);
+        mTransformBuffer.BindPS(0);
     }
 
     void DepthEffect::End()

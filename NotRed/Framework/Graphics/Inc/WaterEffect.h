@@ -56,8 +56,8 @@ namespace NotRed::Graphics
 		{
 			Math::Matrix4 wvp;
 			Math::Vector3 position;
-			float nearPlane = 0.01;
-			float farPlane = 100.0f;
+			float nearPlane = 0.001;
+			float farPlane = 10000.0f;
 			float padding[3];
 		};
 

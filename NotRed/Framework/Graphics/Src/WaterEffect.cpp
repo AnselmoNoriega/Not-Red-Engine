@@ -79,6 +79,7 @@ namespace NotRed::Graphics
         mDepthVertexShader.Bind();
         mDepthPixelShader.Bind();
         mDepthTransformBuffer.BindVS(0);
+        mDepthTransformBuffer.BindPS(0);
         mWaveBuffer.BindVS(1);
         mSampler.BindVS(0);
         mSampler.BindPS(0);

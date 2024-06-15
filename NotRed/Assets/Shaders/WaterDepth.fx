@@ -44,14 +44,14 @@ VS_OUTPUT VS(float3 position : POSITION)
     VS_OUTPUT output;
     
     output.position = mul(float4(p, 1.0f), viewProjection);
-    float linearDepth = output.position.z / output.position.w;
-    float normalizedDepth = (linearDepth - nearPlane) / (farPlane - nearPlane);
-    
-    output.depth = saturate(normalizedDepth);
     return output;
 }
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
+    float linearDepth = input.position.z / input.position.w;
+    
+    input.depth = saturate(linearDepth);
+    
     return float4(input.depth, input.depth, input.depth, 1.0f);
 }

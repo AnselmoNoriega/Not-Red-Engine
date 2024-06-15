@@ -39,14 +39,13 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float4 waterDis = waterDepth.Sample(textureSampler, input.texCoord);
     float4 waterColor = water.Sample(textureSampler, input.texCoord);
     float4 ObjectColor = targets.Sample(textureSampler, input.texCoord);
-    return waterDis;
     if (objectDis.x < waterDis.x)
     {
-        return float4(waterColor.xyz, 1.0f + waterDis.x - objectDis.x);
+        return waterColor;
     }
     else
     {
-        return float4(ObjectColor.xyz, 1.0f + objectDis.x - waterDis.x);
+        return ObjectColor;
     }
     //if(finalColor.a < 1.0f)
     //{
