@@ -122,7 +122,7 @@ void MainState::Initialize()
     mRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
     mDepthBuffer.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 
-    mCharacterPos = GetMatrix({ 1.0f, 0.0f, 0.0f });
+    mCharacterPos = GetMatrix({ 1.0f, 2.0f, 0.0f });
     mWaterPos = GetMatrix({ 1.0f, -0.2f, 0.0f });
 }
 

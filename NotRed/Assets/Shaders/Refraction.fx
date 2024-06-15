@@ -33,18 +33,26 @@ VS_OUTPUT VS(VS_INPUT input)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    float4 color = 1.0f;
-    
     float4 objectDis = depth.Sample(textureSampler, input.texCoord);
     float4 waterDis = waterDepth.Sample(textureSampler, input.texCoord);
-    float4 waterColor = water.Sample(textureSampler, input.texCoord);
-    float4 ObjectColor = targets.Sample(textureSampler, input.texCoord);
+    
     if (objectDis.x < waterDis.x)
     {
-        return waterColor;
+        float4 waterDirection = water.Sample(textureSampler, input.texCoord);
+        float2 offset = waterDirection.xz * 0.1f;
+        
+        float2 refractedUV = input.texCoord + offset;
+        float4 ObjectColor = targets.Sample(textureSampler, refractedUV);
+        
+        float blendFactor = 0.5;
+        float4 color = float4(0.5, 0.9, 1, 1);
+    
+        color = lerp(color, ObjectColor, blendFactor);
+        return color;
     }
     else
     {
+        float4 ObjectColor = targets.Sample(textureSampler, input.texCoord);
         return ObjectColor;
     }
     //if(finalColor.a < 1.0f)

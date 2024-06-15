@@ -92,7 +92,6 @@ namespace NotRed::Graphics
 
         DepthTransform transformData;
         transformData.wvp = Math::Transpose(matFinal);
-        transformData.position = mCamera->GetPosition();
         mDepthTransformBuffer.Update(transformData);
 
         mWaveBuffer.Update(mWaterData);

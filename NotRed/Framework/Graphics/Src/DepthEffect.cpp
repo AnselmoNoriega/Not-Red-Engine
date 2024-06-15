@@ -51,7 +51,6 @@ namespace NotRed::Graphics
 
         Transform transformData;
         transformData.wvp = Math::Transpose(matFinal);
-        transformData.position = mCamera->GetPosition();
         mTransformBuffer.Update(transformData);
 
         renderObject.meshBuffer.Render();

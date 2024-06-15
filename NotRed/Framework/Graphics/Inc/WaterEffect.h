@@ -55,10 +55,6 @@ namespace NotRed::Graphics
 		struct DepthTransform
 		{
 			Math::Matrix4 wvp;
-			Math::Vector3 position;
-			float nearPlane = 0.001;
-			float farPlane = 10000.0f;
-			float padding[3];
 		};
 
         struct SettingsData

@@ -24,7 +24,6 @@ VS_OUTPUT VS(float3 position : POSITION)
 float4 PS(VS_OUTPUT input) : SV_Target
 {
     float linearDepth = input.position.z / input.position.w;
-    float normalizedDepth = (linearDepth - nearPlane) / (farPlane - nearPlane);
     
     input.depth = saturate(linearDepth);
     

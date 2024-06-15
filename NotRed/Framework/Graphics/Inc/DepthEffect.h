@@ -31,10 +31,6 @@ namespace NotRed::Graphics
         struct Transform
         {
             Math::Matrix4 wvp;
-            Math::Vector3 position;
-            float nearPlane = 0.001;
-            float farPlane = 10000.0f;
-            float padding[3];
         };
 
         using TransformBuffer = TypedConstantBuffer<Transform>;

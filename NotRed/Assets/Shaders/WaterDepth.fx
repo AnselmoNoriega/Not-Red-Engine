@@ -1,9 +1,6 @@
 cbuffer Transform : register(b0)
 {
-    matrix viewProjection;
-    float3 camPos;
-    float nearPlane;
-    float farPlane;
+    matrix wvp;
 }
 
 cbuffer WaterBuffer : register(b1)
@@ -43,14 +40,13 @@ VS_OUTPUT VS(float3 position : POSITION)
     
     VS_OUTPUT output;
     
-    output.position = mul(float4(p, 1.0f), viewProjection);
+    output.position = mul(float4(p, 1.0f), wvp);
     return output;
 }
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
     float linearDepth = input.position.z / input.position.w;
-    
     input.depth = saturate(linearDepth);
     
     return float4(input.depth, input.depth, input.depth, 1.0f);
