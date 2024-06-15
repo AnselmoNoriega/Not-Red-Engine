@@ -9,20 +9,18 @@ cbuffer Transform : register(b0)
 struct VS_OUTPUT
 {
     float4 position : SV_Position;
-    float4 color : COLOR;
     float depth : TEXCOORD0;
 };
 
 VS_OUTPUT VS(float3 position : POSITION)
 {
-    float4 viewPosition = mul(float4(position, 1.0f), viewProjection);
-    float linearDepth = viewPosition.z / viewPosition.w;
+    VS_OUTPUT output;
+    
+    output.position = mul(float4(position, 1.0f), viewProjection);
+    float linearDepth = output.position.z / output.position.w;
     float normalizedDepth = (linearDepth - nearPlane) / (farPlane - nearPlane);
     
-    VS_OUTPUT output;
-    output.depth = saturate(normalizedDepth);
-    output.position = mul(float4(position, 1.0f), viewProjection);
-    output.color = float4(position - camPos, 1.0f);
+    output.depth = saturate(0);
     return output;
 }
 

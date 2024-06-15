@@ -34,10 +34,6 @@ float3 GerstnerWave(float4 wave, float3 p)
 
 VS_OUTPUT VS(float3 position : POSITION)
 {
-    float4 viewPosition = mul(float4(position, 1.0f), viewProjection);
-    float linearDepth = viewPosition.z / viewPosition.w;
-    float normalizedDepth = (linearDepth - nearPlane) / (farPlane - nearPlane);
-    
     //Water shape
     float3 p = position;
     for (int i = 0; i < 3; ++i)
@@ -46,8 +42,12 @@ VS_OUTPUT VS(float3 position : POSITION)
     }
     
     VS_OUTPUT output;
-    output.depth = saturate(normalizedDepth);
+    
     output.position = mul(float4(p, 1.0f), viewProjection);
+    float linearDepth = output.position.z / output.position.w;
+    float normalizedDepth = (linearDepth - nearPlane) / (farPlane - nearPlane);
+    
+    output.depth = saturate(normalizedDepth);
     return output;
 }
 

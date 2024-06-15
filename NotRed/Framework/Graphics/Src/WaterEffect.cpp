@@ -83,9 +83,6 @@ namespace NotRed::Graphics
         mSampler.BindVS(0);
         mSampler.BindPS(0);
 
-        mSettingsBuffer.Update(mSettingsData);
-        mWaveBuffer.Update(mWaterData);
-
         const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
         const Math::Matrix4 matView = mCamera->GetViewMatrix();
         const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
@@ -96,6 +93,8 @@ namespace NotRed::Graphics
         transformData.wvp = Math::Transpose(matFinal);
         transformData.position = mCamera->GetPosition();
         mDepthTransformBuffer.Update(transformData);
+
+        mWaveBuffer.Update(mWaterData);
 
         renderObject.meshBuffer.Render();
 

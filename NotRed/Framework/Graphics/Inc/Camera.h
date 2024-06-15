@@ -66,6 +66,6 @@ namespace NotRed::Graphics
 		float mHeight = 0.0f;
 
 		float mNearPlane = 0.01f;
-		float mFarPlane = 10000.0f;
+		float mFarPlane = 100.0f;
 	};
 }
