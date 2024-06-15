@@ -17,7 +17,6 @@ namespace NotRed::Graphics
         mPixelShader.Initialize(shaderFile);
 
         mTransformBuffer.Initialize();
-        mSettingsBuffer.Initialize();
         mLightBuffer.Initialize();
         mMaterialBuffer.Initialize();
         mWaveBuffer.Initialize();
@@ -52,7 +51,6 @@ namespace NotRed::Graphics
         mWaveBuffer.Terminate();
         mMaterialBuffer.Terminate();
         mLightBuffer.Terminate();
-        mSettingsBuffer.Terminate();
         mTransformBuffer.Terminate();
         mPixelShader.Terminate();
         mGeometryShader.Terminate();
@@ -113,9 +111,6 @@ namespace NotRed::Graphics
 
         mTransformBuffer.BindVS(0);
 
-        mSettingsBuffer.BindVS(1);
-        mSettingsBuffer.BindPS(1);
-
         mLightBuffer.BindVS(2);
         mLightBuffer.BindPS(2);
 
@@ -129,7 +124,6 @@ namespace NotRed::Graphics
 
     void WaterEffect::Render(const RenderObject& renderObject, const Math::Matrix4& position)
     {
-        mSettingsBuffer.Update(mSettingsData);
         mWaveBuffer.Update(mWaterData);
 
         const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
@@ -142,17 +136,8 @@ namespace NotRed::Graphics
         transformData.wvp = Math::Transpose(matFinal);
         transformData.world = Math::Transpose(matWorld);
         transformData.viewPosition = mCamera->GetPosition();
-        if (mSettingsData.useShadowMap > 0)
-        {
-            const Math::Matrix4 matLightView = mLightCamera->GetViewMatrix();
-            const Math::Matrix4 matLightProj = mLightCamera->GetProjectionMatrix();
-            transformData.lwvp = Transpose(matWorld * matLightView * matLightProj);
-
-            mShadowMap->BindPS(4);
-        }
         mTransformBuffer.Update(transformData);
 
-        mLightBuffer.Update(*mDirectionalLight);
         mMaterialBuffer.Update(renderObject.material);
 
         TextureManager* tm = TextureManager::Get();
@@ -180,6 +165,9 @@ namespace NotRed::Graphics
             }
         }
 
+        mLightBuffer.BindPS(0);
+        mLightBuffer.Update(mLightData);
+
         renderObject.meshBuffer.Render();
 
         for (uint32_t i = 0; i < mTextures.size(); ++i)
@@ -202,19 +190,6 @@ namespace NotRed::Graphics
 
     void WaterEffect::DebugUI()
     {
-        if (ImGui::CollapsingHeader("WaveLookEffect", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            bool useSpecMap = mSettingsData.useSpecMap > 0;
-            if (ImGui::Checkbox("UseSpecMap##Terrain", &useSpecMap))
-            {
-                mSettingsData.useSpecMap = useSpecMap ? 1 : 0;
-            }
-            bool useShadowMap = mSettingsData.useShadowMap > 0;
-            if (ImGui::Checkbox("UseShadowMap##Terrain", &useShadowMap))
-            {
-                mSettingsData.useShadowMap = useShadowMap ? 1 : 0;
-            }
-        }
         if (ImGui::CollapsingHeader("WaveEffect", ImGuiTreeNodeFlags_DefaultOpen))
         {
             if (ImGui::CollapsingHeader("WavePatterns", ImGuiTreeNodeFlags_DefaultOpen))
@@ -234,14 +209,9 @@ namespace NotRed::Graphics
         mCamera = &camera;
     }
 
-    void WaterEffect::SetLightCamera(const Camera& camera)
-    {
-        mLightCamera = &camera;
-    }
-
     void WaterEffect::SetDirectionalLight(const DirectionalLight& directionalLight)
     {
-        mDirectionalLight = &directionalLight;
+        mLightData.lightDirection = directionalLight.direction;
     }
 
     void WaterEffect::SetShadowMap(const Texture& shadowMap)

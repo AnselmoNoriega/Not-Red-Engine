@@ -7,13 +7,6 @@ cbuffer TranformBuffer : register(b0)
     matrix world;
     float3 viewPos;
 }
-cbuffer LightBuffer : register(b2)
-{
-    float4 lightAmbient;
-    float4 lightDiffuse;
-    float4 lightSpecular;
-    float3 lightDirection;
-}
 cbuffer MaterialBuffer : register(b3)
 {
     float4 materialAmbient;

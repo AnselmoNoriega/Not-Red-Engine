@@ -1,3 +1,7 @@
+cbuffer MaterialBuffer : register(b0)
+{
+    float3 materialAmbient;
+}
 
 Texture2D water : register(t0);
 Texture2D targets : register(t1);
@@ -48,6 +52,10 @@ float4 PS(VS_OUTPUT input) : SV_Target
         float4 color = float4(0.5, 0.9, 1, 1);
     
         color = lerp(color, ObjectColor, blendFactor);
+        if (waterDis.x - objectDis.x <= 0.1)
+        {
+            color = lerp(color, float4(1, 0, 0, 1), blendFactor);
+        }
         return color;
     }
     else

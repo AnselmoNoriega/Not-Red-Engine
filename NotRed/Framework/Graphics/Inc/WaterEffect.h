@@ -32,7 +32,6 @@ namespace NotRed::Graphics
 		void DebugUI();
 
 		void SetCamera(const Camera& camera);
-		void SetLightCamera(const Camera& camera);
 		void SetDirectionalLight(const DirectionalLight& directionalLight);
 		void SetShadowMap(const Texture& shadowMap);
 
@@ -57,13 +56,11 @@ namespace NotRed::Graphics
 			Math::Matrix4 wvp;
 		};
 
-        struct SettingsData
-        {
-            int useDiffuseMap = 1;
-            int useSpecMap = 1;
-            int useShadowMap = 1;
-            float depthBias = 0.0f;
-        };
+		struct LightData
+		{
+			Math::Vector3 lightDirection;
+			float padding;
+		};
 
         struct WaterData
         {
@@ -77,17 +74,15 @@ namespace NotRed::Graphics
 		
         using TransformBuffer = TypedConstantBuffer<TransformData>;
         using DepthTransformBuffer = TypedConstantBuffer<DepthTransform>;
-        using SettingsBuffer = TypedConstantBuffer<SettingsData>;
-        using LightBuffer = TypedConstantBuffer<DirectionalLight>;
         using MaterialBuffer = TypedConstantBuffer<Material>;
         using WaveBuffer = TypedConstantBuffer<WaterData>;
+        using LightBuffer = TypedConstantBuffer<LightData>;
 
 		TransformBuffer mTransformBuffer;
 		DepthTransformBuffer mDepthTransformBuffer;
-		SettingsBuffer mSettingsBuffer;
-		LightBuffer mLightBuffer;
 		MaterialBuffer mMaterialBuffer;
 		WaveBuffer mWaveBuffer;
+		LightBuffer mLightBuffer;
 
 		VertexShader mVertexShader;
 		GeometryShader mGeometryShader;
@@ -102,15 +97,13 @@ namespace NotRed::Graphics
 		BlendState mBlendState;
 		Sampler mSampler;
 
-		SettingsData mSettingsData;
 		WaterData mWaterData;
+		LightData mLightData;
 
 		RenderTarget mWaterTarget;
 		RenderTarget mWaterDepth;
 
 		const Camera* mCamera = nullptr;
-		const Camera* mLightCamera = nullptr;
-		const DirectionalLight* mDirectionalLight = nullptr;
 		const Texture* mShadowMap = nullptr;
 
 		std::array<const Texture*, 4> mTextures;

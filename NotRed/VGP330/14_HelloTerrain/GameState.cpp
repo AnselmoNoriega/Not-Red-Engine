@@ -107,7 +107,6 @@ void MainState::Initialize()
     mWaterEffect.Initialize();
     mWaterEffect.SetCamera(mCamera);
     mWaterEffect.SetDirectionalLight(mDirectionalLight);
-    mWaterEffect.SetLightCamera(mShadowEffect.GetLightCamera());
     mWaterEffect.SetShadowMap(mShadowEffect.GetDepthMap());
 
     mShadowEffect.Initialize();
