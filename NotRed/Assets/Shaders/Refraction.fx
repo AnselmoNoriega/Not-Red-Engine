@@ -40,6 +40,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
     float4 objectDist = depth.Sample(textureSampler, input.texCoord);
     float4 waterDist = waterDepth.Sample(textureSampler, input.texCoord);
+    return water.Sample(textureSampler, input.texCoord);
    
     if (objectDist.x < waterDist.x)
     {
