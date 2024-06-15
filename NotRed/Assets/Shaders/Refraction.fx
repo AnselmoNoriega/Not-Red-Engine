@@ -1,6 +1,6 @@
 cbuffer MaterialBuffer : register(b0)
 {
-    float3 materialAmbient;
+    float3 lightDir;
 }
 
 Texture2D water : register(t0);
@@ -39,24 +39,34 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
     float4 objectDis = depth.Sample(textureSampler, input.texCoord);
     float4 waterDis = waterDepth.Sample(textureSampler, input.texCoord);
-    
+   
     if (objectDis.x < waterDis.x)
     {
         float4 waterDirection = water.Sample(textureSampler, input.texCoord);
         float2 offset = waterDirection.xz * 0.1f;
         
         float2 refractedUV = input.texCoord + offset;
-        float4 ObjectColor = targets.Sample(textureSampler, refractedUV);
-        
-        float blendFactor = 0.5;
+        float4 objectDis2 = depth.Sample(textureSampler, refractedUV);
+        float4 waterDis2 = waterDepth.Sample(textureSampler, refractedUV);
         float4 color = float4(0.5, 0.9, 1, 1);
-    
-        color = lerp(color, ObjectColor, blendFactor);
-        if (waterDis.x - objectDis.x <= 0.1)
+        float blendFactor = 0.5;
+        if (objectDis2.x > waterDis2.x)
         {
-            color = lerp(color, float4(1, 0, 0, 1), blendFactor);
+            float4 ObjectColor = targets.Sample(textureSampler, input.texCoord);
+            color = lerp(color, ObjectColor, blendFactor);
+            return color;
         }
-        return color;
+        else
+        {
+            float4 ObjectColor = targets.Sample(textureSampler, refractedUV);
+    
+            color = lerp(color, ObjectColor, blendFactor);
+            if (objectDis.a != 0.0f && waterDis.x - objectDis.x <= 0.01)
+            {
+                color = lerp(color, float4(1, 0, 0, 1), blendFactor);
+            }
+            return color;
+        }
     }
     else
     {

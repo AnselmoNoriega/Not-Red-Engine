@@ -72,7 +72,7 @@ namespace NotRed::Graphics
 
     void WaterEffect::RenderDepth(const RenderObject& renderObject, const Math::Matrix4& position)
     {
-        mWaterDepth.BeginRender();
+        mWaterDepth.BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
 
         mDepthVertexShader.Bind();
         mDepthPixelShader.Bind();

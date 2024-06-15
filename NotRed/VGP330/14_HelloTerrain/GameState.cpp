@@ -161,7 +161,7 @@ void MainState::Render()
         mStandardEffect.End();
     mRenderTarget.EndRender();
 
-    mDepthBuffer.BeginRender();
+    mDepthBuffer.BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
         mDepthEffect.Begin();
             DrawRenderGroup(mDepthEffect, mCharacter, mCharacterPos);
         mDepthEffect.End();
