@@ -32,8 +32,11 @@ namespace NotRed::Graphics
         mEffectVertexShader.Initialize<VertexPX>(shaderFile);
         mEffectPixelShader.Initialize(shaderFile);
 
+        mFoam.Initialize("../../Assets/Images/water/shampoo.jpg");
+
         mTextures[0] = &mWaterTarget;
         mTextures[3] = &mWaterDepth;
+        mTextures[4] = &mFoam;
         GraphicsSystem* gs = GraphicsSystem::Get();
         const uint32_t screenWidth = gs->GetBackBufferWidth();
         const uint32_t screenHeight = gs->GetBackBufferHeight();
@@ -43,6 +46,7 @@ namespace NotRed::Graphics
 
     void WaterEffect::Terminate()
     {
+        mFoam.Terminate();
         mWaterDepth.Terminate();
         mWaterTarget.Terminate();
         mSampler.Terminate();
@@ -197,6 +201,7 @@ namespace NotRed::Graphics
                 ImGui::DragFloat4("Wave1##Wave", &mWaterData.waves[0].x, 0.05f, 0.0f, 10.0f);
                 ImGui::DragFloat4("Wave2##Wave", &mWaterData.waves[1].x, 0.05f, 0.0f, 10.0f);
                 ImGui::DragFloat4("Wave3##Wave", &mWaterData.waves[2].x, 0.05f, 0.0f, 10.0f);
+                ImGui::DragFloat4("Wave4##Wave", &mWaterData.waves[3].x, 0.05f, 0.0f, 10.0f);
             }
 
             ImGui::DragFloat("mTimeMultiplier##Wave", &mTimeMultiplier, 0.05f, 0.0f, 10.0f);

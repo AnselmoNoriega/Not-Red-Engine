@@ -9,11 +9,11 @@
 #include "VertexShader.h"
 #include "BlendState.h"
 #include "RenderTarget.h"
+#include "Texture.h"
 
 namespace NotRed::Graphics
 {
 	class Camera;
-	class Texture;
 	struct RenderObject;
 
 	class WaterEffect final
@@ -50,7 +50,7 @@ namespace NotRed::Graphics
 			Math::Vector3 viewPosition;
             float padding[2];
         };
-
+		
 		struct DepthTransform
 		{
 			Math::Matrix4 wvp;
@@ -64,9 +64,10 @@ namespace NotRed::Graphics
 
         struct WaterData
         {
-			Math::Vector4 waves[3] = {{0.85f, 0.8f, 0.20f, 9},
+			Math::Vector4 waves[4] = {{0.85f, 0.8f, 0.20f, 9},
 									  {2.35f, 1.0f, 0.25f, 20},
-									  {2.75f, 1.1f, 0.05f, 3}};
+									  {2.75f, 1.1f, 0.05f, 3},
+									  {0.70f, 1.3f, 0.05f, 4.65}};
 			float waveMovementTime = 0.0f;
 			float waveStrength = 1.35f;
 			float padding[2];
@@ -106,7 +107,8 @@ namespace NotRed::Graphics
 		const Camera* mCamera = nullptr;
 		const Texture* mShadowMap = nullptr;
 
-		std::array<const Texture*, 4> mTextures;
+		std::array<const Texture*, 5> mTextures;
+		Texture mFoam;
 
 		float mTimeMultiplier = 1.75f;
 	};

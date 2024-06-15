@@ -14,7 +14,7 @@ cbuffer MaterialBuffer : register(b3)
 }
 cbuffer WaterBuffer : register(b4)
 {
-    float4 wavePattern[3];
+    float4 wavePattern[4];
     float waveMovementTime;
     float waveStrength;
 }
@@ -57,7 +57,7 @@ float3 GerstnerWave(float4 wave, float3 p)
 VS_OUTPUT VS(VS_INPUT input)
 {
     float3 p = input.position;
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         p += GerstnerWave(wavePattern[i], input.position * waveStrength);
     }
