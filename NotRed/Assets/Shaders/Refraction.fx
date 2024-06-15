@@ -1,6 +1,7 @@
 cbuffer MaterialBuffer : register(b0)
 {
     float3 lightDir;
+    float4 lightColor;
 }
 
 Texture2D water : register(t0);
@@ -40,23 +41,28 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
     float4 objectDist = depth.Sample(textureSampler, input.texCoord);
     float4 waterDist = waterDepth.Sample(textureSampler, input.texCoord);
-    return water.Sample(textureSampler, input.texCoord);
    
     if (objectDist.x < waterDist.x)
     {
-        float4 waterDirection = water.Sample(textureSampler, input.texCoord);
+        float3 waterDirection = water.Sample(textureSampler, input.texCoord).xyz;
         float2 offset = waterDirection.xz * 0.1f;
+        
+        float dif = max(dot(waterDirection, -lightDir), 0.0f);
+        float ambient = 0.2;
         
         float2 refractedUV = input.texCoord + offset;
         float4 objectDist2 = depth.Sample(textureSampler, refractedUV);
         float4 waterDist2 = waterDepth.Sample(textureSampler, refractedUV);
         float4 color = float4(0.5, 0.9, 1, 1);
         float blendFactor = 0.5;
+        
         if (objectDist2.x > waterDist2.x)
         {
             float4 ObjectColor = targets.Sample(textureSampler, input.texCoord);
             color = lerp(color, ObjectColor, blendFactor);
-            return color;
+            float4 col = float4(lightColor.xyz * (dif + ambient), 1);
+            col = lerp(col, float4(1, 1, 1, 1), 0.1);
+            return color * col;
         }
         else
         {
@@ -65,19 +71,11 @@ float4 PS(VS_OUTPUT input) : SV_Target
             color = lerp(color, ObjectColor, blendFactor);
             if (objectDist.a != 0.0f && waterDist.x - objectDist.x <= 0.01)
             {
-                // take blend factor
-                // startEdge = foamWidth * 0.1f water to foam
-                // endEdge = foamWidth * 0.9f foam to character
-                // if(factor < startEdge)
-                //  blendfactor = (factor - startEdge) / startEdge
-                // else if (factor > endEdge)
-                //  blendFactor = 1.0f - ((factor - endEdge) / (1.0f - endEdge))
-                // else
-                //  blendFactor = 1.0 foam
-                // color = lerp(color, foamColor, blendFactor
                 color = foamTexture.Sample(textureSampler, input.texCoord);
             }
-            return color;
+            float4 col = float4(lightColor.xyz * (dif + ambient), 1);
+            col = lerp(col, float4(1, 1, 1, 1), 0.1);
+            return color * col;
         }
     }
     else
@@ -85,18 +83,5 @@ float4 PS(VS_OUTPUT input) : SV_Target
         float4 ObjectColor = targets.Sample(textureSampler, input.texCoord);
         return ObjectColor;
     }
-    //if(finalColor.a < 1.0f)
-    //{
-    //    float2 offset = finalColor.xz * 0.1f;
-    //
-    //    float2 refractedUV = input.texCoord + offset;
-    //    
-    //    color = textureMap0.Sample(textureSampler, refractedUV);
-    //    
-    //    float4 blueColor = float4(0.5, 0.9, 1, 1);
-    //
-    //    float blendFactor = 0.5;
-    //    color = lerp(color, finalColor, blendFactor);
-    //}
     
 }

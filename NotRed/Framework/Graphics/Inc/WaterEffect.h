@@ -59,6 +59,7 @@ namespace NotRed::Graphics
 		struct LightData
 		{
 			Math::Vector3 lightDirection;
+			Math::Vector4 lightColor;
 			float padding;
 		};
 

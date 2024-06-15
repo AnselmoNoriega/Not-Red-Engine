@@ -217,6 +217,8 @@ namespace NotRed::Graphics
     void WaterEffect::SetDirectionalLight(const DirectionalLight& directionalLight)
     {
         mLightData.lightDirection = directionalLight.direction;
+        mLightData.lightColor = directionalLight.ambient;
+        mLightData.lightColor.a = 1;
     }
 
     void WaterEffect::SetShadowMap(const Texture& shadowMap)
