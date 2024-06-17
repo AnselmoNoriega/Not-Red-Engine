@@ -40,27 +40,16 @@ namespace NotRed::Graphics
 		void RenderDepth(const RenderObject& renderObject, const Math::Matrix4& position);
 
 	private:
-        struct TransformData
-        {
-            Math::Matrix4 wvp;
-            Math::Matrix4 lwvp;
-            Math::Matrix4 lfwvp;
-            Math::Matrix4 world;
-            Math::Vector3 viewPos;
-			Math::Vector3 viewPosition;
-            float padding[2];
-        };
-		
-		struct DepthTransform
+		struct SimpleTransform
 		{
 			Math::Matrix4 wvp;
 		};
 
-		struct LightData
+		struct RefractionHelper
 		{
 			Math::Vector3 lightDirection;
 			Math::Vector4 lightColor;
-			float padding;
+			float time;
 		};
 
         struct WaterData
@@ -74,17 +63,13 @@ namespace NotRed::Graphics
 			float padding[2];
         };
 		
-        using TransformBuffer = TypedConstantBuffer<TransformData>;
-        using DepthTransformBuffer = TypedConstantBuffer<DepthTransform>;
-        using MaterialBuffer = TypedConstantBuffer<Material>;
+        using SimpleTransformBuffer = TypedConstantBuffer<SimpleTransform>;
         using WaveBuffer = TypedConstantBuffer<WaterData>;
-        using LightBuffer = TypedConstantBuffer<LightData>;
+        using RefractionHelperBuffer = TypedConstantBuffer<RefractionHelper>;
 
-		TransformBuffer mTransformBuffer;
-		DepthTransformBuffer mDepthTransformBuffer;
-		MaterialBuffer mMaterialBuffer;
+		SimpleTransformBuffer mSimpleTransformBuffer;
 		WaveBuffer mWaveBuffer;
-		LightBuffer mLightBuffer;
+		RefractionHelperBuffer mRefractionHelperBuffer;
 
 		VertexShader mVertexShader;
 		GeometryShader mGeometryShader;
@@ -100,7 +85,7 @@ namespace NotRed::Graphics
 		Sampler mSampler;
 
 		WaterData mWaterData;
-		LightData mLightData;
+		RefractionHelper mRefractionHelper;
 
 		RenderTarget mWaterTarget;
 		RenderTarget mWaterDepth;
@@ -112,5 +97,10 @@ namespace NotRed::Graphics
 		Texture mFoam;
 
 		float mTimeMultiplier = 1.75f;
+
+		float mTime = 0.0f;
+		float mAnimationChangeTime = 0.02f;
+		std::vector<size_t> mAnimatedTexture;
+		uint8_t mTextureIndex = 0;
 	};
 }

@@ -2,17 +2,8 @@
 cbuffer TranformBuffer : register(b0)
 {
     matrix wvp;
-    matrix lwvp;
-    matrix lfwvp;
-    matrix world;
-    float3 viewPos;
 }
-cbuffer MaterialBuffer : register(b3)
-{
-    float4 materialAmbient;
-    float4 materialDiffuse;
-}
-cbuffer WaterBuffer : register(b4)
+cbuffer WaterBuffer : register(b1)
 {
     float4 wavePattern[4];
     float waveMovementTime;
@@ -20,7 +11,6 @@ cbuffer WaterBuffer : register(b4)
 }
 
 Texture2D diffuseMap : register(t0);
-SamplerState textureSampler : register(s0);
 
 struct VS_INPUT
 {
@@ -85,13 +75,7 @@ void GS(triangle VS_OUTPUT input[3], inout TriangleStream<GS_OUTPUT> output)
 
 float4 PS(GS_OUTPUT gsInput) : SV_Target
 {
-    float ratio = 1.00 / 1.33;
-    float3 I = normalize(gsInput.position.xyz - viewPos);
-    float3 R = refract(I, gsInput.normal, ratio);
-    
     float4 color;
-    //color = vec4(texture(skybox, R).rgb, 1.0);
-    
     color.xyz = gsInput.normal;
     color.a = 0.5f;
     return color;

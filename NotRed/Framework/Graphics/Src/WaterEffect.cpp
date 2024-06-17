@@ -16,11 +16,9 @@ namespace NotRed::Graphics
         mGeometryShader.Initialize(shaderFile);
         mPixelShader.Initialize(shaderFile);
 
-        mTransformBuffer.Initialize();
-        mLightBuffer.Initialize();
-        mMaterialBuffer.Initialize();
+        mRefractionHelperBuffer.Initialize();
         mWaveBuffer.Initialize();
-        mDepthTransformBuffer.Initialize();
+        mSimpleTransformBuffer.Initialize();
         mBlendState.Initialize(BlendState::Mode::AlphaBlend);
         mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 
@@ -40,8 +38,21 @@ namespace NotRed::Graphics
         GraphicsSystem* gs = GraphicsSystem::Get();
         const uint32_t screenWidth = gs->GetBackBufferWidth();
         const uint32_t screenHeight = gs->GetBackBufferHeight();
-        mWaterTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8); 
+        mWaterTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
         mWaterDepth.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+
+        TextureManager* tm = TextureManager::Get();
+        std::filesystem::path path;
+        for (int i = 1; i <= 120; ++i)
+        {
+            path = "water/Animated_Water_Normal_Map_2/0";
+            for (int j = 100; j > i; j *= 0.1f)
+            {
+                path += "0";
+            }
+            path += std::to_string(i) + ".png";
+            mAnimatedTexture.push_back(tm->LoadTexture(path));
+        }
     }
 
     void WaterEffect::Terminate()
@@ -51,11 +62,9 @@ namespace NotRed::Graphics
         mWaterTarget.Terminate();
         mSampler.Terminate();
         mBlendState.Terminate();
-        mDepthTransformBuffer.Terminate();
+        mSimpleTransformBuffer.Terminate();
         mWaveBuffer.Terminate();
-        mMaterialBuffer.Terminate();
-        mLightBuffer.Terminate();
-        mTransformBuffer.Terminate();
+        mRefractionHelperBuffer.Terminate();
         mPixelShader.Terminate();
         mGeometryShader.Terminate();
         mVertexShader.Terminate();
@@ -72,6 +81,19 @@ namespace NotRed::Graphics
     void WaterEffect::Update(float dt)
     {
         mWaterData.waveMovementTime += dt * mTimeMultiplier;
+        mRefractionHelper.time += dt;
+
+        mTime += dt;
+        if (mTime >= mAnimationChangeTime)
+        {
+            mTime = 0.0f;
+            ++mTextureIndex;
+
+            if (mTextureIndex >= 120)
+            {
+                mTextureIndex = 0;
+            }
+        }
     }
 
     void WaterEffect::RenderDepth(const RenderObject& renderObject, const Math::Matrix4& position)
@@ -80,8 +102,8 @@ namespace NotRed::Graphics
 
         mDepthVertexShader.Bind();
         mDepthPixelShader.Bind();
-        mDepthTransformBuffer.BindVS(0);
-        mDepthTransformBuffer.BindPS(0);
+        mSimpleTransformBuffer.BindVS(0);
+        mSimpleTransformBuffer.BindPS(0);
         mWaveBuffer.BindVS(1);
         mSampler.BindVS(0);
         mSampler.BindPS(0);
@@ -92,9 +114,9 @@ namespace NotRed::Graphics
 
         Math::Matrix4 matFinal = position * matWorld * matView * matProj;
 
-        DepthTransform transformData;
+        SimpleTransform transformData;
         transformData.wvp = Math::Transpose(matFinal);
-        mDepthTransformBuffer.Update(transformData);
+        mSimpleTransformBuffer.Update(transformData);
 
         mWaveBuffer.Update(mWaterData);
 
@@ -113,17 +135,8 @@ namespace NotRed::Graphics
 
         mBlendState.Set();
 
-        mTransformBuffer.BindVS(0);
-
-        mLightBuffer.BindVS(2);
-        mLightBuffer.BindPS(2);
-
-        mMaterialBuffer.BindPS(3);
-
-        mWaveBuffer.BindVS(4);
-
-        mSampler.BindVS(0);
-        mSampler.BindPS(0);
+        mSimpleTransformBuffer.BindVS(0);
+        mWaveBuffer.BindVS(1);
     }
 
     void WaterEffect::Render(const RenderObject& renderObject, const Math::Matrix4& position)
@@ -136,19 +149,9 @@ namespace NotRed::Graphics
 
         Math::Matrix4 matFinal = position * matWorld * matView * matProj;
 
-        TransformData transformData;
+        SimpleTransform transformData;
         transformData.wvp = Math::Transpose(matFinal);
-        transformData.world = Math::Transpose(matWorld);
-        transformData.viewPosition = mCamera->GetPosition();
-        mTransformBuffer.Update(transformData);
-
-        mMaterialBuffer.Update(renderObject.material);
-
-        TextureManager* tm = TextureManager::Get();
-        tm->BindPS(renderObject.diffuseMapID, 0);
-        tm->BindPS(renderObject.normalMapID, 1);
-        tm->BindPS(renderObject.specMapID, 2);
-        tm->BindPS(renderObject.bumpMapID, 3);
+        mSimpleTransformBuffer.Update(transformData);
 
         renderObject.meshBuffer.Render();
     }
@@ -157,6 +160,7 @@ namespace NotRed::Graphics
     {
         mEffectVertexShader.Bind();
         mEffectPixelShader.Bind();
+        mRefractionHelperBuffer.BindPS(0);
         mSampler.BindPS(0);
 
         mBlendState.Set();
@@ -169,8 +173,8 @@ namespace NotRed::Graphics
             }
         }
 
-        mLightBuffer.BindPS(0);
-        mLightBuffer.Update(mLightData);
+        TextureManager::Get()->BindPS(mAnimatedTexture[mTextureIndex], 5);
+        mRefractionHelperBuffer.Update(mRefractionHelper);
 
         renderObject.meshBuffer.Render();
 
@@ -206,6 +210,7 @@ namespace NotRed::Graphics
 
             ImGui::DragFloat("mTimeMultiplier##Wave", &mTimeMultiplier, 0.05f, 0.0f, 10.0f);
             ImGui::DragFloat("waveStrength##Wave", &mWaterData.waveStrength, 0.05f, 0.0f, 10.0f);
+            ImGui::DragFloat("time##Wave", &mRefractionHelper.time, 0.05f, 0.0f, 10.0f);
         }
     }
 
@@ -216,9 +221,9 @@ namespace NotRed::Graphics
 
     void WaterEffect::SetDirectionalLight(const DirectionalLight& directionalLight)
     {
-        mLightData.lightDirection = directionalLight.direction;
-        mLightData.lightColor = directionalLight.ambient;
-        mLightData.lightColor.a = 1;
+        mRefractionHelper.lightDirection = directionalLight.direction;
+        mRefractionHelper.lightColor = directionalLight.ambient;
+        mRefractionHelper.lightColor.a = 1;
     }
 
     void WaterEffect::SetShadowMap(const Texture& shadowMap)

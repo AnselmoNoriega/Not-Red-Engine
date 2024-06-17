@@ -1,14 +1,16 @@
-cbuffer MaterialBuffer : register(b0)
+cbuffer RefractionHelper : register(b0)
 {
     float3 lightDir;
     float4 lightColor;
-}
+    float time;
+};
 
 Texture2D water : register(t0);
 Texture2D targets : register(t1);
 Texture2D depth : register(t2);
 Texture2D waterDepth : register(t3);
 Texture2D foamTexture : register(t4);
+Texture2D waterDistortion : register(t5);
 
 SamplerState textureSampler : register(s0);
 
@@ -23,11 +25,6 @@ struct VS_OUTPUT
     float4 position : SV_Position;
     float2 texCoord : TEXCOORD;
 };
-
-cbuffer TransformBuffer : register(b0)
-{
-    matrix wvp;
-}
 
 VS_OUTPUT VS(VS_INPUT input)
 {
@@ -50,7 +47,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
         float dif = max(dot(waterDirection, -lightDir), 0.0f);
         float ambient = 0.2;
         
-        float2 refractedUV = input.texCoord + offset;
+        float movedCoord = float2(input.texCoord.y + time, input.texCoord.x + time);
+        float2 distortion = waterDistortion.Sample(textureSampler, movedCoord).xy * 0.1;
+        float2 refractedUV = input.texCoord + offset + distortion;
         float4 objectDist2 = depth.Sample(textureSampler, refractedUV);
         float4 waterDist2 = waterDepth.Sample(textureSampler, refractedUV);
         float4 color = float4(0.5, 0.9, 1, 1);
