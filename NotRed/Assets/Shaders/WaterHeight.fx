@@ -3,6 +3,7 @@ cbuffer TranformBuffer : register(b0)
 {
     matrix wvp;
 }
+
 cbuffer WaterBuffer : register(b1)
 {
     float4 wavePattern[4];
@@ -10,11 +11,10 @@ cbuffer WaterBuffer : register(b1)
     float waveStrength;
 }
 
-Texture2D diffuseMap : register(t0);
-
 struct VS_OUTPUT
 {
-    float3 position : POSITION;
+    float4 position : SV_Position;
+    float4 basePosition : POSITION0;
 };
 
 float3 GerstnerWave(float4 wave, float3 p)
@@ -30,15 +30,17 @@ float3 GerstnerWave(float4 wave, float3 p)
     return float3(d.x * (a * cos(f)), a * sin(f), d.y * (a * cos(f)));
 }
 
-VS_OUTPUT VS(float3 position : POSITION)
+VS_OUTPUT VS(float3 pos : POSITION)
 {
-    float3 p = position;
+    VS_OUTPUT output;
+    output.basePosition = mul(float4(pos, 1.0f), wvp);
+
+    float3 p = pos;
     for (int i = 0; i < 4; ++i)
     {
-        p += GerstnerWave(wavePattern[i], position * waveStrength);
+        p += GerstnerWave(wavePattern[i], pos * waveStrength);
     }
 
-    VS_OUTPUT output;
     output.position = mul(float4(p, 1.0f), wvp);
     return output;
 }
@@ -46,7 +48,7 @@ VS_OUTPUT VS(float3 position : POSITION)
 float4 PS(VS_OUTPUT input) : SV_Target
 {
     float4 color;
-    color.xyz = input.position;
+    color.xyz = 0.5;
     color.a = 1.0f;
     return color;
 }

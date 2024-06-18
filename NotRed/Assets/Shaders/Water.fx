@@ -10,8 +10,6 @@ cbuffer WaterBuffer : register(b1)
     float waveStrength;
 }
 
-Texture2D diffuseMap : register(t0);
-
 struct VS_INPUT
 {
     float3 position : POSITION;

@@ -37,9 +37,10 @@ namespace NotRed::Graphics
 		mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 
 		mFoam.Initialize("../../Assets/Images/water/shampoo.jpg");
-		mTextures[0] = &mWaterTarget;
-		mTextures[3] = &mWaterDepth;
-		mTextures[4] = &mFoam;
+		mTextures[0] = &mWaterTarget[NORMAL];
+		mTextures[3] = &mWaterTarget[DEPTH];
+		mTextures[4] = &mWaterTarget[HEIGHT];
+		mTextures[5] = &mFoam;
 
 		TextureManager* tm = TextureManager::Get();
 		std::filesystem::path path;
@@ -57,15 +58,19 @@ namespace NotRed::Graphics
 		GraphicsSystem* gs = GraphicsSystem::Get();
 		const uint32_t screenWidth = gs->GetBackBufferWidth();
 		const uint32_t screenHeight = gs->GetBackBufferHeight();
-		mWaterTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
-		mWaterDepth.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+		for (int i = 0; i < mWaterTarget.size(); ++i)
+		{
+			mWaterTarget[i].Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+		}
 	}
 
 	void WaterEffect::Terminate()
 	{
-		mFoam.Terminate();
-		mWaterDepth.Terminate();
-		mWaterTarget.Terminate();
+		mFoam.Terminate(); 
+		for (int i = 0; i < mWaterTarget.size(); ++i)
+		{
+			mWaterTarget[i].Terminate();
+		}
 		mSampler.Terminate();
 		mBlendState.Terminate();
 		mSimpleTransformBuffer.Terminate();
@@ -100,7 +105,7 @@ namespace NotRed::Graphics
 
 	void WaterEffect::RenderDepth(const RenderObject& renderObject, const Math::Matrix4& position)
 	{
-		mWaterDepth.BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
+		mWaterTarget[DEPTH].BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
 
 		mVertexShader[DEPTH].Bind();
 		mPixelShader[DEPTH].Bind();
@@ -124,17 +129,39 @@ namespace NotRed::Graphics
 
 		renderObject.meshBuffer.Render();
 
-		mWaterDepth.EndRender();
+		mWaterTarget[DEPTH].EndRender();
 	}
 
 	void WaterEffect::RenderHeight(const RenderObject& renderObject, const Math::Matrix4& position)
 	{
+		mWaterTarget[HEIGHT].BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
 
+		mVertexShader[HEIGHT].Bind();
+		mPixelShader[HEIGHT].Bind();
+		mSimpleTransformBuffer.BindVS(0);
+		mSimpleTransformBuffer.BindPS(0);
+		mWaveBuffer.BindVS(1);
+
+		const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
+		const Math::Matrix4 matView = mCamera->GetViewMatrix();
+		const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
+
+		Math::Matrix4 matFinal = position * matWorld * matView * matProj;
+
+		SimpleTransform transformData;
+		transformData.wvp = Math::Transpose(matFinal);
+		mSimpleTransformBuffer.Update(transformData);
+
+		mWaveBuffer.Update(mWaterData);
+
+		renderObject.meshBuffer.Render();
+
+		mWaterTarget[HEIGHT].EndRender();
 	}
 
 	void WaterEffect::RenderNormal(const RenderObject& renderObject, const Math::Matrix4& position)
 	{
-		mWaterTarget.BeginRender();
+		mWaterTarget[NORMAL].BeginRender();
 
 		mVertexShader[NORMAL].Bind();
 		mGeometryShader.Bind();
@@ -166,7 +193,7 @@ namespace NotRed::Graphics
 			Texture::UnbindPS(4);
 		}
 
-		mWaterTarget.EndRender();
+		mWaterTarget[NORMAL].EndRender();
 	}
 
 	void WaterEffect::RenderEffect(const RenderObject& renderObject)
@@ -242,6 +269,7 @@ namespace NotRed::Graphics
 	{
 		RenderDepth(renderObject, position);
 		RenderNormal(renderObject, position);
+		RenderHeight(renderObject, position);
 		RenderEffect(renderTarget);
 	}
 }

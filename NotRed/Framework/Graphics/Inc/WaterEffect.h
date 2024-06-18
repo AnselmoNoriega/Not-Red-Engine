@@ -90,13 +90,12 @@ namespace NotRed::Graphics
 		WaterData mWaterData;
 		RefractionHelper mRefractionHelper;
 
-		RenderTarget mWaterTarget;
-		RenderTarget mWaterDepth;
+		std::array<RenderTarget, 3> mWaterTarget;
 
 		const Camera* mCamera = nullptr;
 		const Texture* mShadowMap = nullptr;
 
-		std::array<const Texture*, 5> mTextures;
+		std::array<const Texture*, 6> mTextures;
 		Texture mFoam;
 
 		float mTimeMultiplier = 1.75f;

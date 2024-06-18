@@ -9,8 +9,9 @@ Texture2D water : register(t0);
 Texture2D targets : register(t1);
 Texture2D depth : register(t2);
 Texture2D waterDepth : register(t3);
-Texture2D foamTexture : register(t4);
-Texture2D waterDistortion : register(t5);
+Texture2D waterHeight : register(t4);
+Texture2D foamTexture : register(t5);
+Texture2D waterDistortion : register(t6);
 
 SamplerState textureSampler : register(s0);
 
@@ -36,6 +37,7 @@ VS_OUTPUT VS(VS_INPUT input)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
+	return waterHeight.Sample(textureSampler, input.texCoord);
 	float3 lighdir = normalize(float3(1.0f, -1.0f, 1.0f));
 	float4 lighCol = float4(1, 0.97, 0.97, 1.000000000f);
 
