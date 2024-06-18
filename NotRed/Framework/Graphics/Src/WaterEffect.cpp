@@ -9,232 +9,239 @@
 
 namespace NotRed::Graphics
 {
-    void WaterEffect::Initialize()
-    {
-        std::filesystem::path shaderFile = "../../Assets/Shaders/Water.fx";
-        mVertexShader.Initialize<Vertex>(shaderFile);
-        mGeometryShader.Initialize(shaderFile);
-        mPixelShader.Initialize(shaderFile);
+	void WaterEffect::Initialize()
+	{
+		std::filesystem::path shaderFile = "../../Assets/Shaders/Water.fx";
+		mGeometryShader.Initialize(shaderFile);
+		mVertexShader[NORMAL].Initialize<Vertex>(shaderFile);
+		mPixelShader[NORMAL].Initialize(shaderFile);
 
-        mRefractionHelperBuffer.Initialize();
-        mWaveBuffer.Initialize();
-        mSimpleTransformBuffer.Initialize();
-        mBlendState.Initialize(BlendState::Mode::AlphaBlend);
-        mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
+		shaderFile = "../../Assets/Shaders/WaterDepth.fx";
+		mVertexShader[DEPTH].Initialize<VertexPX>(shaderFile);
+		mPixelShader[DEPTH].Initialize(shaderFile);
 
-        shaderFile = "../../Assets/Shaders/WaterDepth.fx";
-        mDepthVertexShader.Initialize<VertexPX>(shaderFile);
-        mDepthPixelShader.Initialize(shaderFile);
+		shaderFile = "../../Assets/Shaders/WaterHeight.fx";
+		mVertexShader[HEIGHT].Initialize<VertexPX>(shaderFile);
+		mPixelShader[HEIGHT].Initialize(shaderFile);
 
-        shaderFile = "../../Assets/Shaders/Refraction.fx";
-        mEffectVertexShader.Initialize<VertexPX>(shaderFile);
-        mEffectPixelShader.Initialize(shaderFile);
+		shaderFile = "../../Assets/Shaders/Refraction.fx";
+		mVertexShader[EFFECT].Initialize<VertexPX>(shaderFile);
+		mPixelShader[EFFECT].Initialize(shaderFile);
 
-        mFoam.Initialize("../../Assets/Images/water/shampoo.jpg");
+		mWaveBuffer.Initialize();
+		mSimpleTransformBuffer.Initialize();
+		mRefractionHelperBuffer.Initialize();
 
-        mTextures[0] = &mWaterTarget;
-        mTextures[3] = &mWaterDepth;
-        mTextures[4] = &mFoam;
-        GraphicsSystem* gs = GraphicsSystem::Get();
-        const uint32_t screenWidth = gs->GetBackBufferWidth();
-        const uint32_t screenHeight = gs->GetBackBufferHeight();
-        mWaterTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
-        mWaterDepth.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+		mBlendState.Initialize(BlendState::Mode::AlphaBlend);
 
-        TextureManager* tm = TextureManager::Get();
-        std::filesystem::path path;
-        for (int i = 1; i <= 120; ++i)
-        {
-            path = "water/Animated_Water_Normal_Map_2/0";
-            for (int j = 100; j > i; j *= 0.1f)
-            {
-                path += "0";
-            }
-            path += std::to_string(i) + ".png";
-            mAnimatedTexture.push_back(tm->LoadTexture(path));
-        }
-    }
+		mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 
-    void WaterEffect::Terminate()
-    {
-        mFoam.Terminate();
-        mWaterDepth.Terminate();
-        mWaterTarget.Terminate();
-        mSampler.Terminate();
-        mBlendState.Terminate();
-        mSimpleTransformBuffer.Terminate();
-        mWaveBuffer.Terminate();
-        mRefractionHelperBuffer.Terminate();
-        mPixelShader.Terminate();
-        mGeometryShader.Terminate();
-        mVertexShader.Terminate();
+		mFoam.Initialize("../../Assets/Images/water/shampoo.jpg");
+		mTextures[0] = &mWaterTarget;
+		mTextures[3] = &mWaterDepth;
+		mTextures[4] = &mFoam;
 
-        mEffectPixelShader.Terminate();
-        mEffectVertexShader.Terminate();
-        mDepthPixelShader.Terminate();
-        mDepthVertexShader.Terminate();
-        mPixelShader.Terminate();
-        mGeometryShader.Terminate();
-        mVertexShader.Terminate();
-    }
+		TextureManager* tm = TextureManager::Get();
+		std::filesystem::path path;
+		for (int i = 1; i <= 120; ++i)
+		{
+			path = "water/Animated_Water_Normal_Map_2/0";
+			for (int j = 100; j > i; j *= 0.1f)
+			{
+				path += "0";
+			}
+			path += std::to_string(i) + ".png";
+			mAnimatedTexture.push_back(tm->LoadTexture(path));
+		}
 
-    void WaterEffect::Update(float dt)
-    {
-        mWaterData.waveMovementTime += dt * mTimeMultiplier;
-        mRefractionHelper.time += dt;
+		GraphicsSystem* gs = GraphicsSystem::Get();
+		const uint32_t screenWidth = gs->GetBackBufferWidth();
+		const uint32_t screenHeight = gs->GetBackBufferHeight();
+		mWaterTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+		mWaterDepth.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+	}
 
-        mTime += dt;
-        if (mTime >= mAnimationChangeTime)
-        {
-            mTime = 0.0f;
-            ++mTextureIndex;
+	void WaterEffect::Terminate()
+	{
+		mFoam.Terminate();
+		mWaterDepth.Terminate();
+		mWaterTarget.Terminate();
+		mSampler.Terminate();
+		mBlendState.Terminate();
+		mSimpleTransformBuffer.Terminate();
+		mWaveBuffer.Terminate();
+		mRefractionHelperBuffer.Terminate();
 
-            if (mTextureIndex >= 120)
-            {
-                mTextureIndex = 0;
-            }
-        }
-    }
+		mGeometryShader.Terminate();
+		for (int i = 0; i < mVertexShader.size(); ++i)
+		{
+			mPixelShader[i].Terminate();
+			mVertexShader[i].Terminate();
+		}
+	}
 
-    void WaterEffect::RenderDepth(const RenderObject& renderObject, const Math::Matrix4& position)
-    {
-        mWaterDepth.BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
+	void WaterEffect::Update(float dt)
+	{
+		mWaterData.waveMovementTime += dt * mTimeMultiplier;
+		mRefractionHelper.time += dt;
 
-        mDepthVertexShader.Bind();
-        mDepthPixelShader.Bind();
-        mSimpleTransformBuffer.BindVS(0);
-        mSimpleTransformBuffer.BindPS(0);
-        mWaveBuffer.BindVS(1);
-        mSampler.BindVS(0);
-        mSampler.BindPS(0);
+		mTime += dt;
+		if (mTime >= mAnimationChangeTime)
+		{
+			mTime = 0.0f;
+			++mTextureIndex;
 
-        const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
-        const Math::Matrix4 matView = mCamera->GetViewMatrix();
-        const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
+			if (mTextureIndex >= 120)
+			{
+				mTextureIndex = 0;
+			}
+		}
+	}
 
-        Math::Matrix4 matFinal = position * matWorld * matView * matProj;
+	void WaterEffect::RenderDepth(const RenderObject& renderObject, const Math::Matrix4& position)
+	{
+		mWaterDepth.BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
 
-        SimpleTransform transformData;
-        transformData.wvp = Math::Transpose(matFinal);
-        mSimpleTransformBuffer.Update(transformData);
+		mVertexShader[DEPTH].Bind();
+		mPixelShader[DEPTH].Bind();
+		mSimpleTransformBuffer.BindVS(0);
+		mSimpleTransformBuffer.BindPS(0);
+		mWaveBuffer.BindVS(1);
+		mSampler.BindVS(0);
+		mSampler.BindPS(0);
 
-        mWaveBuffer.Update(mWaterData);
+		const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
+		const Math::Matrix4 matView = mCamera->GetViewMatrix();
+		const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
 
-        renderObject.meshBuffer.Render();
+		Math::Matrix4 matFinal = position * matWorld * matView * matProj;
 
-        mWaterDepth.EndRender();
-    }
+		SimpleTransform transformData;
+		transformData.wvp = Math::Transpose(matFinal);
+		mSimpleTransformBuffer.Update(transformData);
 
-    void WaterEffect::RenderNormal(const RenderObject& renderObject, const Math::Matrix4& position)
-    {
-        mWaterTarget.BeginRender();
+		mWaveBuffer.Update(mWaterData);
 
-        mVertexShader.Bind();
-        mGeometryShader.Bind();
-        mPixelShader.Bind();
+		renderObject.meshBuffer.Render();
 
-        mBlendState.Set();
+		mWaterDepth.EndRender();
+	}
 
-        mSimpleTransformBuffer.BindVS(0);
-        mWaveBuffer.BindVS(1);
+	void WaterEffect::RenderHeight(const RenderObject& renderObject, const Math::Matrix4& position)
+	{
 
-        mWaveBuffer.Update(mWaterData);
+	}
 
-        const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
-        const Math::Matrix4 matView = mCamera->GetViewMatrix();
-        const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
+	void WaterEffect::RenderNormal(const RenderObject& renderObject, const Math::Matrix4& position)
+	{
+		mWaterTarget.BeginRender();
 
-        Math::Matrix4 matFinal = position * matWorld * matView * matProj;
+		mVertexShader[NORMAL].Bind();
+		mGeometryShader.Bind();
+		mPixelShader[NORMAL].Bind();
 
-        SimpleTransform transformData;
-        transformData.wvp = Math::Transpose(matFinal);
-        mSimpleTransformBuffer.Update(transformData);
+		mBlendState.Set();
 
-        renderObject.meshBuffer.Render();
+		mSimpleTransformBuffer.BindVS(0);
+		mWaveBuffer.BindVS(1);
 
-        mGeometryShader.Unbind();
+		mWaveBuffer.Update(mWaterData);
 
-        if (mShadowMap != nullptr)
-        {
-            Texture::UnbindPS(4);
-        }
+		const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
+		const Math::Matrix4 matView = mCamera->GetViewMatrix();
+		const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
 
-        mWaterTarget.EndRender();
-    }
+		Math::Matrix4 matFinal = position * matWorld * matView * matProj;
 
-    void WaterEffect::RenderEffect(const RenderObject& renderObject)
-    {
-        mEffectVertexShader.Bind();
-        mEffectPixelShader.Bind();
-        mRefractionHelperBuffer.BindPS(0);
-        mSampler.BindPS(0);
+		SimpleTransform transformData;
+		transformData.wvp = Math::Transpose(matFinal);
+		mSimpleTransformBuffer.Update(transformData);
 
-        mBlendState.Set();
+		renderObject.meshBuffer.Render();
 
-        for (uint32_t i = 0; i < mTextures.size(); ++i)
-        {
-            if (mTextures[i] != nullptr)
-            {
-                mTextures[i]->BindPS(i);
-            }
-        }
+		mGeometryShader.Unbind();
 
-        TextureManager::Get()->BindPS(mAnimatedTexture[mTextureIndex], 5);
-        mRefractionHelperBuffer.Update(mRefractionHelper);
+		if (mShadowMap != nullptr)
+		{
+			Texture::UnbindPS(4);
+		}
 
-        renderObject.meshBuffer.Render();
+		mWaterTarget.EndRender();
+	}
 
-        for (uint32_t i = 0; i < mTextures.size(); ++i)
-        {
-            Texture::UnbindPS(i);
-        }
-    }
+	void WaterEffect::RenderEffect(const RenderObject& renderObject)
+	{
+		mVertexShader[EFFECT].Bind();
+		mPixelShader[EFFECT].Bind();
+		mRefractionHelperBuffer.BindPS(0);
+		mSampler.BindPS(0);
 
-    void WaterEffect::DebugUI()
-    {
-        if (ImGui::CollapsingHeader("WaveEffect", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            if (ImGui::CollapsingHeader("WavePatterns", ImGuiTreeNodeFlags_DefaultOpen))
-            {
-                ImGui::DragFloat4("Wave1##Wave", &mWaterData.waves[0].x, 0.05f, 0.0f, 10.0f);
-                ImGui::DragFloat4("Wave2##Wave", &mWaterData.waves[1].x, 0.05f, 0.0f, 10.0f);
-                ImGui::DragFloat4("Wave3##Wave", &mWaterData.waves[2].x, 0.05f, 0.0f, 10.0f);
-                ImGui::DragFloat4("Wave4##Wave", &mWaterData.waves[3].x, 0.05f, 0.0f, 10.0f);
-            }
+		mBlendState.Set();
 
-            ImGui::DragFloat("mTimeMultiplier##Wave", &mTimeMultiplier, 0.05f, 0.0f, 10.0f);
-            ImGui::DragFloat("waveStrength##Wave", &mWaterData.waveStrength, 0.05f, 0.0f, 10.0f);
-            ImGui::DragFloat("time##Wave", &mRefractionHelper.time, 0.05f, 0.0f, 10.0f);
-        }
-    }
+		for (uint32_t i = 0; i < mTextures.size(); ++i)
+		{
+			if (mTextures[i] != nullptr)
+			{
+				mTextures[i]->BindPS(i);
+			}
+		}
 
-    void WaterEffect::SetCamera(const Camera& camera)
-    {
-        mCamera = &camera;
-    }
+		TextureManager::Get()->BindPS(mAnimatedTexture[mTextureIndex], 5);
+		mRefractionHelperBuffer.Update(mRefractionHelper);
 
-    void WaterEffect::SetDirectionalLight(const DirectionalLight& directionalLight)
-    {
-        mRefractionHelper.lightDirection = directionalLight.direction;
-        mRefractionHelper.lightColor = directionalLight.ambient;
-        mRefractionHelper.lightColor.a = 1;
-    }
+		renderObject.meshBuffer.Render();
 
-    void WaterEffect::SetShadowMap(const Texture& shadowMap)
-    {
-        mShadowMap = &shadowMap;
-    }
+		for (uint32_t i = 0; i < mTextures.size(); ++i)
+		{
+			Texture::UnbindPS(i);
+		}
+	}
 
-    void WaterEffect::SetTextures(const Texture* renderTarget, const Texture* depthbuffer)
-    {
-        mTextures[1] = renderTarget;
-        mTextures[2] = depthbuffer;
-    }
+	void WaterEffect::DebugUI()
+	{
+		if (ImGui::CollapsingHeader("WaveEffect", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			if (ImGui::CollapsingHeader("WavePatterns", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::DragFloat4("Wave1##Wave", &mWaterData.waves[0].x, 0.05f, 0.0f, 10.0f);
+				ImGui::DragFloat4("Wave2##Wave", &mWaterData.waves[1].x, 0.05f, 0.0f, 10.0f);
+				ImGui::DragFloat4("Wave3##Wave", &mWaterData.waves[2].x, 0.05f, 0.0f, 10.0f);
+				ImGui::DragFloat4("Wave4##Wave", &mWaterData.waves[3].x, 0.05f, 0.0f, 10.0f);
+			}
 
-    void WaterEffect::RenderWater(const RenderObject& renderObject, const Math::Matrix4& position, const RenderObject& renderTarget)
-    {
-        RenderDepth(renderObject, position);
-        RenderNormal(renderObject, position);
-        RenderEffect(renderTarget);
-    }
+			ImGui::DragFloat("mTimeMultiplier##Wave", &mTimeMultiplier, 0.05f, 0.0f, 10.0f);
+			ImGui::DragFloat("waveStrength##Wave", &mWaterData.waveStrength, 0.05f, 0.0f, 10.0f);
+			ImGui::DragFloat("time##Wave", &mRefractionHelper.time, 0.05f, 0.0f, 10.0f);
+		}
+	}
+
+	void WaterEffect::SetCamera(const Camera& camera)
+	{
+		mCamera = &camera;
+	}
+
+	void WaterEffect::SetDirectionalLight(const DirectionalLight& directionalLight)
+	{
+		mRefractionHelper.lightDirection = directionalLight.direction;
+		mRefractionHelper.lightColor = directionalLight.ambient;
+		mRefractionHelper.lightColor.a = 1;
+	}
+
+	void WaterEffect::SetShadowMap(const Texture& shadowMap)
+	{
+		mShadowMap = &shadowMap;
+	}
+
+	void WaterEffect::SetTextures(const Texture* renderTarget, const Texture* depthbuffer)
+	{
+		mTextures[1] = renderTarget;
+		mTextures[2] = depthbuffer;
+	}
+
+	void WaterEffect::RenderWater(const RenderObject& renderObject, const Math::Matrix4& position, const RenderObject& renderTarget)
+	{
+		RenderDepth(renderObject, position);
+		RenderNormal(renderObject, position);
+		RenderEffect(renderTarget);
+	}
 }

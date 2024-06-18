@@ -36,6 +36,7 @@ namespace NotRed::Graphics
 
 	private:
 		void RenderDepth(const RenderObject& renderObject, const Math::Matrix4& position);
+		void RenderHeight(const RenderObject& renderObject, const Math::Matrix4& position);
 		void RenderNormal(const RenderObject& renderObject, const Math::Matrix4& position);
 		void RenderEffect(const RenderObject& renderObject);
 
@@ -67,19 +68,21 @@ namespace NotRed::Graphics
         using WaveBuffer = TypedConstantBuffer<WaterData>;
         using RefractionHelperBuffer = TypedConstantBuffer<RefractionHelper>;
 
+		enum VertexType
+		{
+			NORMAL,
+			DEPTH,
+			HEIGHT,
+			EFFECT,
+		};
+
 		SimpleTransformBuffer mSimpleTransformBuffer;
 		WaveBuffer mWaveBuffer;
 		RefractionHelperBuffer mRefractionHelperBuffer;
 
-		VertexShader mVertexShader;
+		std::array<VertexShader, 4> mVertexShader;
 		GeometryShader mGeometryShader;
-		PixelShader mPixelShader;
-
-		VertexShader mDepthVertexShader;
-		PixelShader mDepthPixelShader;
-
-		VertexShader mEffectVertexShader;
-		PixelShader mEffectPixelShader;
+		std::array<PixelShader, 4> mPixelShader;
 
 		BlendState mBlendState;
 		Sampler mSampler;
