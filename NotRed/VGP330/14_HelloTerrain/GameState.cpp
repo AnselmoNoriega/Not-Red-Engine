@@ -152,7 +152,6 @@ void MainState::Render()
 
 	mShadowEffect.Begin();
 	DrawRenderGroup(mShadowEffect, mCharacter, mCharacterPos);
-	//mShadowEffect.Render(mWater, mWaterPos);
 	mShadowEffect.End();
 
 	mRenderTarget.BeginRender();
