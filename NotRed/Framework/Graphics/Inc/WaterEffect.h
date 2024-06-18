@@ -20,15 +20,10 @@ namespace NotRed::Graphics
 	{
 	public:
 		void Initialize();
-		void Begin();
-		void RenderEffect(const RenderObject& renderObject);
 
-		void End();
 		void Terminate();
 
 		void Update(float dt);
-
-		void Render(const RenderObject& renderObject, const Math::Matrix4& position);
 		void DebugUI();
 
 		void SetCamera(const Camera& camera);
@@ -37,7 +32,12 @@ namespace NotRed::Graphics
 
 		void SetTextures(const Texture* renderTarget, const Texture* depthbuffer);
 
+		void RenderWater(const RenderObject& renderObject, const Math::Matrix4& position, const RenderObject& renderTarget);
+
+	private:
 		void RenderDepth(const RenderObject& renderObject, const Math::Matrix4& position);
+		void RenderNormal(const RenderObject& renderObject, const Math::Matrix4& position);
+		void RenderEffect(const RenderObject& renderObject);
 
 	private:
 		struct SimpleTransform

@@ -125,7 +125,7 @@ namespace NotRed::Graphics
         mWaterDepth.EndRender();
     }
 
-    void WaterEffect::Begin()
+    void WaterEffect::RenderNormal(const RenderObject& renderObject, const Math::Matrix4& position)
     {
         mWaterTarget.BeginRender();
 
@@ -137,10 +137,7 @@ namespace NotRed::Graphics
 
         mSimpleTransformBuffer.BindVS(0);
         mWaveBuffer.BindVS(1);
-    }
 
-    void WaterEffect::Render(const RenderObject& renderObject, const Math::Matrix4& position)
-    {
         mWaveBuffer.Update(mWaterData);
 
         const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
@@ -154,6 +151,15 @@ namespace NotRed::Graphics
         mSimpleTransformBuffer.Update(transformData);
 
         renderObject.meshBuffer.Render();
+
+        mGeometryShader.Unbind();
+
+        if (mShadowMap != nullptr)
+        {
+            Texture::UnbindPS(4);
+        }
+
+        mWaterTarget.EndRender();
     }
 
     void WaterEffect::RenderEffect(const RenderObject& renderObject)
@@ -182,18 +188,6 @@ namespace NotRed::Graphics
         {
             Texture::UnbindPS(i);
         }
-    }
-
-    void WaterEffect::End()
-    {
-        mGeometryShader.Unbind();
-
-        if (mShadowMap != nullptr)
-        {
-            Texture::UnbindPS(4);
-        }
-
-        mWaterTarget.EndRender();
     }
 
     void WaterEffect::DebugUI()
@@ -235,5 +229,12 @@ namespace NotRed::Graphics
     {
         mTextures[1] = renderTarget;
         mTextures[2] = depthbuffer;
+    }
+
+    void WaterEffect::RenderWater(const RenderObject& renderObject, const Math::Matrix4& position, const RenderObject& renderTarget)
+    {
+        RenderDepth(renderObject, position);
+        RenderNormal(renderObject, position);
+        RenderEffect(renderTarget);
     }
 }
