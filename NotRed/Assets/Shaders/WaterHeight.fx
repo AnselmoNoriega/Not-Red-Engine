@@ -14,7 +14,8 @@ cbuffer WaterBuffer : register(b1)
 struct VS_OUTPUT
 {
     float4 position : SV_Position;
-    float4 basePosition : POSITION0;
+    float3 basePosition : POSITION0;
+    float3 newPosition : POSITION1;
 };
 
 float3 GerstnerWave(float4 wave, float3 p)
@@ -33,7 +34,7 @@ float3 GerstnerWave(float4 wave, float3 p)
 VS_OUTPUT VS(float3 pos : POSITION)
 {
     VS_OUTPUT output;
-    output.basePosition = mul(float4(pos, 1.0f), wvp);
+    output.basePosition = pos;
 
     float3 p = pos;
     for (int i = 0; i < 4; ++i)
@@ -41,14 +42,15 @@ VS_OUTPUT VS(float3 pos : POSITION)
         p += GerstnerWave(wavePattern[i], pos * waveStrength);
     }
 
+    output.newPosition = p;
     output.position = mul(float4(p, 1.0f), wvp);
     return output;
 }
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    float4 color;
-    color.xyz = 0.5;
-    color.a = 1.0f;
+    float4 distance = float4(input.newPosition - input.basePosition, 1);
+    float4 color = (distance.r + distance.g) / 2;
+    color.a = 1;
     return color;
 }

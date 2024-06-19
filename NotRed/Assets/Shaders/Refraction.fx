@@ -6,10 +6,10 @@ cbuffer RefractionHelper : register(b0)
 };
 
 Texture2D water : register(t0);
-Texture2D targets : register(t1);
-Texture2D depth : register(t2);
-Texture2D waterDepth : register(t3);
-Texture2D waterHeight : register(t4);
+Texture2D waterDepth : register(t1);
+Texture2D waterHeight : register(t2);
+Texture2D targets : register(t3);
+Texture2D depth : register(t4);
 Texture2D foamTexture : register(t5);
 Texture2D waterDistortion : register(t6);
 
@@ -37,7 +37,7 @@ VS_OUTPUT VS(VS_INPUT input)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	return waterHeight.Sample(textureSampler, input.texCoord);
+	float4 height = waterHeight.Sample(textureSampler, input.texCoord);
 	float3 lighdir = normalize(float3(1.0f, -1.0f, 1.0f));
 	float4 lighCol = float4(1, 0.97, 0.97, 1.000000000f);
 
@@ -68,11 +68,12 @@ float4 PS(VS_OUTPUT input) : SV_Target
 			ObjectColor = targets.Sample(textureSampler, refractedUV);
 		}
 			
+        //color = lerp(color, height, blendFactor);
 		color = lerp(color, ObjectColor, blendFactor);
 		if (objectDist.a != 0.0f && waterDist.x - objectDist.x <= 0.01)
 		{
-			color = foamTexture.Sample(textureSampler, input.texCoord);
-		}
+            color = foamTexture.Sample(textureSampler, input.texCoord);
+        }
 		float4 col = float4(lighCol.xyz * (dif + ambient), 1);
 		col = lerp(col, float4(1, 1, 1, 1), 0.1);
 		return color * col;

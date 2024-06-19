@@ -38,8 +38,8 @@ namespace NotRed::Graphics
 
 		mFoam.Initialize("../../Assets/Images/water/shampoo.jpg");
 		mTextures[0] = &mWaterTarget[NORMAL];
-		mTextures[3] = &mWaterTarget[DEPTH];
-		mTextures[4] = &mWaterTarget[HEIGHT];
+		mTextures[1] = &mWaterTarget[DEPTH];
+		mTextures[2] = &mWaterTarget[HEIGHT];
 		mTextures[5] = &mFoam;
 
 		TextureManager* tm = TextureManager::Get();
@@ -213,7 +213,7 @@ namespace NotRed::Graphics
 			}
 		}
 
-		TextureManager::Get()->BindPS(mAnimatedTexture[mTextureIndex], 5);
+		TextureManager::Get()->BindPS(mAnimatedTexture[mTextureIndex], 6);
 		mRefractionHelperBuffer.Update(mRefractionHelper);
 
 		renderObject.meshBuffer.Render();
@@ -261,8 +261,8 @@ namespace NotRed::Graphics
 
 	void WaterEffect::SetTextures(const Texture* renderTarget, const Texture* depthbuffer)
 	{
-		mTextures[1] = renderTarget;
-		mTextures[2] = depthbuffer;
+		mTextures[3] = renderTarget;
+		mTextures[4] = depthbuffer;
 	}
 
 	void WaterEffect::RenderWater(const RenderObject& renderObject, const Math::Matrix4& position, const RenderObject& renderTarget)
