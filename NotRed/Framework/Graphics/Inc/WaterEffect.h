@@ -35,9 +35,9 @@ namespace NotRed::Graphics
 		void RenderWater(const RenderObject& renderObject, const Math::Matrix4& position, const RenderObject& renderTarget);
 
 	private:
-		void RenderDepth(const RenderObject& renderObject, const Math::Matrix4& position);
-		void RenderHeight(const RenderObject& renderObject, const Math::Matrix4& position);
+		void RenderColor(const RenderObject& renderObject, const Math::Matrix4& position);
 		void RenderNormal(const RenderObject& renderObject, const Math::Matrix4& position);
+		void RenderDepth(const RenderObject& renderObject, const Math::Matrix4& position);
 		void RenderEffect(const RenderObject& renderObject);
 
 	private:
@@ -70,9 +70,9 @@ namespace NotRed::Graphics
 
 		enum VertexType
 		{
+			COLOR,
 			NORMAL,
 			DEPTH,
-			HEIGHT,
 			EFFECT,
 		};
 

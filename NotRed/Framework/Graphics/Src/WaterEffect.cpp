@@ -13,16 +13,16 @@ namespace NotRed::Graphics
 	{
 		std::filesystem::path shaderFile = "../../Assets/Shaders/Water.fx";
 		mGeometryShader.Initialize(shaderFile);
+		mVertexShader[COLOR].Initialize<Vertex>(shaderFile);
+		mPixelShader[COLOR].Initialize(shaderFile);
+
+		shaderFile = "../../Assets/Shaders/WaterNormal.fx";
 		mVertexShader[NORMAL].Initialize<Vertex>(shaderFile);
 		mPixelShader[NORMAL].Initialize(shaderFile);
 
 		shaderFile = "../../Assets/Shaders/WaterDepth.fx";
 		mVertexShader[DEPTH].Initialize<VertexPX>(shaderFile);
 		mPixelShader[DEPTH].Initialize(shaderFile);
-
-		shaderFile = "../../Assets/Shaders/WaterHeight.fx";
-		mVertexShader[HEIGHT].Initialize<Vertex>(shaderFile);
-		mPixelShader[HEIGHT].Initialize(shaderFile);
 
 		shaderFile = "../../Assets/Shaders/Refraction.fx";
 		mVertexShader[EFFECT].Initialize<VertexPX>(shaderFile);
@@ -37,9 +37,9 @@ namespace NotRed::Graphics
 		mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 
 		mFoam.Initialize("../../Assets/Images/water/shampoo.jpg");
-		mTextures[0] = &mWaterTarget[NORMAL];
-		mTextures[1] = &mWaterTarget[DEPTH];
-		mTextures[2] = &mWaterTarget[HEIGHT];
+		mTextures[0] = &mWaterTarget[COLOR];
+		mTextures[1] = &mWaterTarget[NORMAL];
+		mTextures[2] = &mWaterTarget[DEPTH];
 		mTextures[5] = &mFoam;
 
 		TextureManager* tm = TextureManager::Get();
@@ -103,6 +103,72 @@ namespace NotRed::Graphics
 		}
 	}
 
+	void WaterEffect::RenderColor(const RenderObject& renderObject, const Math::Matrix4& position)
+	{
+		mWaterTarget[COLOR].BeginRender();
+
+		mVertexShader[COLOR].Bind();
+		mGeometryShader.Bind();
+		mPixelShader[COLOR].Bind();
+
+		mBlendState.Set();
+
+		mSimpleTransformBuffer.BindVS(0);
+		mWaveBuffer.BindVS(1);
+
+		mWaveBuffer.Update(mWaterData);
+
+		const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
+		const Math::Matrix4 matView = mCamera->GetViewMatrix();
+		const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
+
+		Math::Matrix4 matFinal = position * matWorld * matView * matProj;
+
+		SimpleTransform transformData;
+		transformData.wvp = Math::Transpose(matFinal);
+		mSimpleTransformBuffer.Update(transformData);
+
+		renderObject.meshBuffer.Render();
+
+		mGeometryShader.Unbind();
+
+		if (mShadowMap != nullptr)
+		{
+			Texture::UnbindPS(4);
+		}
+
+		mWaterTarget[COLOR].EndRender();
+	}
+
+	void WaterEffect::RenderNormal(const RenderObject& renderObject, const Math::Matrix4& position)
+	{
+		mWaterTarget[NORMAL].BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
+
+		mVertexShader[NORMAL].Bind();
+		mPixelShader[NORMAL].Bind();
+		mSimpleTransformBuffer.BindVS(0);
+		mSimpleTransformBuffer.BindPS(0);
+		mWaveBuffer.BindVS(1);
+		mSampler.BindPS(0);
+		TextureManager::Get()->BindPS(mAnimatedTexture[mTextureIndex], 0);
+
+		const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
+		const Math::Matrix4 matView = mCamera->GetViewMatrix();
+		const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
+
+		Math::Matrix4 matFinal = position * matWorld * matView * matProj;
+
+		SimpleTransform transformData;
+		transformData.wvp = Math::Transpose(matFinal);
+		mSimpleTransformBuffer.Update(transformData);
+
+		mWaveBuffer.Update(mWaterData);
+
+		renderObject.meshBuffer.Render();
+
+		mWaterTarget[NORMAL].EndRender();
+	}
+
 	void WaterEffect::RenderDepth(const RenderObject& renderObject, const Math::Matrix4& position)
 	{
 		mWaterTarget[DEPTH].BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
@@ -132,72 +198,6 @@ namespace NotRed::Graphics
 		mWaterTarget[DEPTH].EndRender();
 	}
 
-	void WaterEffect::RenderHeight(const RenderObject& renderObject, const Math::Matrix4& position)
-	{
-		mWaterTarget[HEIGHT].BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
-
-		mVertexShader[HEIGHT].Bind();
-		mPixelShader[HEIGHT].Bind();
-		mSimpleTransformBuffer.BindVS(0);
-		mSimpleTransformBuffer.BindPS(0);
-		mWaveBuffer.BindVS(1);
-		mSampler.BindPS(0);
-		TextureManager::Get()->BindPS(mAnimatedTexture[mTextureIndex], 0);
-
-		const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
-		const Math::Matrix4 matView = mCamera->GetViewMatrix();
-		const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
-
-		Math::Matrix4 matFinal = position * matWorld * matView * matProj;
-
-		SimpleTransform transformData;
-		transformData.wvp = Math::Transpose(matFinal);
-		mSimpleTransformBuffer.Update(transformData);
-
-		mWaveBuffer.Update(mWaterData);
-
-		renderObject.meshBuffer.Render();
-
-		mWaterTarget[HEIGHT].EndRender();
-	}
-
-	void WaterEffect::RenderNormal(const RenderObject& renderObject, const Math::Matrix4& position)
-	{
-		mWaterTarget[NORMAL].BeginRender();
-
-		mVertexShader[NORMAL].Bind();
-		mGeometryShader.Bind();
-		mPixelShader[NORMAL].Bind();
-
-		mBlendState.Set();
-
-		mSimpleTransformBuffer.BindVS(0);
-		mWaveBuffer.BindVS(1);
-
-		mWaveBuffer.Update(mWaterData);
-
-		const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
-		const Math::Matrix4 matView = mCamera->GetViewMatrix();
-		const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
-
-		Math::Matrix4 matFinal = position * matWorld * matView * matProj;
-
-		SimpleTransform transformData;
-		transformData.wvp = Math::Transpose(matFinal);
-		mSimpleTransformBuffer.Update(transformData);
-
-		renderObject.meshBuffer.Render();
-
-		mGeometryShader.Unbind();
-
-		if (mShadowMap != nullptr)
-		{
-			Texture::UnbindPS(4);
-		}
-
-		mWaterTarget[NORMAL].EndRender();
-	}
-
 	void WaterEffect::RenderEffect(const RenderObject& renderObject)
 	{
 		mVertexShader[EFFECT].Bind();
@@ -215,7 +215,6 @@ namespace NotRed::Graphics
 			}
 		}
 
-		TextureManager::Get()->BindPS(mAnimatedTexture[mTextureIndex], 6);
 		mRefractionHelperBuffer.Update(mRefractionHelper);
 
 		renderObject.meshBuffer.Render();
@@ -269,9 +268,9 @@ namespace NotRed::Graphics
 
 	void WaterEffect::RenderWater(const RenderObject& renderObject, const Math::Matrix4& position, const RenderObject& renderTarget)
 	{
-		RenderDepth(renderObject, position);
+		RenderColor(renderObject, position);
 		RenderNormal(renderObject, position);
-		RenderHeight(renderObject, position);
+		RenderDepth(renderObject, position);
 		RenderEffect(renderTarget);
 	}
 }

@@ -6,12 +6,11 @@ cbuffer RefractionHelper : register(b0)
 };
 
 Texture2D water : register(t0);
-Texture2D waterDepth : register(t1);
-Texture2D waterHeight : register(t2);
+Texture2D waterNormal : register(t1);
+Texture2D waterDepth : register(t2);
 Texture2D targets : register(t3);
-Texture2D depth : register(t4);
+Texture2D targetsDepth : register(t4);
 Texture2D foamTexture : register(t5);
-Texture2D waterDistortion : register(t6);
 
 SamplerState textureSampler : register(s0);
 
@@ -37,54 +36,32 @@ VS_OUTPUT VS(VS_INPUT input)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    return waterHeight.Sample(textureSampler, input.texCoord);
-    float4 height = waterHeight.Sample(textureSampler, input.texCoord);
-    float3 lighdir = normalize(float3(1.0f, -1.0f, 1.0f));
-    float4 lighCol = float4(1, 0.97, 0.97, 1.0f);
-
-    float4 objectDist = depth.Sample(textureSampler, input.texCoord);
-    float4 waterDist = waterDepth.Sample(textureSampler, input.texCoord);
-
-    if (objectDist.x < waterDist.x)
+    float4 wDepth = waterDepth.Sample(textureSampler, input.texCoord);
+    float4 tDepth = targetsDepth.Sample(textureSampler, input.texCoord);
+    
+    if (wDepth.x > tDepth.x)
     {
-        float3 waterDirection = water.Sample(textureSampler, input.texCoord).xyz;
-        float dif = max(dot(waterDirection, -lighdir), 0.0f);
-        float ambient = 0.4;
-
-        float2 movedCoord = float2(input.texCoord.y + time, input.texCoord.x + time);
-        float2 distortion = waterDistortion.Sample(textureSampler, movedCoord).xy * 0.1;
-        float2 refractedUV = input.texCoord + distortion;
-        float4 objectDist2 = depth.Sample(textureSampler, refractedUV);
-        float4 waterDist2 = waterDepth.Sample(textureSampler, refractedUV);
-        float4 color = float4(0.305, 0.952, 0.984, 1);
-        float blendFactor = 0.5;
-
-        float4 ObjectColor;
-        if (objectDist2.x > waterDist2.x)
+        float2 wNormal = waterNormal.Sample(textureSampler, input.texCoord).rb * 0.1f * wDepth.x; //check with b-g
+        
+        float4 wDistortedDepth = waterDepth.Sample(textureSampler, input.texCoord + wNormal);
+        float4 tDistortedDepth = targetsDepth.Sample(textureSampler, input.texCoord + wNormal);
+        
+        float4 targetsColor;
+        if (wDistortedDepth.x < tDistortedDepth.x)
         {
-            ObjectColor = targets.Sample(textureSampler, input.texCoord);
+            targetsColor = targets.Sample(textureSampler, input.texCoord);
         }
         else
         {
-            ObjectColor = targets.Sample(textureSampler, refractedUV);
+            targetsColor = targets.Sample(textureSampler, input.texCoord + wNormal);
         }
-			
-        color = lerp(color, ObjectColor, blendFactor);
-        float4 white = float4(1.0, 1.0, 1.0, 1.0);
-        color = lerp(color, white, height / 2);
         
-        if (objectDist.a != 0.0f && waterDist.x - objectDist.x <= 0.01)
-        {
-            color = foamTexture.Sample(textureSampler, input.texCoord);
-        }
-        float4 col = float4(lighCol.xyz * (dif + ambient), 1);
-        col = lerp(col, float4(1, 1, 1, 1), 0.1);
-        return color * col;
+        float4 waterColor = water.Sample(textureSampler, input.texCoord);
+        return lerp(waterColor, targetsColor, 0.5);
     }
     else
     {
-        float4 ObjectColor = targets.Sample(textureSampler, input.texCoord);
-        return ObjectColor;
+        return targets.Sample(textureSampler, input.texCoord);
     }
 
 }
