@@ -21,7 +21,7 @@ namespace NotRed::Graphics
 		mPixelShader[DEPTH].Initialize(shaderFile);
 
 		shaderFile = "../../Assets/Shaders/WaterHeight.fx";
-		mVertexShader[HEIGHT].Initialize<VertexPX>(shaderFile);
+		mVertexShader[HEIGHT].Initialize<Vertex>(shaderFile);
 		mPixelShader[HEIGHT].Initialize(shaderFile);
 
 		shaderFile = "../../Assets/Shaders/Refraction.fx";
@@ -141,6 +141,8 @@ namespace NotRed::Graphics
 		mSimpleTransformBuffer.BindVS(0);
 		mSimpleTransformBuffer.BindPS(0);
 		mWaveBuffer.BindVS(1);
+		mSampler.BindPS(0);
+		TextureManager::Get()->BindPS(mAnimatedTexture[mTextureIndex], 0);
 
 		const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
 		const Math::Matrix4 matView = mCamera->GetViewMatrix();

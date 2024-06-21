@@ -11,11 +11,19 @@ cbuffer WaterBuffer : register(b1)
     float waveStrength;
 }
 
+Texture2D normals : register(t0);
+SamplerState textureSampler : register(s0);
+
+struct VS_INPUT
+{
+    float3 position : POSITION;
+    float2 texCoord : TEXCOORD;
+};
+
 struct VS_OUTPUT
 {
     float4 position : SV_Position;
-    float3 basePosition : POSITION0;
-    float3 newPosition : POSITION1;
+    float2 texCoord : TEXCOORD;
 };
 
 float3 GerstnerWave(float4 wave, float3 p)
@@ -31,26 +39,22 @@ float3 GerstnerWave(float4 wave, float3 p)
     return float3(d.x * (a * cos(f)), a * sin(f), d.y * (a * cos(f)));
 }
 
-VS_OUTPUT VS(float3 pos : POSITION)
+VS_OUTPUT VS(VS_INPUT input)
 {
     VS_OUTPUT output;
-    output.basePosition = pos;
 
-    float3 p = pos;
+    float3 p = input.position;
     for (int i = 0; i < 4; ++i)
     {
-        p += GerstnerWave(wavePattern[i], pos * waveStrength);
+        p += GerstnerWave(wavePattern[i], input.position * waveStrength);
     }
-
-    output.newPosition = p;
+    
     output.position = mul(float4(p, 1.0f), wvp);
+    output.texCoord = input.texCoord;
     return output;
 }
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    float4 distance = float4(input.newPosition - input.basePosition, 1);
-    float4 color = (distance.r + distance.g) / 2;
-    color.a = 1;
-    return color;
+    return normals.Sample(textureSampler, input.texCoord * 10);
 }

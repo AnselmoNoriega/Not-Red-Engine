@@ -21,12 +21,16 @@ struct VS_INPUT
 struct VS_OUTPUT
 {
     float4 position : POSITION;
+    float3 basePosition : TEXCOORD0;
+    float3 newPosition : TEXCOORD1;
 };
 
 struct GS_OUTPUT
 {
     float4 position : SV_Position;
-    float3 normal : NORMAL;
+    float3 normal : NORMAL0;
+    float3 basePosition : TEXCOORD0;
+    float3 newPosition : TEXCOORD1;
 };
 
 float3 GerstnerWave(float4 wave, float3 p)
@@ -45,12 +49,16 @@ float3 GerstnerWave(float4 wave, float3 p)
 VS_OUTPUT VS(VS_INPUT input)
 {
     float3 p = input.position;
+    
+    VS_OUTPUT output;
+    output.basePosition = p;
+    
     for (int i = 0; i < 4; ++i)
     {
         p += GerstnerWave(wavePattern[i], input.position * waveStrength);
     }
     
-    VS_OUTPUT output;
+    output.newPosition = p;
     output.position = mul(float4(p, 1.0f), wvp);
     return output;
 }
@@ -66,6 +74,8 @@ void GS(triangle VS_OUTPUT input[3], inout TriangleStream<GS_OUTPUT> output)
         GS_OUTPUT outputData;
         outputData.position = input[i].position;
         outputData.normal = normalize(cross(AB, AC));
+        outputData.basePosition = input[i].basePosition;
+        outputData.newPosition = input[i].newPosition;
         output.Append(outputData);
     }
     output.RestartStrip();
@@ -73,8 +83,19 @@ void GS(triangle VS_OUTPUT input[3], inout TriangleStream<GS_OUTPUT> output)
 
 float4 PS(GS_OUTPUT gsInput) : SV_Target
 {
-    float4 color;
-    color.xyz = gsInput.normal;
-    color.a = 0.5f;
-    return color;
+    float3 lighdir = normalize(float3(1.0f, -1.0f, 1.0f));
+    float4 lighCol = float4(1, 0.97, 0.97, 1.0f);
+    
+    float dif = max(dot(gsInput.normal, -lighdir), 0.0f);
+    float ambient = 0.4;
+    
+    float4 col = float4(lighCol.xyz * (dif + ambient), 1);
+    
+    float4 color = float4(0.305, 0.862, 0.854, 1);
+    
+    float4 distance = float4(gsInput.newPosition - gsInput.basePosition, 1);
+    color = lerp(color, float4(1, 1, 1, 1), ((distance.r + distance.g) / 2) / 2);
+    color.a = 1;
+    
+    return color * col;
 }
