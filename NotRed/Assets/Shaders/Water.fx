@@ -2,13 +2,21 @@
 cbuffer TranformBuffer : register(b0)
 {
     matrix wvp;
+    float3 camPos;
 }
+
 cbuffer WaterBuffer : register(b1)
 {
     float4 wavePattern[4];
     float waveMovementTime;
     float waveStrength;
 }
+
+cbuffer RefractionHelper : register(b2)
+{
+    float3 lightDir;
+    float4 lightColor;
+};
 
 struct VS_INPUT
 {
@@ -66,8 +74,8 @@ VS_OUTPUT VS(VS_INPUT input)
 [maxvertexcount(3)]
 void GS(triangle VS_OUTPUT input[3], inout TriangleStream<GS_OUTPUT> output)
 {
-    float3 AB = input[1].position - input[0].position;
-    float3 AC = input[2].position - input[0].position;
+    float3 AB = input[1].newPosition - input[0].newPosition;
+    float3 AC = input[2].newPosition - input[0].newPosition;
     
     for (int i = 0; i < 3; ++i)
     {
@@ -83,13 +91,17 @@ void GS(triangle VS_OUTPUT input[3], inout TriangleStream<GS_OUTPUT> output)
 
 float4 PS(GS_OUTPUT gsInput) : SV_Target
 {
-    float3 lighdir = normalize(float3(1.0f, -1.0f, 1.0f));
-    float4 lighCol = float4(1, 0.97, 0.97, 1.0f);
+    float dif = max(dot(gsInput.normal, -lightDir), 0.0f);
     
-    float dif = max(dot(gsInput.normal, -lighdir), 0.0f);
-    float ambient = 0.4;
+    float ambient = 0.5;
+    float specularLight = 0.7f;
     
-    float4 col = float4(lighCol.xyz * (dif + ambient), 1);
+    float3 reflectionDir = reflect(lightDir, gsInput.normal);
+    float3 viewDirection = normalize(camPos - gsInput.newPosition);
+    float specAmount = pow(max(dot(viewDirection, reflectionDir), 0.0f), 8);
+    float specular = specAmount * specularLight;
+    
+    float4 col = float4(lightColor.xyz * (dif + ambient + specular), 1);
     
     float4 color = float4(0.305, 0.862, 0.854, 1);
     

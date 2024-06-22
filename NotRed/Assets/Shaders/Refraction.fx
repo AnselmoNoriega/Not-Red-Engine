@@ -1,9 +1,3 @@
-cbuffer RefractionHelper : register(b0)
-{
-    float3 lightDir;
-    float4 lightColor;
-    float time;
-};
 
 Texture2D water : register(t0);
 Texture2D waterNormal : register(t1);
@@ -34,20 +28,26 @@ VS_OUTPUT VS(VS_INPUT input)
     return output;
 }
 
+double UnpackDepth(double4 packedDepth)
+{
+    double depth = packedDepth.x;// + packedDepth.y / 256.0 + packedDepth.z / 65536.0;
+    return depth;
+}
+
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    float4 wDepth = waterDepth.Sample(textureSampler, input.texCoord);
-    float4 tDepth = targetsDepth.Sample(textureSampler, input.texCoord);
+    double wDepth = UnpackDepth(waterDepth.Sample(textureSampler, input.texCoord));
+    double tDepth = UnpackDepth(targetsDepth.Sample(textureSampler, input.texCoord));
     
-    if (wDepth.x > tDepth.x)
+    if (wDepth > tDepth)
     {
-        float2 wNormal = waterNormal.Sample(textureSampler, input.texCoord).rb * 0.1f * wDepth.x; //check with b-g
+        float2 wNormal = waterNormal.Sample(textureSampler, input.texCoord).rb * 0.1f * wDepth; //check with b-g
         
-        float4 wDistortedDepth = waterDepth.Sample(textureSampler, input.texCoord + wNormal);
-        float4 tDistortedDepth = targetsDepth.Sample(textureSampler, input.texCoord + wNormal);
+        double wDistortedDepth = UnpackDepth(waterDepth.Sample(textureSampler, input.texCoord + wNormal));
+        double tDistortedDepth = UnpackDepth(targetsDepth.Sample(textureSampler, input.texCoord + wNormal));
         
         float4 targetsColor;
-        if (wDistortedDepth.x < tDistortedDepth.x)
+        if (wDistortedDepth < tDistortedDepth)
         {
             targetsColor = targets.Sample(textureSampler, input.texCoord);
         }

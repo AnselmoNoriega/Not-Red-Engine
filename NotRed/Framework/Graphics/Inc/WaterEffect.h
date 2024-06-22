@@ -44,13 +44,15 @@ namespace NotRed::Graphics
 		struct SimpleTransform
 		{
 			Math::Matrix4 wvp;
+			Math::Vector3 camPos;
+			float padding;
 		};
 
 		struct RefractionHelper
 		{
 			Math::Vector3 lightDirection;
 			Math::Vector4 lightColor;
-			float time;
+			float padding;
 		};
 
         struct WaterData

@@ -66,7 +66,7 @@ void MainState::Initialize()
 	mCamera.SetLookAt({ 0.0f, 0.0f,0.0f });
 
 	mDirectionalLight.direction = Math::Normalize({ 1.0f, -1.0f, 1.0f });
-	mDirectionalLight.ambient = { 0.5f, 0.5f,0.5f, 1.0f };
+	mDirectionalLight.ambient = { 0.9f, 0.9f,0.9f, 1.0f };
 	mDirectionalLight.diffuse = { 0.8f, 0.8f, 0.8f, 0.1f };
 	mDirectionalLight.specular = { 1.0f, 1.0f, 1.0f, 1.0f };
 
@@ -86,7 +86,11 @@ void MainState::Initialize()
 			static_cast<uint32_t>(m.indices.size())
 		);
 		mWater.meshBuffer.Update(m.vertices.data(), m.vertices.size());
-		mWater.diffuseMapID = TextureManager::Get()->LoadTexture("terrain/dirt_seamless.jpg");
+	}
+	{
+		Mesh groundMesh = MeshBuilder::CreateHorizontalPlane(20, 20, 1.0f);
+		mGround.meshBuffer.Initialize(groundMesh);
+		mGround.diffuseMapID = TextureManager::Get()->LoadTexture("misc/concrete.jpg");
 	}
 	{
 		std::filesystem::path shaderFilePath = (L"../../Assets/Shaders/Standard.fx");
@@ -123,6 +127,7 @@ void MainState::Initialize()
 
 	mCharacterPos = GetMatrix({ 1.0f, 2.0f, 0.0f });
 	mWaterPos = GetMatrix({ 1.0f, -0.2f, 0.0f });
+	mGroundPos = GetMatrix({ 1.0f, 3.0f, 0.0f });
 }
 
 void MainState::Terminate()
@@ -134,6 +139,7 @@ void MainState::Terminate()
 	mDepthEffect.Terminate();
 	mStandardEffect.Terminate();
 	mWater.Terminate();
+	mGround.Terminate();
 	CleanRenderGroup(mCharacter);
 }
 
@@ -156,12 +162,14 @@ void MainState::Render()
 
 	mRenderTarget.BeginRender();
 	mStandardEffect.Begin();
+	mStandardEffect.Render(mGround, mGroundPos);
 	DrawRenderGroup(mStandardEffect, mCharacter, mCharacterPos);
 	mStandardEffect.End();
 	mRenderTarget.EndRender();
 
 	mDepthBuffer.BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
 	mDepthEffect.Begin();
+	mDepthEffect.Render(mGround, mGroundPos);
 	DrawRenderGroup(mDepthEffect, mCharacter, mCharacterPos);
 	mDepthEffect.End();
 	mDepthBuffer.EndRender();

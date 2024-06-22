@@ -9,7 +9,7 @@ cbuffer Transform : register(b0)
 struct VS_OUTPUT
 {
     float4 position : SV_Position;
-    float depth : TEXCOORD0;
+    float4 depth : TEXCOORD0;
 };
 
 VS_OUTPUT VS(float3 position : POSITION)
@@ -21,11 +21,21 @@ VS_OUTPUT VS(float3 position : POSITION)
     return output;
 }
 
+float4 PackDepth(double depth)
+{
+    float4 packedDepth;
+    packedDepth.x = frac(depth);
+    packedDepth.y = frac(depth * 256.0);
+    packedDepth.z = frac(depth * 65536.0);
+    packedDepth.a = 1;
+    return packedDepth;
+}
+
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    float linearDepth = input.position.z / input.position.w;
+    double linearDepth = input.position.z / input.position.w;
+    linearDepth = saturate(linearDepth);
+    input.depth = PackDepth(linearDepth);
     
-    input.depth = saturate(linearDepth);
-    
-    return float4(input.depth, input.depth, input.depth, 1.0f);
+    return input.depth;
 } 

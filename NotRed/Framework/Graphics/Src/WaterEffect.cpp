@@ -88,7 +88,6 @@ namespace NotRed::Graphics
 	void WaterEffect::Update(float dt)
 	{
 		mWaterData.waveMovementTime += dt * mTimeMultiplier;
-		mRefractionHelper.time += dt;
 
 		mTime += dt;
 		if (mTime >= mAnimationChangeTime)
@@ -114,7 +113,9 @@ namespace NotRed::Graphics
 		mBlendState.Set();
 
 		mSimpleTransformBuffer.BindVS(0);
+		mSimpleTransformBuffer.BindPS(0);
 		mWaveBuffer.BindVS(1);
+		mRefractionHelperBuffer.BindPS(2);
 
 		mWaveBuffer.Update(mWaterData);
 
@@ -126,7 +127,10 @@ namespace NotRed::Graphics
 
 		SimpleTransform transformData;
 		transformData.wvp = Math::Transpose(matFinal);
+		transformData.camPos = mCamera->GetPosition();
 		mSimpleTransformBuffer.Update(transformData);
+
+		mRefractionHelperBuffer.Update(mRefractionHelper);
 
 		renderObject.meshBuffer.Render();
 
@@ -202,7 +206,6 @@ namespace NotRed::Graphics
 	{
 		mVertexShader[EFFECT].Bind();
 		mPixelShader[EFFECT].Bind();
-		mRefractionHelperBuffer.BindPS(0);
 		mSampler.BindPS(0);
 
 		mBlendState.Set();
@@ -214,8 +217,6 @@ namespace NotRed::Graphics
 				mTextures[i]->BindPS(i);
 			}
 		}
-
-		mRefractionHelperBuffer.Update(mRefractionHelper);
 
 		renderObject.meshBuffer.Render();
 
@@ -239,7 +240,6 @@ namespace NotRed::Graphics
 
 			ImGui::DragFloat("mTimeMultiplier##Wave", &mTimeMultiplier, 0.05f, 0.0f, 10.0f);
 			ImGui::DragFloat("waveStrength##Wave", &mWaterData.waveStrength, 0.05f, 0.0f, 10.0f);
-			ImGui::DragFloat("time##Wave", &mRefractionHelper.time, 0.05f, 0.0f, 10.0f);
 		}
 	}
 
@@ -252,7 +252,6 @@ namespace NotRed::Graphics
 	{
 		mRefractionHelper.lightDirection = directionalLight.direction;
 		mRefractionHelper.lightColor = directionalLight.ambient;
-		mRefractionHelper.lightColor.a = 1;
 	}
 
 	void WaterEffect::SetShadowMap(const Texture& shadowMap)

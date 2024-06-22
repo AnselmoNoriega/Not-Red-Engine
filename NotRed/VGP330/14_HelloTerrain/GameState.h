@@ -26,6 +26,8 @@ private:
 	Math::Matrix4 mCharacterPos;
 	NotRed::Graphics::RenderObject mWater;
 	Math::Matrix4 mWaterPos;
+	NotRed::Graphics::RenderObject mGround;
+	Math::Matrix4 mGroundPos;
 
 	NotRed::Graphics::DepthEffect mDepthEffect;
 
