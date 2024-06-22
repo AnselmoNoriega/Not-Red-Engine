@@ -57,7 +57,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
         }
         
         float4 waterColor = water.Sample(textureSampler, input.texCoord);
-        return lerp(waterColor, targetsColor, 0.5);
+        float blendStrength = (waterColor.x + waterColor.y + waterColor.z) / 3;
+        return lerp(targetsColor, waterColor, blendStrength);
     }
     else
     {

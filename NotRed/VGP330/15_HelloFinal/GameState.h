@@ -23,7 +23,18 @@ private:
 	NotRed::Graphics::WaterEffect mWaterEffect;
 
 	NotRed::Graphics::RenderGroup mCharacter;
-	Math::Matrix4 mCharacterPos;/*
+	Math::Matrix4 mCharacterPos;
+	NotRed::Graphics::RenderObject mWater;
+	Math::Matrix4 mWaterPos;
 	NotRed::Graphics::RenderObject mGround;
-	Math::Matrix4 mGroundPos;*/
+	Math::Matrix4 mGroundPos;
+
+	NotRed::Graphics::DepthEffect mDepthEffect;
+
+	//PostProcessing
+	NotRed::Graphics::RenderTarget mRenderTarget;
+	NotRed::Graphics::RenderTarget mDepthBuffer;
+
+	//ScreenQuad
+	NotRed::Graphics::RenderObject mScreenQuad;
 };

@@ -20,21 +20,13 @@ private:
 
 	NotRed::Graphics::StandardEffect mStandardEffect;
 	NotRed::Graphics::ShadowEffect mShadowEffect;
-	NotRed::Graphics::WaterEffect mWaterEffect;
+	NotRed::Graphics::TerrainEffect mTerrainEffect;
 
+	NotRed::Graphics::Terrain mTerrain;
 	NotRed::Graphics::RenderGroup mCharacter;
 	Math::Matrix4 mCharacterPos;
-	NotRed::Graphics::RenderObject mWater;
-	Math::Matrix4 mWaterPos;
 	NotRed::Graphics::RenderObject mGround;
 	Math::Matrix4 mGroundPos;
 
-	NotRed::Graphics::DepthEffect mDepthEffect;
-
-	//PostProcessing
-	NotRed::Graphics::RenderTarget mRenderTarget;
-	NotRed::Graphics::RenderTarget mDepthBuffer;
-
-	//ScreenQuad
-	NotRed::Graphics::RenderObject mScreenQuad;
+	bool mOnTerrain = false;
 };
