@@ -38,8 +38,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
     double wDepth = UnpackDepth(waterDepth.Sample(textureSampler, input.texCoord));
     double tDepth = UnpackDepth(targetsDepth.Sample(textureSampler, input.texCoord));
+    double depthBias = 0.0001;
     
-    if (wDepth > tDepth)
+    if (wDepth + depthBias > tDepth)
     {
         float2 wNormal = waterNormal.Sample(textureSampler, input.texCoord).rb * 0.1f * wDepth; //check with b-g
         
