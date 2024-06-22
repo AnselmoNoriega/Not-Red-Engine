@@ -105,7 +105,7 @@ float4 PS(GS_OUTPUT gsInput) : SV_Target
     
     float4 color = float4(0.305, 0.862, 0.854, 1);
     
-    float4 distance = float4(gsInput.newPosition - gsInput.basePosition, 1);
+    float4 distance = float4((gsInput.newPosition * 1.3) - (gsInput.basePosition * 1.3), 1);
     color = lerp(color, float4(1, 1, 1, 1), ((distance.r + distance.g) / 2) / 2);
     color.a = 1;
     
