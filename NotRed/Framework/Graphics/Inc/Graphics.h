@@ -3,6 +3,8 @@
 #include "Common.h"
 
 #include "GraphicsSystem.h"
+#include "Animation.h"
+#include "AnimationBuilder.h"
 #include "BlendState.h"
 #include "Camera.h"
 #include "Colors.h"
@@ -11,6 +13,7 @@
 #include "DebugUI.h"
 #include "GaussianBlur.h"
 #include "GeometryShader.h"
+#include "KeyFrame.h"
 #include "LightTypes.h"
 #include "Material.h"
 #include "MeshBuffer.h"

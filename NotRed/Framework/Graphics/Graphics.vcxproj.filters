@@ -36,6 +36,9 @@
     <ClInclude Include="Inc\GeometryShader.h" />
     <ClInclude Include="Inc\WaterEffect.h" />
     <ClInclude Include="Inc\DepthEffect.h" />
+    <ClInclude Include="Inc\Animation.h" />
+    <ClInclude Include="Inc\AnimationBuilder.h" />
+    <ClInclude Include="Inc\KeyFrame.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -64,6 +67,8 @@
     <ClCompile Include="Src\Geometry.cpp" />
     <ClCompile Include="Src\WaterEffect.cpp" />
     <ClCompile Include="Src\DepthEffect.cpp" />
+    <ClCompile Include="Src\Animation.cpp" />
+    <ClCompile Include="Src\AnimationBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

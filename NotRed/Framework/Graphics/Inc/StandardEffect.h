@@ -22,7 +22,7 @@ namespace NotRed::Graphics
         void Begin();
         void End();
 
-        void Render(const RenderObject& renderObject, const Math::Matrix4& pos);
+        void Render(const RenderObject& renderObject);
 
         void SetCamera(const Camera& camera);
         void SetLightCamera(const Camera& camera);

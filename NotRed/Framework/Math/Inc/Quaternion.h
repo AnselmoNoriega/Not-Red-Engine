@@ -32,7 +32,7 @@ namespace NotRed::Math
         void Invers() noexcept;
         float Magnitude() const noexcept;
         float MagnitudesSquared() const noexcept;
-        void normalize() noexcept;
+        void Normalize() noexcept;
         float Dot(const Quaternion& q) const noexcept;
 
         static  Quaternion Conjugate(const Quaternion& q);

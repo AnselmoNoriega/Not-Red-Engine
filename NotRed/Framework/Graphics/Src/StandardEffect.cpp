@@ -58,7 +58,7 @@ namespace NotRed::Graphics
         }
     }
 
-    void StandardEffect::Render(const RenderObject& renderObject, const Math::Matrix4& pos)
+    void StandardEffect::Render(const RenderObject& renderObject)
     {
         SettingsData settingsData;
         settingsData.useDiffuseMap = renderObject.diffuseMapID > 0 && mSettingsData.useDiffuseMap > 0 ? 1 : 0;
@@ -75,7 +75,7 @@ namespace NotRed::Graphics
         const Math::Matrix4 matView = mCamera->GetViewMatrix();
         const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
 
-        Math::Matrix4 matFinal = pos * matWorld * matView * matProj;
+        Math::Matrix4 matFinal = matWorld * matView * matProj;
 
         TransformData transformData;
         transformData.wvp = Math::Transpose(matFinal);

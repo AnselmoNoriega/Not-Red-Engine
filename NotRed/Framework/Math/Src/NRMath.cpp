@@ -31,6 +31,7 @@ void Quaternion::Conjugate() noexcept
 {
 	x = -x; y = -y; z = -z;
 }
+
 void Quaternion::Invers()noexcept
 {
 	Conjugate();
@@ -40,14 +41,17 @@ float Quaternion::Magnitude() const noexcept
 {
 	return sqrt(MagnitudesSquared());
 }
+
 float Quaternion::MagnitudesSquared() const noexcept
 {
 	return (x * x + y * y + z * z + w * w);
 }
-void Quaternion::normalize() noexcept
+
+void Quaternion::Normalize() noexcept
 {
 	*this = *this / Magnitude();
 }
+
 float Quaternion::Dot(const Quaternion& q) const noexcept
 {
 	return x * q.x + y * q.y + z * q.z + w * q.w;
