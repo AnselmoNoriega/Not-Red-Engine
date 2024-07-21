@@ -2,6 +2,7 @@
 
 #include "MeshTypes.h"
 #include "Material.h"
+#include "Skeleton.h"
 
 namespace NotRed::Graphics
 {
@@ -24,5 +25,6 @@ namespace NotRed::Graphics
 
         std::vector<MeshData> meshData;
         std::vector<MeterialData> meterialData;
+        std::unique_ptr<Skeleton> skeleton;
     };
 }

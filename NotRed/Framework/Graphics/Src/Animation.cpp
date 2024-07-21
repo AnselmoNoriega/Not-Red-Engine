@@ -26,8 +26,10 @@ namespace
 				t = t - 1.0f;
 				t = -0.5f * ((t * (t - 2.0f)) - 1.0f);
 			}
+			break;
 		}
 		default:
+			ASSERT(false, "Animation: ease type not supported.");
 			break;
 		}
 		return t;
