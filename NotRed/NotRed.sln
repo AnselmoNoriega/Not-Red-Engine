@@ -102,6 +102,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "16_HelloQuaternion", "VGP33
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "17_HelloAnimation", "VGP334\17_HelloAnimation\17_HelloAnimation.vcxproj", "{D953A45B-87A4-4CD9-B597-52C4EE51D983}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "18_HelloSkeletalAnimation", "VGP334\18_HelloSkeletalAnimation\18_HelloSkeletalAnimation.vcxproj", "{819DE07F-8237-4B2C-8D33-E367EA7C3970}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -318,6 +320,14 @@ Global
 		{D953A45B-87A4-4CD9-B597-52C4EE51D983}.Release|x64.Build.0 = Release|x64
 		{D953A45B-87A4-4CD9-B597-52C4EE51D983}.Release|x86.ActiveCfg = Release|Win32
 		{D953A45B-87A4-4CD9-B597-52C4EE51D983}.Release|x86.Build.0 = Release|Win32
+		{819DE07F-8237-4B2C-8D33-E367EA7C3970}.Debug|x64.ActiveCfg = Debug|x64
+		{819DE07F-8237-4B2C-8D33-E367EA7C3970}.Debug|x64.Build.0 = Debug|x64
+		{819DE07F-8237-4B2C-8D33-E367EA7C3970}.Debug|x86.ActiveCfg = Debug|Win32
+		{819DE07F-8237-4B2C-8D33-E367EA7C3970}.Debug|x86.Build.0 = Debug|Win32
+		{819DE07F-8237-4B2C-8D33-E367EA7C3970}.Release|x64.ActiveCfg = Release|x64
+		{819DE07F-8237-4B2C-8D33-E367EA7C3970}.Release|x64.Build.0 = Release|x64
+		{819DE07F-8237-4B2C-8D33-E367EA7C3970}.Release|x86.ActiveCfg = Release|Win32
+		{819DE07F-8237-4B2C-8D33-E367EA7C3970}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -351,6 +361,7 @@ Global
 		{66FEAF64-7B27-433C-A6FF-683BA6202B78} = {3D5F2E84-41B3-406B-BECA-62C9487FFEC6}
 		{3994A5A5-CBAD-4FB3-86BE-FF730CF32F06} = {4948C620-62AA-4C8D-B94F-2D41EF543CCF}
 		{D953A45B-87A4-4CD9-B597-52C4EE51D983} = {4948C620-62AA-4C8D-B94F-2D41EF543CCF}
+		{819DE07F-8237-4B2C-8D33-E367EA7C3970} = {4948C620-62AA-4C8D-B94F-2D41EF543CCF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {42C00E3B-185C-4077-85D6-BC4109FB8B55}
