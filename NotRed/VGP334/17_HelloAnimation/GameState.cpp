@@ -57,21 +57,57 @@ void MainState::Initialize()
     mStandardEffect.SetCamera(mCamera);
     mStandardEffect.SetDirectionalLight(mDirectionalLight);
 
+    {
+        Mesh obj;
 
+        obj = MeshBuilder::CreateSphere(60, 60, 1.0f);
+        mBall.meshBuffer.Initialize(obj);
+        mBall.diffuseMapID = TextureManager::Get()->LoadTexture("materials/Foam/TCom_Various_AcousticFoam_4K_albedo.tif");
+
+        obj = MeshBuilder::CreateHorizontalPlane(10, 10, 1.0f);
+        mGround.meshBuffer.Initialize(obj);
+        mGround.diffuseMapID = TextureManager::Get()->LoadTexture("misc/Concrete.jpg");
+    }
+
+    mAnimation = AnimationBuilder()
+        .AddPositionKey({ 0.0f, 0.5f, 0.0f }, 0.0f)
+        .AddScaleKey({ 1.0f, 0.5f, 1.0f }, 0.0f)
+
+        .AddPositionKey({ 0.0f, 2.5f, 0.0f }, 2.0f)
+        .AddScaleKey({ 1.0f, 1.5f, 1.0f }, 2.0f)
+
+        .AddPositionKey({ 0.0f, 0.5f, 0.0f }, 4.0f)
+        .AddScaleKey({ 1.0f, 0.5f, 1.0f }, 4.0f)
+
+        .Build();
 }
+
 void MainState::Terminate()
 {
     mStandardEffect.Terminate();
 }
+
 void MainState::Update(const float deltaTime)
 {
     UpdateCameraControl(deltaTime);
+
+    mAnimationTime += deltaTime;
+    while (mAnimationTime > mAnimation.GetDuration())
+    {
+        mAnimationTime -= mAnimation.GetDuration();
+    }
 }
+
 void MainState::Render()
 {
+    mBall.transform = mAnimation.GetTransform(mAnimationTime);
+
     mStandardEffect.Begin();
+        mStandardEffect.Render(mBall);
+        mStandardEffect.Render(mGround);
     mStandardEffect.End();
 }
+
 void MainState::DebugUI()
 {
     ImGui::Begin("Debug control", nullptr, ImGuiWindowFlags_AlwaysAutoResize);

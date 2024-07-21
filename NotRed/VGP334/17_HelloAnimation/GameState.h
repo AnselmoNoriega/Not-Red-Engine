@@ -17,4 +17,11 @@ private:
 	NotRed::Graphics::Camera mCamera;
 	NotRed::Graphics::DirectionalLight mDirectionalLight;
 	NotRed::Graphics::StandardEffect mStandardEffect;
+
+	NotRed::Graphics::RenderObject mGround;
+	NotRed::Graphics::RenderObject mBall;
+
+	NotRed::Graphics::Animation mAnimation;
+
+	float mAnimationTime = 0.0f;
 };
