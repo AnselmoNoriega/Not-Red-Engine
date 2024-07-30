@@ -32,6 +32,7 @@ void App::Run(const AppConfig& config)
     DebugUI::StaticInitialize(handle, false, true);
     SimpleDraw::StaticInitialize(config.maxVertexCount);
     TextureManager::Initialize("../../Assets/Images/");
+    ModelManager::StaticInitialize();
         
     ASSERT(mCurrentState, "App: no app state found");
     mCurrentState->Initialize();

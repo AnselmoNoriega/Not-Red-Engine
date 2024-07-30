@@ -22,6 +22,7 @@ namespace NotRed::Graphics
 		void AddFilledAABB(const Vector3& min, const Vector3& max, const Color& color);
 		void AddFilledAABB(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, const Color& color);
 
+		void AddSphere(uint32_t slices, uint32_t rings, const Color& color);
 		void AddSphere(uint32_t slices, uint32_t rings, float radius, const Color& color);
 
 		void AddGroundPlane(float size, const Color& color);
