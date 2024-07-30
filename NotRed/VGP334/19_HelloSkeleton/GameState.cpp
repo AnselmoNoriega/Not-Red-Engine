@@ -54,7 +54,7 @@ void MainState::Initialize()
     mDirectionalLight.specular = { 1.0f,1.0f,1.0f,1.0f };
 
     mModelID = ModelManager::Get()->LoadModel("../../Assets/Models/Paladin/Paladin.model");
-    mCharacter = CreateRenderGroup(mCharacterId, &mCharacterAnimator);
+    mCharacter = CreateRenderGroup(mModelID);
 
     mStandardEffect.Initialize(L"../../Assets/Shaders/Standard.fx");
     mStandardEffect.SetCamera(mCamera);
@@ -81,14 +81,13 @@ void MainState::Render()
     if (mDrawSkeleton)
     {
         AnimationUtil::BoneTransforms boneTransforms;
-        AnimationUtil::ComputeBoneTransforms(mCharacterID, boneTransforms);
-        AnimationUtil::DrawSkeleton(mCharacterId, boneTransforms);
+        AnimationUtil::ComputeBoneTransforms(mModelID, boneTransforms);
+        AnimationUtil::DrawSkeleton(mModelID, boneTransforms);
     }
     else
     {
         DrawRenderGroup(mStandardEffect, mCharacter);
     }
-    mStandardEffect.Render(mGround);
     mStandardEffect.End();
 }
 

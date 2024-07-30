@@ -143,4 +143,24 @@ namespace NotRed::Math
 			0.0f, 0.0f, 0.0f, 1.0f
 		};
 	}
+
+	inline Vector3 GetTranslation(const Matrix4& m)
+	{
+		return { m._41, m._42, m._43 };
+	}
+
+	inline Vector3 GetRight(const Matrix4& m)
+	{
+		return { m._11, m._12, m._13 };
+	}
+
+	inline Vector3 Getup(const Matrix4& m)
+	{
+		return { m._21, m._22, m._23 };
+	}
+
+	inline Vector3 GetLook(const Matrix4& m)
+	{
+		return { m._31, m._32, m._33 };
+	}
 }

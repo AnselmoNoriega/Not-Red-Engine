@@ -39,6 +39,11 @@
     <ClInclude Include="Inc\Animation.h" />
     <ClInclude Include="Inc\AnimationBuilder.h" />
     <ClInclude Include="Inc\KeyFrame.h" />
+    <ClInclude Include="Inc\Bone.h" />
+    <ClInclude Include="Inc\Skeleton.h" />
+    <ClInclude Include="Inc\AnimationClip.h" />
+    <ClInclude Include="Inc\AnimationUtils.h" />
+    <ClInclude Include="Inc\ModelManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -69,6 +74,8 @@
     <ClCompile Include="Src\DepthEffect.cpp" />
     <ClCompile Include="Src\Animation.cpp" />
     <ClCompile Include="Src\AnimationBuilder.cpp" />
+    <ClCompile Include="Src\AnimationUtil.cpp" />
+    <ClCompile Include="Src\ModelManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

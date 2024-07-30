@@ -141,6 +141,7 @@ Quaternion Quaternion::Lerp(const Quaternion& q0, const Quaternion& q1, float t)
 {
 	return q0 * (1.0f - t) + (q1 * t);
 }
+
 Quaternion Quaternion::slerp(const Quaternion& q0, const Quaternion& q1, float t)
 {
 	float dot = q0.Dot(q1);

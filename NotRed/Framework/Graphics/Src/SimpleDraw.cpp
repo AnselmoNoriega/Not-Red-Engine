@@ -204,48 +204,65 @@ void SimpleDraw::AddFilledAABB(float minX, float minY, float minZ, float maxX, f
 	AddFace(tlb, tlf, blf, color);
 }
 
-void SimpleDraw::AddSphere(uint32_t slices, uint32_t rings, float radius, const Color& color)
+void Graphics::SimpleDraw::AddSphere(uint32_t slices, uint32_t rings, float radius, const Math::Vector3& offset, const Color& color)
 {
 	Vector3 v0 = Vector3::Zero;
 	Vector3 v1 = Vector3::Zero;
 
-	float vertRotation = (TwoPi / static_cast<float>(rings - 1));
-	float horzRotation = (TwoPi / static_cast<float>(slices));
+	float vertRotation = (Math::Constants::Pi / static_cast<float>(rings - 1));
+	float horzRotation = (Math::Constants::TwoPi / static_cast<float>(slices));
 
 	for (uint32_t r = 0; r < rings; ++r)
 	{
 		float rPos0 = static_cast<float>(r);
-		float rPos1 = static_cast<float>(r + 1);
 		float phi0 = rPos0 * vertRotation;
+		float rPos1 = static_cast<float>(r + 1);
 		float phi1 = rPos1 * vertRotation;
 		for (uint32_t s = 0; s <= slices; ++s)
 		{
 			float sPos0 = static_cast<float>(s);
+			float rotation0 = sPos0 * horzRotation;
+
 			float sPos1 = static_cast<float>(s + 1);
-			float rot0 = sPos0 * horzRotation;
-			float rot1 = sPos1 * horzRotation;
+			float rotation1 = sPos1 * horzRotation;
 
 			v0 = {
-					radius * sin(rot0) * sin(phi0),
+					radius * sin(rotation0) * sin(phi0),
 					radius * cos(phi0),
-					radius * cos(rot0) * sin(phi0)
+					radius * cos(rotation0) * sin(phi0)
 			};
 
 			v1 = {
-					radius * sin(rot1) * sin(phi0),
+					radius * sin(rotation1) * sin(phi0),
 					radius * cos(phi0),
-					radius * cos(rot1) * sin(phi0)
+					radius * cos(rotation1) * sin(phi0)
 			};
-			AddLine(v0, v1, color);
+			AddLine(v0 + offset, v1 + offset, color);
 
 			v1 = {
-					radius * sin(rot0) * sin(phi1),
+					radius * sin(rotation0) * sin(phi1),
 					radius * cos(phi1),
-					radius * cos(rot0) * sin(phi1)
+					radius * cos(rotation0) * sin(phi1)
 			};
-			AddLine(v0, v1, color);
+			AddLine(v0 + offset, v1 + offset, color);
 		}
 	}
+}
+
+void SimpleDraw::AddGroundPlane(float size, const Color& color)
+{
+	const float hs = size * 0.5f;
+	const uint32_t iSize = static_cast<uint32_t>(size);
+	for (uint32_t i = 0; i <= iSize; ++i)
+	{
+		AddLine({ i - hs, 0.0f, -hs }, { i - hs, 0.0f, hs }, color);
+		AddLine({ -hs, 0.0f, i - hs }, { hs, 0.0f, i - hs }, color);
+	}
+}
+
+void SimpleDraw::AddSphere(uint32_t slices, uint32_t rings, float radius, const Color& color)
+{
+	AddSphere(slices, rings, radius, Math::Vector3::Zero, color);
 }
 
 void SimpleDraw::AddGroundPlane(float size, const Color& color)

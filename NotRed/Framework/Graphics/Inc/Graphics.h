@@ -4,6 +4,8 @@
 
 #include "GraphicsSystem.h"
 #include "Animation.h"
+#include "AnimationClip.h"
+#include "AnimationUtils.h"
 #include "AnimationBuilder.h"
 #include "BlendState.h"
 #include "Bone.h"
@@ -21,6 +23,7 @@
 #include "MeshBuilder.h"
 #include "MeshTypes.h"
 #include "Model.h"
+#include "ModelManager.h"
 #include "ModelIO.h"
 #include "PixelShader.h"
 #include "PostProcessingEffect.h"
