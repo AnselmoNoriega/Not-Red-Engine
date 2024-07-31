@@ -1,12 +1,12 @@
 
-cbuffer TransformBuffer : register(b0)
+cbuffer TranformBuffer : register(b0)
 {
     matrix wvp;
     matrix lwvp;
+    matrix lfwvp;
     matrix world;
     float3 viewPosition;
 }
-
 cbuffer SettingsBuffer : register(b1)
 {
     bool useDiffuseMap;
@@ -19,7 +19,6 @@ cbuffer SettingsBuffer : register(b1)
     float bumpWeight;
     float depthBias;
 }
-
 cbuffer LightBuffer : register(b2)
 {
     float4 lightAmbient;
@@ -27,7 +26,6 @@ cbuffer LightBuffer : register(b2)
     float4 lightSpecular;
     float3 lightDirection;
 }
-
 cbuffer MaterialBuffer : register(b3)
 {
     float4 materialAmbient;
@@ -76,7 +74,7 @@ matrix GetBoneTransform(int4 indices, float4 weights)
 struct VS_INPUT
 {
     float3 position : POSITION;
-    float3 normal : NORMAL;
+    float3 noraml : NORMAL;
     float3 tangent : TANGENT;
     float2 texCoord : TEXCOORD;
     int4 blendIndices : BLENDINDICES;
@@ -87,7 +85,7 @@ struct VS_OUTPUT
 {
     float4 position : SV_Position;
     float3 worldNormal : NORMAL;
-    float3 worldTagent : TANGENT;
+    float3 worldTangent : TANGENT;
     float2 texCoord : TEXCOORD0;
     float3 dirToLight : TEXCOORD1;
     float3 dirToView : TEXCOORD2;
@@ -114,13 +112,13 @@ VS_OUTPUT VS(VS_INPUT input)
     {
         float4 bumpMapColor = bumpMap.SampleLevel(textureSampler, input.texCoord, 0.0f).r;
         float bumpColor = (2.0f * bumpMapColor.r) - 1.0f;
-        localPosition += (input.normal * bumpColor * bumpWeight);
+        localPosition += (input.noraml * bumpColor * bumpWeight);
     }
 	
     VS_OUTPUT output;
     output.position = mul(float4(localPosition, 1.0f), toNDC);
-    output.worldNormal = mul(input.normal, (float3x3) toWorld);
-    output.worldTagent = mul(input.tangent, (float3x3) toWorld);
+    output.worldNormal = mul(input.noraml, (float3x3) toWorld);
+    output.worldTangent = mul(input.tangent, (float3x3) toWorld);
     output.texCoord = input.texCoord;
     output.dirToLight = -lightDirection;
     output.dirToView = normalize(viewPosition - mul(float4(localPosition, 1.0f), toWorld).xyz);
@@ -141,7 +139,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
         float3 n = normalize(input.worldNormal);
         if (useNormalMap)
         {
-            float3 t = normalize(input.worldTagent);
+            float3 t = normalize(input.worldTangent);
             float3 b = normalize(cross(n, t));
             float3x3 tbnw = float3x3(t, b, n);
             float4 normalMapColor = normalMap.Sample(textureSampler, input.texCoord);
