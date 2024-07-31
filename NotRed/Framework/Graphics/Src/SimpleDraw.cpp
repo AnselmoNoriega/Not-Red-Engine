@@ -265,16 +265,6 @@ void SimpleDraw::AddSphere(uint32_t slices, uint32_t rings, float radius, const 
 	AddSphere(slices, rings, radius, Math::Vector3::Zero, color);
 }
 
-void SimpleDraw::AddGroundPlane(float size, const Color& color)
-{
-	const float hs = size * 0.5f;
-	const uint32_t iSize = static_cast<uint32_t>(size);
-	for (uint32_t i = 0; i <= iSize; ++i)
-	{
-		AddLine({ i - hs, 0.0f, -hs }, { i - hs, 0.0f, hs }, color);
-		AddLine({ -hs, 0.0f, i - hs }, { hs, 0.0f, i - hs }, color);
-	}
-}
 void SimpleDraw::AddGroundCircle(uint32_t slices, float radius, const Color& color)
 {
 	Vector3 v0 = Vector3::Zero;
