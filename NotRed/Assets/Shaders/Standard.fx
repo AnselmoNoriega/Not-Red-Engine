@@ -78,7 +78,7 @@ struct VS_INPUT
     float3 tangent : TANGENT;
     float2 texCoord : TEXCOORD;
     int4 blendIndices : BLENDINDICES;
-    float4 blendWeights : BLENDWEIGHTS;
+    float4 blendWeights : BLENDWEIGHT;
 };
 
 struct VS_OUTPUT
