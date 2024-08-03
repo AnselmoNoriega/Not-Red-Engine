@@ -9,7 +9,7 @@ namespace NotRed
 		std::wstring appName = L"Empty";
 		uint32_t winWidth = 1280;
 		uint32_t winHeight = 720;
-		uint32_t maxVertexCount = 10000;
+		uint32_t maxVertexCount = 100000;
 	};
 
 	class App final
