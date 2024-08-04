@@ -53,7 +53,7 @@ void MainState::Initialize()
     mDirectionalLight.diffuse = { 0.8f,0.8f,0.8f,1.0f };
     mDirectionalLight.specular = { 1.0f,1.0f,1.0f,1.0f };
 
-    mModelID = ModelManager::Get()->LoadModel("../../Assets/Models/Paladin/Paladin.model");
+    mModelID = ModelManager::Get()->LoadModel("../../Assets/Models/r2d2/R2.model");
     mCharacter = CreateRenderGroup(mModelID);
 
     mStandardEffect.Initialize(L"../../Assets/Shaders/Standard.fx");

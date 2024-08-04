@@ -1,0 +1,1 @@
+-scale 0.01 ../../Assets/Models/r2d2/R2.fbx ../../Assets/Models/r2d2/R2.fbx
