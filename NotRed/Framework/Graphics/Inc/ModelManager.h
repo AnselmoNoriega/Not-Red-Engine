@@ -22,6 +22,7 @@ namespace NotRed::Graphics
 
 		ModelID GetModelID(const std::filesystem::path& filepath);
 		ModelID LoadModel(const std::filesystem::path& filepath);
+		void AddAnimation(ModelID id, const std::filesystem::path& filepath);
 		const Model* GetModel(ModelID id);
 
 	private:

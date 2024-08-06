@@ -4,6 +4,7 @@
 
 #include "GraphicsSystem.h"
 #include "Animation.h"
+#include "Animator.h"
 #include "AnimationClip.h"
 #include "AnimationUtils.h"
 #include "AnimationBuilder.h"
