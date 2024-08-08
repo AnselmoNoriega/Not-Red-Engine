@@ -351,7 +351,7 @@ namespace NotRed::Graphics
 	{
 		if (model.skeleton == nullptr || model.skeleton->bones.empty() || model.animationClips.empty())
 		{
-			return true;
+			return false;
 		}
 		filePath.replace_extension("animset");
 
@@ -385,6 +385,8 @@ namespace NotRed::Graphics
 			}
 		}
 		fclose(file);
+
+		return true;
 	}
 
 	void ModelIO::LoadAnimations(std::filesystem::path filePath, Model& model)
