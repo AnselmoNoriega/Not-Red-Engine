@@ -98,7 +98,7 @@ namespace NotRed::Graphics
         if (settingsData.useSkinning > 0)
         {
             AnimationUtil::BoneTransforms boneTransforms;
-            AnimationUtil::ComputeBoneTransforms(renderObject.modelID, boneTransforms);
+            AnimationUtil::ComputeBoneTransforms(renderObject.modelID, boneTransforms, renderObject.animator);
             AnimationUtil::ApplyBoneOfset(renderObject.modelID, boneTransforms);
             for (Math::Matrix4& transform : boneTransforms)
             {

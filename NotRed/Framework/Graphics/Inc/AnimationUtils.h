@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ModelManager.h";
+#include "Animator.h"
 
 namespace NotRed::Graphics::AnimationUtil
 {

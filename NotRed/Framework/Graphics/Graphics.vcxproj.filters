@@ -44,6 +44,7 @@
     <ClInclude Include="Inc\AnimationClip.h" />
     <ClInclude Include="Inc\AnimationUtils.h" />
     <ClInclude Include="Inc\ModelManager.h" />
+    <ClInclude Include="Inc\Animator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -76,6 +77,7 @@
     <ClCompile Include="Src\AnimationBuilder.cpp" />
     <ClCompile Include="Src\AnimationUtil.cpp" />
     <ClCompile Include="Src\ModelManager.cpp" />
+    <ClCompile Include="Src\Animator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

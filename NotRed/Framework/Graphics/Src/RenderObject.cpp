@@ -1,6 +1,8 @@
 #include "Precompiled.h"
 #include "RenderObject.h"
+
 #include "Model.h"
+#include "Animator.h"
 
 using namespace NotRed;
 using namespace NotRed::Graphics;
@@ -10,13 +12,13 @@ void Graphics::RenderObject::Terminate()
 	meshBuffer.Terminate();
 }
 
-RenderGroup Graphics::CreateRenderGroup(ModelID id)
+RenderGroup Graphics::CreateRenderGroup(ModelID id, const Animator* animator)
 {
 	const Model* model = ModelManager::Get()->GetModel(id);
-	return CreateRenderGroup(*model, id);
+	return CreateRenderGroup(*model, id, animator);
 }
 
-RenderGroup Graphics::CreateRenderGroup(const Model& model, ModelID id)
+RenderGroup Graphics::CreateRenderGroup(const Model& model, ModelID id, const Animator* animator)
 {
 	auto TryLoadTexture = [](const auto& textureName)->TextureID
 		{
@@ -44,6 +46,7 @@ RenderGroup Graphics::CreateRenderGroup(const Model& model, ModelID id)
 
 		renderObject.modelID = id;
 		renderObject.skeleton = model.skeleton.get();
+		renderObject.animator = animator;
 	}
 	return renderGroup;
 }

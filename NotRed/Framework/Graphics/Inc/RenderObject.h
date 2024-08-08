@@ -9,6 +9,7 @@
 namespace NotRed::Graphics
 {
     struct Model;
+    class Animator;
 
     struct RenderObject
     {
