@@ -53,7 +53,8 @@ void MainState::Initialize()
     mDirectionalLight.diffuse = { 0.8f,0.8f,0.8f,1.0f };
     mDirectionalLight.specular = { 1.0f,1.0f,1.0f,1.0f };
 
-    mModelID = ModelManager::Get()->LoadModel("../../Assets/Models/Mike/Bboy.model");
+    mModelID = ModelManager::Get()->LoadModel("../../Assets/Models/Mike/Thriller.model");
+    ModelManager::Get()->AddAnimation(mModelID, "../../Assets/Models/Mike/Bboy.animset");
     mCharacter = CreateRenderGroup(mModelID, &mCharacterAnimator);
     mCharacterAnimator.Initialize(mModelID);
 
@@ -84,7 +85,7 @@ void MainState::Render()
     if (mDrawSkeleton)
     {
         AnimationUtil::BoneTransforms boneTransforms;
-        AnimationUtil::ComputeBoneTransforms(mModelID, boneTransforms);
+        AnimationUtil::ComputeBoneTransforms(mModelID, boneTransforms, &mCharacterAnimator);
         AnimationUtil::DrawSkeleton(mModelID, boneTransforms);
     }
     else
