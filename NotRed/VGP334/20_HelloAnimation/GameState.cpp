@@ -53,7 +53,7 @@ void MainState::Initialize()
     mDirectionalLight.diffuse = { 0.8f,0.8f,0.8f,1.0f };
     mDirectionalLight.specular = { 1.0f,1.0f,1.0f,1.0f };
 
-    mModelID = ModelManager::Get()->LoadModel("../../Assets/Models/Mike/Thriller.model");
+    mModelID = ModelManager::Get()->LoadModel("../../Assets/Models/Mike/Bboy.model");
     mCharacter = CreateRenderGroup(mModelID, &mCharacterAnimator);
     mCharacterAnimator.Initialize(mModelID);
 
