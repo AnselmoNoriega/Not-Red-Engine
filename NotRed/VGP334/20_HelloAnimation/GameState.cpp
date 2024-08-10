@@ -55,6 +55,8 @@ void MainState::Initialize()
 
     mModelID = ModelManager::Get()->LoadModel("../../Assets/Models/Mike/Thriller.model");
     ModelManager::Get()->AddAnimation(mModelID, "../../Assets/Models/Mike/Bboy.animset");
+    ModelManager::Get()->AddAnimation(mModelID, "../../Assets/Models/Mike/Idle.animset");
+    ModelManager::Get()->AddAnimation(mModelID, "../../Assets/Models/Mike/Jog.animset");
     mCharacter = CreateRenderGroup(mModelID, &mCharacterAnimator);
     mCharacterAnimator.Initialize(mModelID);
 
@@ -110,7 +112,7 @@ void MainState::DebugUI()
         ImGui::ColorEdit4("Specular##Light", &mDirectionalLight.specular.r);
     }
     ImGui::Checkbox("DrawSkeleton", &mDrawSkeleton);
-    if (ImGui::DragInt("AnimClip", &mAnimIndex, 1.0f, -1, mCharacterAnimator.GetAnimationCount() - 1))
+    if (ImGui::DragInt("AnimClip", &mAnimIndex, 0.3f, -1, mCharacterAnimator.GetAnimationCount() - 1))
     {
         mCharacterAnimator.PlayAnimation(mAnimIndex, true);
     }
