@@ -55,8 +55,8 @@ void MainState::Initialize()
 
     mModelID = ModelManager::Get()->LoadModel("../../Assets/Models/Mike/Thriller.model");
     ModelManager::Get()->AddAnimation(mModelID, "../../Assets/Models/Mike/Bboy.animset");
-    ModelManager::Get()->AddAnimation(mModelID, "../../Assets/Models/Mike/Idle.animset");
     ModelManager::Get()->AddAnimation(mModelID, "../../Assets/Models/Mike/Jog.animset");
+    ModelManager::Get()->AddAnimation(mModelID, "../../Assets/Models/Mike/Idle.animset");
     mCharacter = CreateRenderGroup(mModelID, &mCharacterAnimator);
     mCharacterAnimator.Initialize(mModelID);
 
