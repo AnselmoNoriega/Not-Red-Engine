@@ -147,8 +147,24 @@
   <ItemGroup>
     <ClCompile Include="Src\CollisionShape.cpp" />
     <ClCompile Include="Src\PhysicsWorld.cpp" />
-    <ClCompile Include="Src\Precompiled.cpp" />
+    <ClCompile Include="Src\Precompiled.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Src\RigidBody.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\External\Bullet\Bullet.vcxproj">
+      <Project>{516192eb-788a-4fe7-b2b7-2ef9ac036b12}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Core.vcxproj">
+      <Project>{2be6c312-c1af-40be-b41e-1f9b0b4c54a3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Graphics\Graphics.vcxproj">
+      <Project>{63f26f90-57a0-4fdc-a2e3-6315d7cbec11}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Math\Math.vcxproj">
+      <Project>{ade8e00a-5cc1-4de7-b4bb-d28eb96a1f5d}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
