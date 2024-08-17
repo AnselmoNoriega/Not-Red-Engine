@@ -6,6 +6,7 @@ using namespace NotRed;
 using namespace NotRed::Core;
 using namespace NotRed::Graphics;
 using namespace NotRed::Input;
+using namespace NotRed::Physics;
 
 void App::ChangeState(const std::string& stateName)
 {
@@ -33,6 +34,9 @@ void App::Run(const AppConfig& config)
     SimpleDraw::StaticInitialize(config.maxVertexCount);
     TextureManager::Initialize("../../Assets/Images/");
     ModelManager::StaticInitialize();
+
+    PhysicsWorld::Settings settings;
+    PhysicsWorld::StaticInitialize(settings);
         
     ASSERT(mCurrentState, "App: no app state found");
     mCurrentState->Initialize();
@@ -58,7 +62,11 @@ void App::Run(const AppConfig& config)
         }
 
         auto deltaTime = TimeUtil::GetdeltaTime();
-        mCurrentState->Update(deltaTime);
+        if (deltaTime < 0.5f)
+        {
+            PhysicsWorld::Get()->Update(deltaTime);
+            mCurrentState->Update(deltaTime);
+        }
         GraphicsSystem* gs = GraphicsSystem::Get();
 
         gs->BeginRender();
@@ -76,6 +84,8 @@ void App::Run(const AppConfig& config)
 
     mCurrentState->Terminate();
 
+    PhysicsWorld::StaticTerminate();
+    ModelManager::StaticTerminate();
     TextureManager::Terminate();
     SimpleDraw::StaticTerminate();
     DebugUI::StaticTerminate();
