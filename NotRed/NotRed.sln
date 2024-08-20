@@ -48,6 +48,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{2E58
 		Assets\Shaders\Blur.fx = Assets\Shaders\Blur.fx
 		Assets\Shaders\CellShader.fx = Assets\Shaders\CellShader.fx
 		Assets\Shaders\Depth.fx = Assets\Shaders\Depth.fx
+		Particle.fx = Particle.fx
 		Assets\Shaders\PostProcessing.fx = Assets\Shaders\PostProcessing.fx
 		Assets\Shaders\Refraction.fx = Assets\Shaders\Refraction.fx
 		Assets\Shaders\Shadow.fx = Assets\Shaders\Shadow.fx

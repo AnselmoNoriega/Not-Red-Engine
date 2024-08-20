@@ -47,6 +47,8 @@ void PhysicsWorld::Initialize(const Settings& settings)
 	mSolver = new btSequentialImpulseConstraintSolver();
 	mDynamicsWorld = new btDiscreteDynamicsWorld(mDispatcher, mInterface, mSolver, mCollisionConfiguration);
 	mDynamicsWorld->setGravity(ConvertTobtVector3(settings.gravity));
+
+	mDynamicsWorld->setDebugDrawer(&mDebugDrawer);
 }
 
 void PhysicsWorld::Terminate()
@@ -70,7 +72,28 @@ void PhysicsWorld::Update(float deltaTime)
 }
 
 void PhysicsWorld::DebugUI()
-{	
+{
+	if (ImGui::CollapsingHeader("Physics", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		int debugMode = mDebugDrawer.getDebugMode();
+		bool isEnabled = (debugMode & btIDebugDraw::DBG_DrawWireframe) > 0;
+		if (ImGui::Checkbox("DrawWireFrame", &isEnabled))
+		{
+			debugMode = (isEnabled) ? debugMode | btIDebugDraw::DBG_DrawWireframe : debugMode & ~btIDebugDraw::DBG_DrawWireframe;
+		}
+		isEnabled = (debugMode & btIDebugDraw::DBG_DrawAabb) > 0;
+		if (ImGui::Checkbox("DrawAABB", &isEnabled))
+		{
+			debugMode = (isEnabled) ? debugMode | btIDebugDraw::DBG_DrawAabb : debugMode & ~btIDebugDraw::DBG_DrawAabb;
+		}
+		isEnabled = (debugMode & btIDebugDraw::DBG_DrawContactPoints) > 0;
+		if (ImGui::Checkbox("DrawCollisionPoints", &isEnabled))
+		{
+			debugMode = (isEnabled) ? debugMode | btIDebugDraw::DBG_DrawContactPoints : debugMode & ~btIDebugDraw::DBG_DrawContactPoints;
+		}
+		mDebugDrawer.setDebugMode(debugMode);
+		mDynamicsWorld->debugDrawWorld();
+	}
 }
 
 void PhysicsWorld::Register(PhysicsObject* physicsObject)
@@ -89,7 +112,7 @@ void PhysicsWorld::Register(PhysicsObject* physicsObject)
 void PhysicsWorld::Unregister(PhysicsObject* physicsObject)
 {
 	auto iter = std::find(mPhysicsObjects.begin(), mPhysicsObjects.end(), physicsObject);
-	if (iter == mPhysicsObjects.end())
+	if (iter != mPhysicsObjects.end())
 	{
 		if (physicsObject->GetRigidBody() != nullptr)
 		{

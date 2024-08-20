@@ -28,5 +28,7 @@ namespace NotRed::Graphics
 		static MeshPX CreateSkyBoxPX(float size);
 
 		static MeshPX CreateScreenQuad();
+
+		static Mesh CreateSpriteQuad(float width, float height);
 	};
 }

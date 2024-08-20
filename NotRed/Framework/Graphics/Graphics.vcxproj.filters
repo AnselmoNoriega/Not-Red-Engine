@@ -45,6 +45,7 @@
     <ClInclude Include="Inc\AnimationUtils.h" />
     <ClInclude Include="Inc\ModelManager.h" />
     <ClInclude Include="Inc\Animator.h" />
+    <ClInclude Include="Inc\ParticleSystemEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -78,6 +79,7 @@
     <ClCompile Include="Src\AnimationUtil.cpp" />
     <ClCompile Include="Src\ModelManager.cpp" />
     <ClCompile Include="Src\Animator.cpp" />
+    <ClCompile Include="Src\ParticleSystemEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

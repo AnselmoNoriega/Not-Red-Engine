@@ -178,6 +178,7 @@
     <ClInclude Include="Inc\VertexShader.h" />
     <ClInclude Include="Inc\VertexTypes.h" />
     <ClInclude Include="Inc\WaterEffect.h" />
+    <ClInclude Include="Inc\ParticleSystemEffect.h" />
     <ClInclude Include="Src\Precompiled.h" />
     <ClInclude Include="Inc\StandardEffect.h" />
     <ClInclude Include="Inc\TextureManager.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="Src\MeshBuilder.cpp" />
     <ClCompile Include="Src\ModelIO.cpp" />
     <ClCompile Include="Src\ModelManager.cpp" />
+    <ClCompile Include="Src\ParticleSystemEffect.cpp" />
     <ClCompile Include="Src\PixelShader.cpp" />
     <ClCompile Include="Src\PostProcessingEffect.cpp" />
     <ClCompile Include="Src\Precompiled.cpp">
