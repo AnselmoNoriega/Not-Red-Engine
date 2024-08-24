@@ -152,6 +152,7 @@
     <ClCompile Include="Src\Particle.cpp" />
     <ClCompile Include="Src\Particles.cpp" />
     <ClCompile Include="Src\ParticleSystem.cpp" />
+    <ClCompile Include="Src\PhysicsDebugDrawer.cpp" />
     <ClCompile Include="Src\PhysicsWorld.cpp" />
     <ClCompile Include="Src\Precompiled.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

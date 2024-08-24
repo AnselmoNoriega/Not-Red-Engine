@@ -44,8 +44,15 @@ void MainState::UpdateCameraControl(float dt)
 
     if (input->IsKeyPressed(KeyCode::SPACE))
     {
-        mBallRB.SetPosition({ 0.0f, 10.0f, 0.0f });
-        mBallRB.SetVelocity({ 0.0f, 0.0f, 0.0f });
+        Physics::ParticleActivationData data;
+        data.startColor = Colors::Red;
+        data.endColor = Colors::Aquamarine;
+        data.startScale = { 1.5f, 1.5f, 1.5f };
+        data.endScale = { 0.1f, 0.1f, 0.1f };
+        data.lifeTime = 3.0f;
+        data.position = Vector3::Zero;
+        data.velocity = { 50 , 50, 0.0f };
+        mParticle.Activate(data);
     }
 }
 
@@ -63,28 +70,15 @@ void MainState::Initialize()
     mStandardEffect.SetCamera(mCamera);
     mStandardEffect.SetDirectionalLight(mDirectionalLight);
 
-    Mesh ball = MeshBuilder::CreateSphere(60, 60, 1.0f);
-    mBall.meshBuffer.Initialize(ball);
-    mBall.diffuseMapID = TextureManager::Get()->LoadTexture("misc/basketball.jpg");
-    mBall.transform.position = { 0.0f, 5.0f, 0.0f };
-    mBallShape.InitializeSphere(1.0f);
-    mBallRB.Initialize(mBall.transform, mBallShape, 3.0f);
-
-    Mesh ground = MeshBuilder::CreateHorizontalPlane(10, 10, 1.0f);
-    mGround.meshBuffer.Initialize(ground);
-    mGround.diffuseMapID = TextureManager::Get()->LoadTexture("misc/Concrete.jpg");
-    mGroundShape.InitializeHull({ 5.0f, 0.5f,5.0f }, { 0.0f, 0.0f,0.0f });
-    mGroundRB.Initialize(mGround.transform, mGroundShape);
+    Mesh mesh = MeshBuilder::CreateSphere(30, 30, 1.0f);
+    mParticleRenderObj.meshBuffer.Initialize(mesh);
+    mParticle.Initialize();
 }
 
 void MainState::Terminate()
 {
-    mGroundRB.Terminate();
-    mGroundShape.Terminate();
-    mGround.Terminate();
-    mBallRB.Terminate();
-    mBallShape.Terminate();
-    mBall.Terminate();
+    mParticle.Terminate();
+    mParticleRenderObj.Terminate();
     mStandardEffect.Terminate();
 }
 
@@ -96,9 +90,20 @@ void MainState::Update(const float deltaTime)
 
 void MainState::Render()
 {
+    SimpleDraw::AddGroundPlane(20.0f, Colors::WhiteSmoke);
+    SimpleDraw::Render(mCamera);
     mStandardEffect.Begin();
-    mStandardEffect.Render(mBall);
-    mStandardEffect.Render(mGround);
+    if (mParticle.IsActive())
+    {
+        Physics::CurrentParticleInfo info;
+        mParticle.ObtainCurrentInfo(info);
+        mParticleRenderObj.transform = info.transform;
+        mParticleRenderObj.material.ambient = info.color;
+        mParticleRenderObj.material.diffuse = info.color;
+        mParticleRenderObj.material.specular = info.color;
+        mParticleRenderObj.material.emissive = info.color;
+        mStandardEffect.Render(mParticleRenderObj);
+    }
     mStandardEffect.End();
 }
 
@@ -119,25 +124,6 @@ void MainState::DebugUI()
     mStandardEffect.DebugUI();
     Physics::PhysicsWorld::Get()->DebugUI();
 
-
-    if (ImGui::CollapsingHeader("Quaternion", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        if (ImGui::DragFloat("Yaw", &mYaw, 0.01f))
-        {
-            Quaternion rot = Quaternion::CreateFromYawPitchRoll(mYaw, mPitch, mRoll);
-            mBall.transform.rotation = rot;
-        }
-        if (ImGui::DragFloat("Pitch", &mPitch, 0.01f))
-        {
-            Quaternion rot = Quaternion::CreateFromYawPitchRoll(mYaw, mPitch, mRoll);
-            mBall.transform.rotation = rot;
-        }
-        if (ImGui::DragFloat("Roll", &mRoll, 0.01f))
-        {
-            Quaternion rot = Quaternion::CreateFromYawPitchRoll(mYaw, mPitch, mRoll);
-            mBall.transform.rotation = rot;
-        }
-    }
     ImGui::End();
 
     SimpleDraw::Render(mCamera);

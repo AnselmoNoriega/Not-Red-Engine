@@ -1,77 +1,54 @@
 #include "Precompiled.h"
-#include "ParticleSystemEffect.h"
-
-#include "RenderObject.h"
-#include "Camera.h"
-#include "MeshBuffer.h"
-#include "VertexTypes.h"
+#include "Particle.h"
 
 using namespace NotRed;
-using namespace NotRed::Graphics;
-using namespace NotRed::Math;
+using namespace NotRed::Physics;
 
-void ParticleSystemEffect::Initialize()
+void Particle::Initialize()
 {
-	std::filesystem::path filePath = L"../../Assets/Shaders/Particle.fx";
-	mVertexShader.Initialize<Vertex>(filePath);
-	mPixelShader.Initialize(filePath);
-	mParticleBuffer.Initialize();
-	mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
-	mBlendState.Initialize(BlendState::Mode::AlphaBlend);
+	mLifeTime = 0.0f;
+	mCollisionShape.InitializeEmpty();
+	mTransform.position = { static_cast<float>(std::rand()), static_cast<float>(std::rand()), static_cast<float>(std::rand()) };
+	mRigidBody.Initialize(mTransform, mCollisionShape, 1.0f);
 }
 
-void ParticleSystemEffect::Terminate()
+void Particle::Terminate()
 {
-	mBlendState.Terminate();
-	mSampler.Terminate();
-	mParticleBuffer.Terminate();
-	mPixelShader.Terminate();
-	mVertexShader.Terminate();
+	mRigidBody.Terminate();
+	mCollisionShape.Terminate();
 }
 
-void ParticleSystemEffect::Begin()
+void Particle::Activate(const ParticleActivationData& data)
 {
-	mVertexShader.Bind();
-	mPixelShader.Bind();
-	mParticleBuffer.BindVS(0);
-	mSampler.BindPS(0);
-	mBlendState.Set();
+	mData = data;
+	mLifeTime = data.lifeTime;
+	mRigidBody.SetPosition(data.position);
+	mRigidBody.SetVelocity(data.velocity);
 }
 
-void ParticleSystemEffect::End()
+void Particle::Update(float deltaTime)
 {
-	mBlendState.ClearState();
+	mLifeTime -= deltaTime;
 }
 
-void ParticleSystemEffect::Render(const RenderObject& renderObject)
+bool Particle::IsActive() const
 {
-	Render(renderObject, Colors::White);
+	return mLifeTime > 0.0f;
 }
 
-void ParticleSystemEffect::Render(const RenderObject& renderObject, const Color& color)
+void Particle::ObtainCurrentInfo(CurrentParticleInfo& info) const
 {
-	Matrix4 matView = mCamera->GetViewMatrix();
-	Matrix4 matScale = Matrix4::Scaling(renderObject.transform.scale);
-	Vector3 localPosition = TransformCoord(renderObject.transform.position, matView);
-	Matrix4 matTransform = Matrix4::Translation(localPosition);
-	Matrix4 matCamLocal = matScale * matTransform;
-	Matrix4 matProj = mCamera->GetProjectionMatrix();
-	Matrix4 matFinal = matCamLocal * matProj;
+	if (mData.lifeTime > 0.0f)
+	{
+		float t = (1.0f - Clamp(mLifeTime / mData.lifeTime, 0.0f, 1.0f));
+		info.color = Lerp(mData.startColor, mData.endColor, t);
 
-	ParticleData data;
-	data.wvp = Transpose(matFinal);
-	data.color = color;
-	mParticleBuffer.Update(data);
-	TextureManager::Get()->BindPS(renderObject.diffuseMapID, 0);
-
-	renderObject.meshBuffer.Render();
+		info.transform = mTransform;
+		info.transform.scale - Lerp(mData.startScale, mData.endScale, t);
+	}
 }
 
-void ParticleSystemEffect::DebugUI()
+const Math::Vector3& Particle::GetPosition() const
 {
-}
-
-void ParticleSystemEffect::SetCamer(const Camera& camera)
-{
-	mCamera = &camera;
+	return mTransform.position;
 }

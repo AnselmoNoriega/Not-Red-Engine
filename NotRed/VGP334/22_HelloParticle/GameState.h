@@ -18,15 +18,6 @@ private:
     NotRed::Graphics::DirectionalLight mDirectionalLight;
     NotRed::Graphics::StandardEffect mStandardEffect;
 
-    NotRed::Graphics::RenderObject mBall;
-    NotRed::Physics::CollisionShape mBallShape;
-    NotRed::Physics::RigidBody mBallRB;
-
-    NotRed::Graphics::RenderObject mGround;
-    NotRed::Physics::CollisionShape mGroundShape;
-    NotRed::Physics::RigidBody mGroundRB;
-
-    float mPitch = 0.0f;
-    float mYaw = 0.0f;
-    float mRoll = 0.0f;
+    NotRed::Graphics::RenderObject mParticleRenderObj;
+    NotRed::Physics::Particle mParticle;
 };

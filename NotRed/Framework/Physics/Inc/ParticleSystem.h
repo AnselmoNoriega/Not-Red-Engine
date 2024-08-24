@@ -7,7 +7,7 @@ namespace NotRed::Physics
 	struct ParticleSystemInfo
 	{
 		int maxParticle = 100;
-		Graphics::TextureId particleTextureId = 0;
+		Graphics::TextureID particleTextureId = 0;
 		Math::Vector3 spawnPosition = Math::Vector3::Zero;
 		Math::Vector3 spawnDirection = Math::Vector3::YAxis;
 		float spawnDelay = 0.0f;
