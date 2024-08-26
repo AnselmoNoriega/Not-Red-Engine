@@ -148,6 +148,7 @@
     <ClInclude Include="Src\Precompiled.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Inc\SoftBody.h" />
     <ClCompile Include="Src\CollisionShape.cpp" />
     <ClCompile Include="Src\Particle.cpp" />
     <ClCompile Include="Src\Particles.cpp" />

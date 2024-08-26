@@ -71,7 +71,7 @@ void ParticleSystemEffect::DebugUI()
 {
 }
 
-void ParticleSystemEffect::SetCamer(const Camera& camera)
+void ParticleSystemEffect::SetCamera(const Camera& camera)
 {
 	mCamera = &camera;
 }

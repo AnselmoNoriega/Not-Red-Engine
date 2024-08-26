@@ -11,7 +11,7 @@
 namespace NotRed::Graphics
 {
 	class Camera;
-	class RenderObject;
+	struct RenderObject;
 
 	class ParticleSystemEffect
 	{
@@ -26,7 +26,7 @@ namespace NotRed::Graphics
 		void Render(const RenderObject& renderObject, const Color& color);
 
 		void DebugUI();
-		void SetCamer(const Camera& camera);
+		void SetCamera(const Camera& camera);
 
 	private:
 		struct ParticleData

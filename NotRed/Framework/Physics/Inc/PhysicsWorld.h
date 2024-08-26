@@ -43,7 +43,15 @@ namespace NotRed::Physics
 		btBroadphaseInterface* mInterface = nullptr;
 		btCollisionDispatcher* mDispatcher = nullptr;
 		btDefaultCollisionConfiguration* mCollisionConfiguration = nullptr;
-		btDiscreteDynamicsWorld* mDynamicsWorld = nullptr;
 		btSequentialImpulseConstraintSolver* mSolver = nullptr;
+
+#ifdef USE_SOFT_BODY
+		btSoftRigidDynamicsWorld* mDynamicsWorld = nullptr;
+		btSoftBodyWorldInfo& GetSoftBodyWorldInfo() { return mDynamicsWorld->getWorldInfo(); }
+#else
+		btDiscreteDynamicsWorld* mDynamicsWorld = nullptr;
+		btSoftBodyWorldInfo& GetSoftBodyWorldInfo() { return btSoftBodyWorldInfo(); }
+#endif
+		friend class SoftBody;
 	};
 }
