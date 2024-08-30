@@ -12,7 +12,7 @@ SoftBody::~SoftBody()
 	ASSERT(mSoftBody == nullptr, "SoftBody: terminate must be called");
 }
 
-void SoftBody::Initialize(Graphics::Mesh& mesh, float mass, const std::vector<uint32_t> fixedNodeIndices)
+void SoftBody::Initialize(Graphics::Mesh& mesh, float mass, const std::vector<uint32_t>& fixedNodeIndices)
 {
 #ifdef USE_SOFT_BODY
 	btSoftBodyWorldInfo& worldInfo = PhysicsWorld::Get()->GetSoftBodyWorldInfo();

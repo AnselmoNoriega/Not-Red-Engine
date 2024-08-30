@@ -25,7 +25,7 @@ namespace NotRed::Physics
 
 		void Initialize(const Settings& settings);
 		void Terminate();
-
+		
 		void Update(float deltaTime);
 		void DebugUI();
 

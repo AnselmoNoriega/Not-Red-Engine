@@ -9,7 +9,7 @@ namespace NotRed::Physics
 	public:
 		SoftBody() = default;
 		~SoftBody();
-		void Initialize(Graphics::Mesh& mesh, float mass, const std::vector<uint32_t> fixedNodeIndices);
+		void Initialize(Graphics::Mesh& mesh, float mass, const std::vector<uint32_t>& fixedNodeIndices);
 		void Terminate();
 
 	protected:
