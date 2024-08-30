@@ -86,7 +86,15 @@ bool ParticleSystem::IsActive()
 
 void ParticleSystem::DebugUI()
 {
-
+	if (ImGui::CollapsingHeader("ParticleSystem"))
+	{
+		if (ImGui::DragFloat3("Direction", &mInfo.spawnDirection.x))
+		{
+			mInfo.spawnDirection = Normalize(mInfo.spawnDirection);
+		}
+		ImGui::DragInt("MinPerEmit", &mInfo.minParticlesPerEmit);
+		mInfo.maxParticlesPerEmit = Max(mInfo.minParticlesPerEmit, mInfo.maxParticlesPerEmit);
+	}
 }
 
 void ParticleSystem::SetPosition(const Math::Vector3& position)
@@ -101,8 +109,45 @@ void ParticleSystem::SetCamera(const Graphics::Camera& camera)
 
 void ParticleSystem::SpawnParticles()
 {
+	int numParticles = mInfo.minParticlesPerEmit + (rand() % (mInfo.maxParticlesPerEmit - mInfo.minParticlesPerEmit + 1));
+	for (int i = 0; i < numParticles; ++i)
+	{
+		SpawnSingleParticle();
+	}
+	float randFloat = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	mNextSpawn = mInfo.minTimeBetweenEmit + ((mInfo.maxTimeBetweenEmit - mInfo.minTimeBetweenEmit) * randFloat);
 }
 
 void ParticleSystem::SpawnSingleParticle()
 {
+	Particle* particle = mParticles[mNextAvailableParticleIndex].get();
+
+	mNextAvailableParticleIndex = (mNextAvailableParticleIndex + 1) % mParticles.size();
+
+	float randFloat = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	float randAngle = mInfo.minSpawnAngle + ((mInfo.maxSpawnAngle - mInfo.minSpawnAngle) * randFloat);
+
+	Vector3 rotAxis = (Abs(Dot(mInfo.spawnDirection, Vector3::YAxis)) >= 0.9f) ? Vector3::XAxis : Vector3::YAxis;
+	Matrix4 matRotA = Matrix4::RotationAxis(rotAxis, randAngle);
+
+	rotAxis = Normalize(Cross(rotAxis, mInfo.spawnDirection));
+	Matrix4 matRot = Matrix4::RotationAxis(rotAxis, randAngle) * matRotA;
+	Vector3 spawnDirection = TransformNormal(mInfo.spawnDirection, matRot);
+
+	randFloat = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	float speed = mInfo.minSpeed + ((mInfo.maxSpeed - mInfo.minSpeed) * randFloat);
+
+	ParticleActivationData activateData;
+
+	float t = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	activateData.startColor = Lerp(mInfo.minStartColor, mInfo.maxStartColor, t);
+	t = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	activateData.endColor = Lerp(mInfo.minEndColor, mInfo.maxEndColor, t);
+	t = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	activateData.endScale = Lerp(mInfo.minEndScale, mInfo.maxEndScale, t);
+	t = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	activateData.lifeTime = Lerp(mInfo.minParticleLifeTime, mInfo.maxParticleLifeTime, t);
+	activateData.position = mInfo.spawnPosition;
+	activateData.velocity = spawnDirection * speed;
+	particle->Activate(activateData);
 }

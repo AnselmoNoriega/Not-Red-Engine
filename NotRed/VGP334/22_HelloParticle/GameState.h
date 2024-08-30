@@ -16,8 +16,6 @@ private:
 
     NotRed::Graphics::Camera mCamera;
     NotRed::Graphics::DirectionalLight mDirectionalLight;
-    NotRed::Graphics::StandardEffect mStandardEffect;
-
-    NotRed::Graphics::RenderObject mParticleRenderObj;
-    NotRed::Physics::Particle mParticle;
+    NotRed::Graphics::ParticleSystemEffect mParticleEffect;
+    NotRed::Physics::ParticleSystem mParticleSystem;
 };

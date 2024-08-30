@@ -2,7 +2,7 @@
 
 #include "PhysicsObject.h"
 
-namespace NR::Physics
+namespace NotRed::Physics
 {
 	class SoftBody final : public PhysicsObject
 	{

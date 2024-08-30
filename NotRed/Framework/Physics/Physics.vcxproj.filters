@@ -74,5 +74,8 @@
     <ClCompile Include="Inc\SoftBody.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\SoftBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
