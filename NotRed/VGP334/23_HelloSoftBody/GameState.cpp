@@ -107,9 +107,9 @@ void GameState::Terminate()
     mBall.Terminate();
     mStandardEffect.Terminate();
 }
-void GameState::Update(const float deltaTime)
+void GameState::Update(const float dt)
 {
-    UpdateCameraControl(deltaTime);
+    UpdateCameraControl(dt);
 
 }
 void GameState::Render()

@@ -7,7 +7,7 @@ class GameState : public NotRed::AppState
 public:
 	void Initialize()  override;
 	void Terminate()  override;
-	void Update(const float deltaTime) override;
+	void Update(const float dt) override;
 	void Render() override;
 	void DebugUI() override;
 
