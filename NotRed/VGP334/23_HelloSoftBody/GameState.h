@@ -2,7 +2,7 @@
 
 #include <Not-Red/Inc/NotRed.h>
 
-class GameState : public NotRed::AppState
+class MainState : public NotRed::AppState
 {
 public:
 	void Initialize()  override;

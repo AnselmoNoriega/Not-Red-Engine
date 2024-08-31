@@ -5,7 +5,7 @@ using namespace NotRed::Graphics;
 using namespace NotRed::Math;
 using namespace NotRed::Input;
 
-void GameState::UpdateCameraControl(float dt)
+void MainState::UpdateCameraControl(float dt)
 {
     auto input = Input::InputSystem::Get();
     const float moveSpeed = input->IsKeyDown(KeyCode::LSHIFT) ? 10.0f : 1.0f;
@@ -55,7 +55,7 @@ void GameState::UpdateCameraControl(float dt)
     }
 }
 
-void GameState::Initialize()
+void MainState::Initialize()
 {
     mCamera.SetPosition({ 0.0f,1.0f,-4.0f });
     mCamera.SetLookAt({ 0.0f,0.0f,0.0f });
@@ -95,7 +95,7 @@ void GameState::Initialize()
     mCloth.meshBuffer.Initialize(nullptr, sizeof(Vertex), mClothMesh.vertices.size(), mClothMesh.indices.data(), mClothMesh.indices.size());
     mCloth.diffuseMapID = TextureManager::Get()->LoadTexture("planets/neptune.jpg");
 }
-void GameState::Terminate()
+void MainState::Terminate()
 {
     mCloth.Terminate();
     mClothSoftBody.Terminate();
@@ -107,12 +107,12 @@ void GameState::Terminate()
     mBall.Terminate();
     mStandardEffect.Terminate();
 }
-void GameState::Update(const float dt)
+void MainState::Update(const float dt)
 {
     UpdateCameraControl(dt);
 
 }
-void GameState::Render()
+void MainState::Render()
 {
     mCloth.meshBuffer.Update(mClothMesh.vertices.data(), mClothMesh.vertices.size());
     mStandardEffect.Begin();
@@ -121,7 +121,7 @@ void GameState::Render()
     mStandardEffect.Render(mCloth);
     mStandardEffect.End();
 }
-void GameState::DebugUI()
+void MainState::DebugUI()
 {
     ImGui::Begin("Debug control", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
     if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))

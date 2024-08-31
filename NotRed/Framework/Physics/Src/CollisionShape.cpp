@@ -7,7 +7,7 @@ using namespace NotRed::Math;
 
 CollisionShape::~CollisionShape()
 {
-	ASSERT(mCollisionShape == nullptr, "CollisionShape: terminate must be called");
+	ASSERT(mCollisionShape != nullptr, "CollisionShape: terminate must be called");
 }
 
 void CollisionShape::InitializeSphere(float radius)

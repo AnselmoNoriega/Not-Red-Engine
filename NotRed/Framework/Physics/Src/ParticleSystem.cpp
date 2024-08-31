@@ -88,12 +88,30 @@ void ParticleSystem::DebugUI()
 {
 	if (ImGui::CollapsingHeader("ParticleSystem"))
 	{
+		ImGui::DragFloat3("Position", &mInfo.spawnPosition.x);
 		if (ImGui::DragFloat3("Direction", &mInfo.spawnDirection.x))
 		{
 			mInfo.spawnDirection = Normalize(mInfo.spawnDirection);
 		}
 		ImGui::DragInt("MinPerEmit", &mInfo.minParticlesPerEmit);
 		mInfo.maxParticlesPerEmit = Max(mInfo.minParticlesPerEmit, mInfo.maxParticlesPerEmit);
+		ImGui::DragInt("MaxPerEmit", &mInfo.maxParticlesPerEmit, 1, mInfo.minParticlesPerEmit);
+		ImGui::DragFloat("MinTimeToEmit", &mInfo.minTimeBetweenEmit, 0.01f);
+		ImGui::DragFloat("MaxTimeToEmit", &mInfo.maxTimeBetweenEmit, 0.01f, mInfo.minTimeBetweenEmit);
+		ImGui::DragFloat("MinAngle", &mInfo.minSpawnAngle, 0.001f, -Math::Constants::Pi);
+		ImGui::DragFloat("MaxAngle", &mInfo.minTimeBetweenEmit, 0.001f, mInfo.minSpawnAngle);
+		ImGui::DragFloat("MinSpeed", &mInfo.minSpeed);
+		ImGui::DragFloat("MaxSpeed", &mInfo.maxSpeed, 1.0f, mInfo.minSpeed);
+		ImGui::DragFloat("MinLife", &mInfo.minParticleLifeTime, 0.25f);
+		ImGui::DragFloat("MaxLife", &mInfo.maxParticleLifeTime, 0.25f, mInfo.minParticleLifeTime);
+		ImGui::ColorEdit4("MinStartColor", &mInfo.minStartColor.r);
+		ImGui::ColorEdit4("MaxStartColor", &mInfo.maxStartColor.r);
+		ImGui::ColorEdit4("MinEndColor", &mInfo.minEndColor.r);
+		ImGui::ColorEdit4("MaxEndColor", &mInfo.maxEndColor.r);
+		ImGui::DragFloat3("MinStartScale", &mInfo.minStartScale.x, 0.1f, 0.001f);
+		ImGui::DragFloat3("MaxStartScale", &mInfo.maxStartScale.x, 0.1f, 0.001f);
+		ImGui::DragFloat3("MinEndScale", &mInfo.minEndScale.x, 0.1f, 0.001f);
+		ImGui::DragFloat3("MaxEndScale", &mInfo.maxEndScale.x, 0.1f, 0.001f);
 	}
 }
 

@@ -45,6 +45,9 @@
     <ClInclude Include="Inc\PhysicsDebugDrawer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\SoftBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\RigidBody.cpp">
@@ -69,9 +72,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\PhysicsDebugDrawer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Inc\SoftBody.h">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\SoftBody.cpp">
