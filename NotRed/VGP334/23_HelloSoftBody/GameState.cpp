@@ -95,6 +95,7 @@ void MainState::Initialize()
     mCloth.meshBuffer.Initialize(nullptr, sizeof(Vertex), mClothMesh.vertices.size(), mClothMesh.indices.data(), mClothMesh.indices.size());
     mCloth.diffuseMapID = TextureManager::Get()->LoadTexture("planets/neptune.jpg");
 }
+
 void MainState::Terminate()
 {
     mCloth.Terminate();
@@ -107,11 +108,13 @@ void MainState::Terminate()
     mBall.Terminate();
     mStandardEffect.Terminate();
 }
+
 void MainState::Update(const float dt)
 {
     UpdateCameraControl(dt);
 
 }
+
 void MainState::Render()
 {
     mCloth.meshBuffer.Update(mClothMesh.vertices.data(), mClothMesh.vertices.size());
@@ -121,6 +124,7 @@ void MainState::Render()
     mStandardEffect.Render(mCloth);
     mStandardEffect.End();
 }
+
 void MainState::DebugUI()
 {
     ImGui::Begin("Debug control", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
