@@ -89,6 +89,7 @@ void MainState::Initialize()
     {
         v.position.y = 10.0f;
     }
+
     uint32_t lastVertex = mClothMesh.vertices.size() - 1;
     uint32_t lastVertexOtherSide = lastVertex - rows;
     mClothSoftBody.Initialize(mClothMesh, 1.0f, { lastVertex, lastVertexOtherSide });
