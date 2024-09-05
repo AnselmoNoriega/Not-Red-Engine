@@ -1,12 +1,14 @@
 #include "Precompiled.h"
 #include "App.h"
 #include "AppState.h"
+#include "EventManager.h"
 
 using namespace NotRed;
 using namespace NotRed::Core;
 using namespace NotRed::Graphics;
 using namespace NotRed::Input;
 using namespace NotRed::Physics;
+using namespace NotRed::Audio;
 
 void App::ChangeState(const std::string& stateName)
 {
@@ -35,6 +37,10 @@ void App::Run(const AppConfig& config)
     TextureManager::Initialize("../../Assets/Images/");
     ModelManager::StaticInitialize();
 
+    AudioSystem::StaticInitialize();
+    SoundEffectManager::StaticInitialize("../../Assets/Sounds");
+    EventManager::StaticInitialize();
+
     PhysicsWorld::Settings settings;
     PhysicsWorld::StaticInitialize(settings);
         
@@ -61,6 +67,8 @@ void App::Run(const AppConfig& config)
             mCurrentState->Initialize();
         }
 
+        AudioSystem::Get()->Update();
+
         auto deltaTime = TimeUtil::GetdeltaTime();
         if (deltaTime < 0.5f)
         {
@@ -83,6 +91,10 @@ void App::Run(const AppConfig& config)
     }
 
     mCurrentState->Terminate();
+
+    EventManager::StaticTerminate();
+    SoundEffectManager::StaticTerminate();
+    AudioSystem::StaticTerminate();
 
     PhysicsWorld::StaticTerminate();
     ModelManager::StaticTerminate();
