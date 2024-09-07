@@ -151,8 +151,8 @@
     <ClCompile Include="Src\SoundEffectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\External\DirectXTK\DirectXTK_Desktop_2019.vcxproj">
-      <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
+    <ProjectReference Include="..\..\External\DirectXTK\Audio\DirectXTKAudio_Desktop_2022_Win8.vcxproj">
+      <Project>{4f150a30-cecb-49d1-8283-6a3f57438cf5}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Core\Core.vcxproj">
       <Project>{2be6c312-c1af-40be-b41e-1f9b0b4c54a3}</Project>

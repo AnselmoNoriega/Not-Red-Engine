@@ -44,7 +44,7 @@ void Audio::SoundEffectManager::SetRootPath(const std::filesystem::path& root)
 	mRoot = root;
 }
 
-SoundId Audio::SoundEffectManager::Load(const std::filesystem::path& fileName)
+SoundID Audio::SoundEffectManager::Load(const std::filesystem::path& fileName)
 {
 	std::filesystem::path fullPath = mRoot / fileName;
 	std::size_t soundId = std::filesystem::hash_value(fullPath);
@@ -78,7 +78,7 @@ void SoundEffectManager::Clear()
 	mInventory.clear();
 }
 
-void Audio::SoundEffectManager::Play(SoundId id, bool loop)
+void Audio::SoundEffectManager::Play(SoundID id, bool loop)
 {
 	auto iter = mInventory.find(id);
 	if (iter != mInventory.end())
@@ -88,7 +88,7 @@ void Audio::SoundEffectManager::Play(SoundId id, bool loop)
 	}
 }
 
-void Audio::SoundEffectManager::Stop(SoundId id)
+void Audio::SoundEffectManager::Stop(SoundID id)
 {
 	auto iter = mInventory.find(id);
 	if (iter != mInventory.end())

@@ -23,7 +23,7 @@ private:
 
 	NotRed::Graphics::RenderGroup mCharacter;
 
-	std::vector<NotRed::Audio::SoundId> mEventSoundIds;
+	std::vector<NotRed::Audio::SoundID> mEventSoundIds;
 	NotRed::Graphics::Animation mEventAnimation;
 	float mEventAnimationTime;
 

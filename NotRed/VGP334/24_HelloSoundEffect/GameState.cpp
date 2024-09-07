@@ -115,7 +115,6 @@ void MainState::Initialize()
     EventManager* em = EventManager::Get();
     mSpaceEventId = em->AddListener(EventType::SpacePressed, std::bind(&MainState::OnSpaceEvent, this, std::placeholders::_1));
     mAnimEventId = em->AddListener(EventType::AnimEvent, std::bind(&MainState::OnAnimEvent, this, std::placeholders::_1));
-    //mSoundId = SoundEffectManager::Get()->Load("megamanx_shot.wav");
 
 }
 

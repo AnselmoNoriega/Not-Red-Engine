@@ -2,7 +2,7 @@
 
 namespace NotRed::Audio
 {
-	using SoundId = std::size_t;
+	using SoundID = std::size_t;
 
 	class SoundEffectManager final
 	{
@@ -22,11 +22,11 @@ namespace NotRed::Audio
 
 		void SetRootPath(const std::filesystem::path& root);
 
-		SoundId Load(const std::filesystem::path& fileName);
+		SoundID Load(const std::filesystem::path& fileName);
 		void Clear();
 
-		void Play(SoundId id, bool loop = false);
-		void Stop(SoundId id);
+		void Play(SoundID id, bool loop = false);
+		void Stop(SoundID id);
 
 	private:
 		struct Entry
@@ -36,7 +36,7 @@ namespace NotRed::Audio
 			std::unique_ptr <DirectX::SoundEffectInstance> instance;
 		};
 
-		using SoundEffects = std::unordered_map<SoundId, std::unique_ptr<Entry>>;
+		using SoundEffects = std::unordered_map<SoundID, std::unique_ptr<Entry>>;
 		SoundEffects mInventory;
 
 		std::filesystem::path mRoot;
