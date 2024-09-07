@@ -92,8 +92,8 @@ void MainState::Initialize()
     mStandardEffect.SetDirectionalLight(mDirectionalLight);
 
     Model modelA;
-    ModelIO::LoadModel("../../Assets/Models/TechSoldier/Ch44_nonPBR.model", modelA);
-    ModelIO::LoadMaterial("../../Assets/Models/TechSoldier/Ch44_nonPBR.model", modelA);
+    ModelIO::LoadModel("../../Assets/Models/Mike/Bboy.model", modelA);
+    ModelIO::LoadMaterial("../../Assets/Models/Mike/Bboy.model", modelA);
     mCharacter = CreateRenderGroup(modelA);
 
     SoundEffectManager* sem = SoundEffectManager::Get();
