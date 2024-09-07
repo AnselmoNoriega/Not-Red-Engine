@@ -118,11 +118,13 @@ void MainState::Initialize()
     //mSoundId = SoundEffectManager::Get()->Load("megamanx_shot.wav");
 
 }
+
 void MainState::Terminate()
 {
     CleanRenderGroup(mCharacter);
     mStandardEffect.Terminate();
 }
+
 void MainState::Update(const float deltaTime)
 {
     UpdateCameraControl(deltaTime);
@@ -135,6 +137,7 @@ void MainState::Update(const float deltaTime)
         mEventAnimationTime -= mEventAnimation.GetDuration();
     }
 }
+
 void MainState::Render()
 {
     for (auto& ro : mCharacter)
@@ -145,6 +148,7 @@ void MainState::Render()
     DrawRenderGroup(mStandardEffect, mCharacter);
     mStandardEffect.End();
 }
+
 void MainState::DebugUI()
 {
     ImGui::Begin("Debug control", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
