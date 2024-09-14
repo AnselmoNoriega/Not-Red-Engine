@@ -18,5 +18,11 @@ private:
 	NotRed::Graphics::DirectionalLight mDirectionalLight;
 	NotRed::Graphics::StandardEffect mStandardEffect;
 
-	NotRed::Graphics::RenderGroup mCharacter;
+	NotRed::Graphics::RenderGroup mBiker;
+	NotRed::Graphics::ModelID mBikerID;
+	NotRed::Graphics::Animator mBikerAnimator;
+	NotRed::Graphics::Animation mBikerEvent;
+	float mEventTime;
+
+	NotRed::Graphics::RenderObject mGround;
 };

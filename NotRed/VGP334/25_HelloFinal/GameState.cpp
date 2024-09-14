@@ -64,29 +64,56 @@ void MainState::Initialize()
 	mStandardEffect.SetCamera(mCamera);
 	mStandardEffect.SetDirectionalLight(mDirectionalLight);
 
-	Model modelA;
-	ModelIO::LoadModel("../../Assets/Models/Mike/Bboy.model", modelA);
-	ModelIO::LoadMaterial("../../Assets/Models/Mike/Bboy.model", modelA);
-	mCharacter = CreateRenderGroup(modelA);
+	mBikerID = ModelManager::Get()->LoadModel("../../Assets/Models/Capoeira/Capoeira.model");
+	ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/Capoeira/Capoeira.animset");
+	mBiker = CreateRenderGroup(mBikerID, &mBikerAnimator);
+	mBikerAnimator.Initialize(mBikerID);
+	{
+		mEventTime = 0.0f;
+		mBikerEvent = AnimationBuilder()
+			.AddPositionKey({ -10.0f, 0.0f, 0.0f }, 0.0f)
+			.AddEventKey([&]() {mBikerAnimator.PlayAnimation(1, true); }, 2.0f)
+			.AddEventKey([]() {}, 20.0f)
+			.Build();
+	}
 
+	Mesh obj = MeshBuilder::CreateHorizontalPlane(40, 40, 1.0f);
+	mGround.meshBuffer.Initialize(obj);
+	mGround.diffuseMapID = TextureManager::Get()->LoadTexture("misc/Concrete.jpg");
 }
 
 void MainState::Terminate()
 {
-	CleanRenderGroup(mCharacter);
+	CleanRenderGroup(mBiker);
 	mStandardEffect.Terminate();
 }
 
 void MainState::Update(const float deltaTime)
 {
+	float prevTime = mEventTime;
+	mEventTime += deltaTime;
+	mBikerEvent.PlayEvents(prevTime, mEventTime);
+	while (mEventTime >= mBikerEvent.GetDuration())
+	{
+		mEventTime -= mBikerEvent.GetDuration();
+	}
+
+	mBikerAnimator.Update(deltaTime);
+
 	UpdateCameraControl(deltaTime);
 }
 
 void MainState::Render()
 {
+	for (auto& ro : mBiker)
+	{
+		ro.transform = mBikerEvent.GetTransform(mEventTime);
+	}
+
 	mStandardEffect.Begin();
 	{
-		DrawRenderGroup(mStandardEffect, mCharacter);
+		DrawRenderGroup(mStandardEffect, mBiker);
+		mStandardEffect.Render(mGround);
 	}
 	mStandardEffect.End();
 }
