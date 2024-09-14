@@ -63,18 +63,35 @@ void MainState::Initialize()
 	mStandardEffect.Initialize(L"../../Assets/Shaders/Standard.fx");
 	mStandardEffect.SetCamera(mCamera);
 	mStandardEffect.SetDirectionalLight(mDirectionalLight);
-
-	mBikerID = ModelManager::Get()->LoadModel("../../Assets/Models/Capoeira/Capoeira.model");
-	ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/Capoeira/Capoeira.animset");
-	mBiker = CreateRenderGroup(mBikerID, &mBikerAnimator);
-	mBikerAnimator.Initialize(mBikerID);
 	{
-		mEventTime = 0.0f;
-		mBikerEvent = AnimationBuilder()
-			.AddPositionKey({ -10.0f, 0.0f, 0.0f }, 0.0f)
-			.AddEventKey([&]() {mBikerAnimator.PlayAnimation(1, true); }, 2.0f)
-			.AddEventKey([]() {}, 20.0f)
-			.Build();
+		mBikerID = ModelManager::Get()->LoadModel("../../Assets/Models/PunchingBag/PunchingBag.model");
+		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/PunchingBag/PunchingBag.animset");
+		mBiker = CreateRenderGroup(mBikerID, &mBikerAnimator);
+		mBikerAnimator.Initialize(mBikerID);
+		{
+			mBikerEventTime = 0.0f;
+			mBikerEvent = AnimationBuilder()
+				.AddPositionKey({ -15.0f, 0.0f, 0.0f }, 0.0f)
+				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, -90.0f), 0.0f)
+				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(1, true); }, 0.1f)
+				.AddEventKey([]() {}, 20.0f)
+				.Build();
+		}
+	}
+	{
+		mGuyID = ModelManager::Get()->LoadModel("../../Assets/Models/Capoeira/Capoeira.model");
+		ModelManager::Get()->AddAnimation(mGuyID, "../../Assets/Models/Capoeira/Capoeira.animset");
+		mGuy = CreateRenderGroup(mGuyID, &mGuyAnimator);
+		mGuyAnimator.Initialize(mGuyID);
+		{
+			mGuyEventTime = 0.0f;
+			mGuyEvent = AnimationBuilder()
+				.AddPositionKey({ 15.0f, 0.0f, 0.0f }, 0.0f)
+				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, 90.0f), 0.0f)
+				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(1, true); }, 0.1f)
+				.AddEventKey([]() {}, 20.0f)
+				.Build();
+		}
 	}
 
 	Mesh obj = MeshBuilder::CreateHorizontalPlane(40, 40, 1.0f);
@@ -85,20 +102,35 @@ void MainState::Initialize()
 void MainState::Terminate()
 {
 	CleanRenderGroup(mBiker);
+	CleanRenderGroup(mGuy);
 	mStandardEffect.Terminate();
 }
 
 void MainState::Update(const float deltaTime)
 {
-	float prevTime = mEventTime;
-	mEventTime += deltaTime;
-	mBikerEvent.PlayEvents(prevTime, mEventTime);
-	while (mEventTime >= mBikerEvent.GetDuration())
 	{
-		mEventTime -= mBikerEvent.GetDuration();
+		float prevTime = mBikerEventTime;
+		mBikerEventTime += deltaTime;
+
+		mBikerEvent.PlayEvents(prevTime, mBikerEventTime);
+		while (mBikerEventTime >= mBikerEvent.GetDuration())
+		{
+			mBikerEventTime -= mBikerEvent.GetDuration();
+		}
+	}
+	{
+		float prevTime = mGuyEventTime;
+		mGuyEventTime += deltaTime;
+
+		mGuyEvent.PlayEvents(prevTime, mGuyEventTime);
+		while (mGuyEventTime >= mGuyEvent.GetDuration())
+		{
+			mGuyEventTime -= mGuyEvent.GetDuration();
+		}
 	}
 
 	mBikerAnimator.Update(deltaTime);
+	mGuyAnimator.Update(deltaTime);
 
 	UpdateCameraControl(deltaTime);
 }
@@ -107,12 +139,17 @@ void MainState::Render()
 {
 	for (auto& ro : mBiker)
 	{
-		ro.transform = mBikerEvent.GetTransform(mEventTime);
+		ro.transform = mBikerEvent.GetTransform(mBikerEventTime);
+	}
+	for (auto& ro : mGuy)
+	{
+		ro.transform = mGuyEvent.GetTransform(mGuyEventTime);
 	}
 
 	mStandardEffect.Begin();
 	{
 		DrawRenderGroup(mStandardEffect, mBiker);
+		DrawRenderGroup(mStandardEffect, mGuy);
 		mStandardEffect.Render(mGround);
 	}
 	mStandardEffect.End();

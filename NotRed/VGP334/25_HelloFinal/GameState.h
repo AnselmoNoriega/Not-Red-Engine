@@ -22,7 +22,13 @@ private:
 	NotRed::Graphics::ModelID mBikerID;
 	NotRed::Graphics::Animator mBikerAnimator;
 	NotRed::Graphics::Animation mBikerEvent;
-	float mEventTime;
+	float mBikerEventTime;
+
+	NotRed::Graphics::RenderGroup mGuy;
+	NotRed::Graphics::ModelID mGuyID;
+	NotRed::Graphics::Animator mGuyAnimator;
+	NotRed::Graphics::Animation mGuyEvent;
+	float mGuyEventTime;
 
 	NotRed::Graphics::RenderObject mGround;
 };

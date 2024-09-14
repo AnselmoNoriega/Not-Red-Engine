@@ -49,5 +49,5 @@ Animation AnimationBuilder::Build()
 		!mWorkingCopy.mScaleKeys.empty() ||
 		!mWorkingCopy.mEventKeys.empty(),
 		"AnimationBuilder: no animaiton keys are present");
-	return mWorkingCopy;
+	return std::move(mWorkingCopy);
 }
