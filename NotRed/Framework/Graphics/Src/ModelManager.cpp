@@ -44,7 +44,7 @@ ModelID ModelManager::LoadModel(const std::filesystem::path& filepath)
         ModelIO::LoadModel(filepath, *modelPtr);
         ModelIO::LoadMaterial(filepath, *modelPtr);
         ModelIO::LoadSkeleton(filepath, *modelPtr);
-        ModelIO::LoadAnimations(filepath, *modelPtr);
+        //ModelIO::LoadAnimations(filepath, *modelPtr);
     }
     return modelID;
 }

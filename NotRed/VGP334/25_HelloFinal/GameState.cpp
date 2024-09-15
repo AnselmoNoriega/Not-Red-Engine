@@ -67,6 +67,7 @@ void MainState::Initialize()
 		mBikerID = ModelManager::Get()->LoadModel("../../Assets/Models/WalkingBiker/Walking.model");
 		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/Mike/Bboy.animset");
 		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/WalkingBiker/Walking.animset");
+		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/PunchingBag/PunchingBag.animset");
 		mBiker = CreateRenderGroup(mBikerID, &mBikerAnimator);
 		mBikerAnimator.Initialize(mBikerID);
 		{
@@ -75,16 +76,19 @@ void MainState::Initialize()
 				.AddPositionKey({ -15.0f, 0.0f, 0.0f }, 0.0f)
 				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, 80.0f), 0.0f)
 				.AddScaleKey({2.0f, 2.0f, 2.0f}, 0.0f)
-				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(1, false); }, 0.1f)
-				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(2, true); }, 1.0f)
+				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(0, false); }, 0.1f)
+				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(1, true); }, 1.0f)
 				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 10.0f)
+				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(2, true); }, 10.1f)
+				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 100.0f)
 				.Build();
 		}
 	}
 	{
 		mGuyID = ModelManager::Get()->LoadModel("../../Assets/Models/Capoeira/Capoeira.model");
 		ModelManager::Get()->AddAnimation(mGuyID, "../../Assets/Models/Capoeira/Capoeira.animset");
-		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/WalkingBlonde/Walking.animset");
+		ModelManager::Get()->AddAnimation(mGuyID, "../../Assets/Models/WalkingBlonde/Walking.animset");
+		ModelManager::Get()->AddAnimation(mGuyID, "../../Assets/Models/Dying/Dying.animset");
 		mGuy = CreateRenderGroup(mGuyID, &mGuyAnimator);
 		mGuyAnimator.Initialize(mGuyID);
 		{
@@ -92,10 +96,11 @@ void MainState::Initialize()
 			mGuyEvent = AnimationBuilder()
 				.AddPositionKey({ 15.0f, 0.0f, 0.0f }, 0.0f)
 				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, -80.0f), 0.0f)
-				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(1, true); }, 0.1f)
-				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(2, true); }, 3.0f)
-				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 10.0f)
-				.AddEventKey([]() {}, 20.0f)
+				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(0, true); }, 0.1f)
+				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(1, true); }, 3.0f)
+				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 9.0f)
+				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(2, true); }, 9.1f)
+				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 100.0f)
 				.Build();
 		}
 	}
