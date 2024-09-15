@@ -55,8 +55,8 @@ void MainState::Initialize()
 	mCamera.SetPosition({ 0.0f,1.0f,-4.0f });
 	mCamera.SetLookAt({ 0.0f,0.0f,0.0f });
 
-	mDirectionalLight.direction = Math::Normalize({ 1.0f,-1.0f,1.0f });
-	mDirectionalLight.ambient = { 0.5f,0.5f,0.5f,1.0f };
+	mDirectionalLight.direction = Math::Normalize({ 0.5f,-1.0f,0.5f });
+	mDirectionalLight.ambient = { 0.8f,0.8f,0.8f,1.0f };
 	mDirectionalLight.diffuse = { 0.8f,0.8f,0.8f,1.0f };
 	mDirectionalLight.specular = { 1.0f,1.0f,1.0f,1.0f };
 
@@ -64,31 +64,37 @@ void MainState::Initialize()
 	mStandardEffect.SetCamera(mCamera);
 	mStandardEffect.SetDirectionalLight(mDirectionalLight);
 	{
-		mBikerID = ModelManager::Get()->LoadModel("../../Assets/Models/PunchingBag/PunchingBag.model");
-		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/PunchingBag/PunchingBag.animset");
+		mBikerID = ModelManager::Get()->LoadModel("../../Assets/Models/WalkingBiker/Walking.model");
+		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/Mike/Bboy.animset");
+		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/WalkingBiker/Walking.animset");
 		mBiker = CreateRenderGroup(mBikerID, &mBikerAnimator);
 		mBikerAnimator.Initialize(mBikerID);
 		{
 			mBikerEventTime = 0.0f;
 			mBikerEvent = AnimationBuilder()
 				.AddPositionKey({ -15.0f, 0.0f, 0.0f }, 0.0f)
-				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, -90.0f), 0.0f)
-				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(1, true); }, 0.1f)
-				.AddEventKey([]() {}, 20.0f)
+				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, 80.0f), 0.0f)
+				.AddScaleKey({2.0f, 2.0f, 2.0f}, 0.0f)
+				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(1, false); }, 0.1f)
+				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(2, true); }, 1.0f)
+				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 10.0f)
 				.Build();
 		}
 	}
 	{
 		mGuyID = ModelManager::Get()->LoadModel("../../Assets/Models/Capoeira/Capoeira.model");
 		ModelManager::Get()->AddAnimation(mGuyID, "../../Assets/Models/Capoeira/Capoeira.animset");
+		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/WalkingBlonde/Walking.animset");
 		mGuy = CreateRenderGroup(mGuyID, &mGuyAnimator);
 		mGuyAnimator.Initialize(mGuyID);
 		{
 			mGuyEventTime = 0.0f;
 			mGuyEvent = AnimationBuilder()
 				.AddPositionKey({ 15.0f, 0.0f, 0.0f }, 0.0f)
-				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, 90.0f), 0.0f)
+				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, -80.0f), 0.0f)
 				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(1, true); }, 0.1f)
+				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(2, true); }, 3.0f)
+				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 10.0f)
 				.AddEventKey([]() {}, 20.0f)
 				.Build();
 		}
