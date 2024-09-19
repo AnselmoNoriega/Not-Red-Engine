@@ -31,4 +31,6 @@ private:
 	float mGuyEventTime;
 
 	NotRed::Graphics::RenderObject mGround;
+
+	float mAnimSpeed = 1.0f;
 };

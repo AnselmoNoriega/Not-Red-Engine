@@ -68,6 +68,7 @@ void MainState::Initialize()
 		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/Mike/Bboy.animset");
 		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/WalkingBiker/Walking.animset");
 		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/PunchingBag/PunchingBag.animset");
+		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/Mike/Bboy.animset");//Add dancing here
 		mBiker = CreateRenderGroup(mBikerID, &mBikerAnimator);
 		mBikerAnimator.Initialize(mBikerID);
 		{
@@ -78,8 +79,9 @@ void MainState::Initialize()
 				.AddScaleKey({2.0f, 2.0f, 2.0f}, 0.0f)
 				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(0, false); }, 0.1f)
 				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(1, true); }, 1.0f)
-				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 10.0f)
-				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(2, true); }, 10.1f)
+				.AddPositionKey({ -1.0f, 0.0f, 0.0f }, 8.5f)
+				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(2, false); }, 8.6f)
+				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(3, true); }, 10.6f)//Add dancing
 				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 100.0f)
 				.Build();
 		}
@@ -89,6 +91,7 @@ void MainState::Initialize()
 		ModelManager::Get()->AddAnimation(mGuyID, "../../Assets/Models/Capoeira/Capoeira.animset");
 		ModelManager::Get()->AddAnimation(mGuyID, "../../Assets/Models/WalkingBlonde/Walking.animset");
 		ModelManager::Get()->AddAnimation(mGuyID, "../../Assets/Models/Dying/Dying.animset");
+		ModelManager::Get()->AddAnimation(mGuyID, "../../Assets/Models/Crawling/Crawling.animset");
 		mGuy = CreateRenderGroup(mGuyID, &mGuyAnimator);
 		mGuyAnimator.Initialize(mGuyID);
 		{
@@ -99,7 +102,12 @@ void MainState::Initialize()
 				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(0, true); }, 0.1f)
 				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(1, true); }, 3.0f)
 				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 9.0f)
-				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(2, true); }, 9.1f)
+				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(2, false); }, 9.1f)
+				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, -80.0f), 11.0f)
+				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(3, true); }, 11.1f)
+				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, 80.0f), 12.0f)
+				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 12.0f)
+				.AddPositionKey({ 15.0f, 0.0f, 0.0f }, 25.0f)
 				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 100.0f)
 				.Build();
 		}
@@ -121,7 +129,7 @@ void MainState::Update(const float deltaTime)
 {
 	{
 		float prevTime = mBikerEventTime;
-		mBikerEventTime += deltaTime;
+		mBikerEventTime += deltaTime * mAnimSpeed;
 
 		mBikerEvent.PlayEvents(prevTime, mBikerEventTime);
 		while (mBikerEventTime >= mBikerEvent.GetDuration())
@@ -131,7 +139,7 @@ void MainState::Update(const float deltaTime)
 	}
 	{
 		float prevTime = mGuyEventTime;
-		mGuyEventTime += deltaTime;
+		mGuyEventTime += deltaTime * mAnimSpeed;
 
 		mGuyEvent.PlayEvents(prevTime, mGuyEventTime);
 		while (mGuyEventTime >= mGuyEvent.GetDuration())
@@ -169,6 +177,10 @@ void MainState::Render()
 void MainState::DebugUI()
 {
 	ImGui::Begin("Debug control", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+	if (ImGui::CollapsingHeader("Debug", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::DragFloat("AnimSpeed", &mAnimSpeed, 0.1f);
+	}
 	if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		if (ImGui::DragFloat3("Direction", &mDirectionalLight.direction.x, 0.1f))
