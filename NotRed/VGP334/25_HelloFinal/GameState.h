@@ -30,7 +30,16 @@ private:
 	NotRed::Graphics::Animation mGuyEvent;
 	float mGuyEventTime;
 
+	NotRed::Graphics::ParticleSystemEffect mParticleEffect;
+	NotRed::Physics::ParticleSystem mParticleSystem;
+
 	NotRed::Graphics::RenderObject mGround;
+	NotRed::Graphics::RenderObject mMeteorite;
+	NotRed::Graphics::RenderObject mSkyBox;
+
+	NotRed::Audio::SoundID mBackgroundSound;
+
+	NotRed::Graphics::Animation mMeteorAnim;
 
 	float mAnimSpeed = 1.0f;
 };

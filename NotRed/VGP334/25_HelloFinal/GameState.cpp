@@ -5,6 +5,7 @@ using namespace NotRed::Graphics;
 using namespace NotRed::Math;
 using namespace NotRed::Input;
 using namespace NotRed::Audio;
+using namespace NotRed::Physics;
 
 void MainState::UpdateCameraControl(float dt)
 {
@@ -64,6 +65,28 @@ void MainState::Initialize()
 	mStandardEffect.SetCamera(mCamera);
 	mStandardEffect.SetDirectionalLight(mDirectionalLight);
 	{
+		Mesh obj = MeshBuilder::CreateHorizontalPlane(40, 40, 1.0f);
+		mGround.meshBuffer.Initialize(obj);
+		mGround.diffuseMapID = TextureManager::Get()->LoadTexture("misc/Concrete.jpg");
+
+		obj = MeshBuilder::CreateSphere(100, 100, 10.0f);
+		mMeteorite.meshBuffer.Initialize(obj);
+		mMeteorite.diffuseMapID = TextureManager::Get()->LoadTexture("Terrain-Height-Maps/terrain_map-0.jpg");
+
+		mMeteorAnim = AnimationBuilder()
+			.AddPositionKey({ 10.0f, 30.0f, 10.0f }, 0.0f)
+			.AddPositionKey({ 10.0f, 30.0f, 10.0f }, 0.0f)
+			.AddPositionKey({ 0.0f, 0.5f, 0.0f }, 20.0f)
+			.AddPositionKey({ 0.0f, 0.5f, 0.0f }, 23.0f)
+			.AddPositionKey({ 0.0f, 0.5f, 0.0f }, 100.0f)
+			.Build();
+	}
+	{
+		MeshPX obj = MeshBuilder::CreateSkySpherePX(100, 100, 60.0f);
+		mSkyBox.meshBuffer.Initialize(obj);
+		mSkyBox.diffuseMapID = TextureManager::Get()->LoadTexture("skysphere/sky.jpg");
+	}
+	{
 		mBikerID = ModelManager::Get()->LoadModel("../../Assets/Models/WalkingBiker/Walking.model");
 		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/Mike/Bboy.animset");
 		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/WalkingBiker/Walking.animset");
@@ -77,7 +100,7 @@ void MainState::Initialize()
 			mBikerEvent = AnimationBuilder()
 				.AddPositionKey({ -15.0f, 0.0f, 0.0f }, 0.0f)
 				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, 80.0f), 0.0f)
-				.AddScaleKey({2.0f, 2.0f, 2.0f}, 0.0f)
+				.AddScaleKey({ 2.0f, 2.0f, 2.0f }, 0.0f)
 				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(4, true); }, 0.1f)
 				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(1, true); }, 5.0f)
 				.AddPositionKey({ -15.0f, 0.0f, 0.0f }, 5.0f)
@@ -109,16 +132,48 @@ void MainState::Initialize()
 				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, -80.0f), 15.0f)
 				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(3, true); }, 15.1f)
 				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, 80.0f), 16.0f)
-				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 16.0f) 
+				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 16.0f)
 				.AddPositionKey({ 15.0f, 0.0f, 0.0f }, 31.0f)
 				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 100.0f)
 				.Build();
 		}
 	}
+	{
+		mParticleEffect.Initialize();
+		mParticleEffect.SetCamera(mCamera);
 
-	Mesh obj = MeshBuilder::CreateHorizontalPlane(40, 40, 1.0f);
-	mGround.meshBuffer.Initialize(obj);
-	mGround.diffuseMapID = TextureManager::Get()->LoadTexture("misc/Concrete.jpg");
+		ParticleSystemInfo info;
+		info.maxParticle = 150;
+		info.particleTextureId = TextureManager::Get()->LoadTexture("pikachu.png");
+		info.spawnPosition = Math::Vector3::Zero;
+		info.spawnDirection = Math::Vector3::YAxis;
+		info.spawnDelay = 0.05f;
+		info.spawnLifeTime = 9999.0f;
+		info.minParticlesPerEmit = 2;
+		info.maxParticlesPerEmit = 6;
+		info.minTimeBetweenEmit = 0.15f;
+		info.maxTimeBetweenEmit = 0.65f;
+		info.minSpawnAngle = -30.0f * Math::Constants::Pi / 180.0f;
+		info.maxSpawnAngle = -30.0f * Math::Constants::Pi / 180.0f;
+		info.minSpeed = 10.0f;
+		info.maxSpeed = 20.0f;
+		info.minParticleLifeTime = 0.5f;
+		info.maxParticleLifeTime = 1.0f;
+		info.minStartColor = Colors::Red;
+		info.maxStartColor = Colors::Yellow;
+		info.minEndColor = Colors::White;
+		info.maxEndColor = Colors::Orange;
+		info.minStartScale = Math::Vector3::One;
+		info.maxStartScale = { 1.5f, 1.5f,1.5f };
+		info.minEndScale = { 0.15f, 0.15f, 0.15f };
+		info.maxEndScale = { 1.5f, 1.5f,1.5f };
+		mParticleSystem.Initialize(info);
+		mParticleSystem.SetCamera(mCamera);
+	}
+
+	//SoundEffectManager* sem = SoundEffectManager::Get();
+	//mBackgroundSound = sem->Load("01. CHA-LA HEAD-CHA-LA.wav");
+	//SoundEffectManager::Get()->Play(mBackgroundSound);
 }
 
 void MainState::Terminate()
@@ -126,6 +181,11 @@ void MainState::Terminate()
 	CleanRenderGroup(mBiker);
 	CleanRenderGroup(mGuy);
 	mStandardEffect.Terminate();
+	mParticleEffect.Terminate();
+	mParticleSystem.Terminate();
+	mGround.Terminate();
+	mMeteorite.Terminate();
+	mSkyBox.Terminate();
 }
 
 void MainState::Update(const float deltaTime)
@@ -150,15 +210,18 @@ void MainState::Update(const float deltaTime)
 			mGuyEventTime -= mGuyEvent.GetDuration();
 		}
 	}
-
+	mParticleSystem.SetPosition(mMeteorite.transform.position);
 	mBikerAnimator.Update(deltaTime);
 	mGuyAnimator.Update(deltaTime);
 
 	UpdateCameraControl(deltaTime);
+	mParticleSystem.Update(deltaTime);
 }
 
 void MainState::Render()
 {
+	mMeteorite.transform = mMeteorAnim.GetTransform(mGuyEventTime);
+
 	for (auto& ro : mBiker)
 	{
 		ro.transform = mBikerEvent.GetTransform(mBikerEventTime);
@@ -173,8 +236,14 @@ void MainState::Render()
 		DrawRenderGroup(mStandardEffect, mBiker);
 		DrawRenderGroup(mStandardEffect, mGuy);
 		mStandardEffect.Render(mGround);
+		mStandardEffect.Render(mMeteorite);
+		mStandardEffect.Render(mSkyBox);
 	}
 	mStandardEffect.End();
+
+	mParticleEffect.Begin();
+	mParticleSystem.Render(mParticleEffect);
+	mParticleEffect.End();
 }
 
 void MainState::DebugUI()
@@ -183,6 +252,8 @@ void MainState::DebugUI()
 	if (ImGui::CollapsingHeader("Debug", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::DragFloat("AnimSpeed", &mAnimSpeed, 0.1f);
+		mParticleEffect.DebugUI();
+		mParticleSystem.DebugUI();
 	}
 	if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
 	{

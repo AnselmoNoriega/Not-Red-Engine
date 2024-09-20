@@ -89,7 +89,7 @@ void ParticleSystem::DebugUI()
 	if (ImGui::CollapsingHeader("ParticleSystem"))
 	{
 		ImGui::DragFloat3("Position", &mInfo.spawnPosition.x);
-		if (ImGui::DragFloat3("Direction", &mInfo.spawnDirection.x))
+		if (ImGui::DragFloat3("Direction##Particle", &mInfo.spawnDirection.x, 0.05))
 		{
 			mInfo.spawnDirection = Normalize(mInfo.spawnDirection);
 		}
@@ -99,7 +99,7 @@ void ParticleSystem::DebugUI()
 		ImGui::DragFloat("MinTimeToEmit", &mInfo.minTimeBetweenEmit, 0.01f);
 		ImGui::DragFloat("MaxTimeToEmit", &mInfo.maxTimeBetweenEmit, 0.01f, mInfo.minTimeBetweenEmit);
 		ImGui::DragFloat("MinAngle", &mInfo.minSpawnAngle, 0.001f, -Math::Constants::Pi);
-		ImGui::DragFloat("MaxAngle", &mInfo.minTimeBetweenEmit, 0.001f, mInfo.minSpawnAngle);
+		ImGui::DragFloat("MaxAngle", &mInfo.maxSpawnAngle, 0.001f, mInfo.minSpawnAngle);
 		ImGui::DragFloat("MinSpeed", &mInfo.minSpeed);
 		ImGui::DragFloat("MaxSpeed", &mInfo.maxSpeed, 1.0f, mInfo.minSpeed);
 		ImGui::DragFloat("MinLife", &mInfo.minParticleLifeTime, 0.25f);
