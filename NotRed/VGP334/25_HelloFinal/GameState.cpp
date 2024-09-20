@@ -13,7 +13,7 @@ void MainState::UpdateCameraControl(float dt)
 	const float moveSpeed = input->IsKeyDown(KeyCode::LSHIFT) ? 10.0f : 1.0f;
 	const float turnSpeed = 0.8f;
 
-	if (input->IsKeyDown(KeyCode::W))
+	/*if (input->IsKeyDown(KeyCode::W))
 	{
 		mCamera.Walk(moveSpeed * dt);
 	}
@@ -42,7 +42,7 @@ void MainState::UpdateCameraControl(float dt)
 	{
 		mCamera.Yaw(input->GetMouseMoveX() * turnSpeed * dt);
 		mCamera.Pitch(input->GetMouseMoveY() * turnSpeed * dt);
-	}
+	}*/
 
 	if (input->IsKeyPressed(KeyCode::SPACE))
 	{
@@ -75,9 +75,10 @@ void MainState::Initialize()
 
 		mMeteorAnim = AnimationBuilder()
 			.AddPositionKey({ 10.0f, 30.0f, 10.0f }, 0.0f)
-			.AddPositionKey({ 10.0f, 30.0f, 10.0f }, 0.0f)
-			.AddPositionKey({ 0.0f, 0.5f, 0.0f }, 20.0f)
-			.AddPositionKey({ 0.0f, 0.5f, 0.0f }, 23.0f)
+			.AddEventKey([&]() {mCamera.SetPosition({ -9.0f, 3.0f, -4.33f }); mCamera.Yaw(-1.0f); }, 0.1f)
+			.AddEventKey([&]() {mCamera.SetPosition({11.4f, 3.6f, -3.5f});  mCamera.Yaw(2.0f); }, 5.1f)
+			.AddPositionKey({ 10.0f, 30.0f, 10.0f }, 25.0f)
+			.AddPositionKey({ 0.0f, 0.5f, 0.0f }, 28.0f)
 			.AddPositionKey({ 0.0f, 0.5f, 0.0f }, 100.0f)
 			.Build();
 	}
@@ -203,6 +204,7 @@ void MainState::Update(const float deltaTime)
 	{
 		float prevTime = mGuyEventTime;
 		mGuyEventTime += deltaTime * mAnimSpeed;
+		mMeteorAnim.PlayEvents(prevTime, mBikerEventTime);
 
 		mGuyEvent.PlayEvents(prevTime, mGuyEventTime);
 		while (mGuyEventTime >= mGuyEvent.GetDuration())
@@ -252,6 +254,8 @@ void MainState::DebugUI()
 	if (ImGui::CollapsingHeader("Debug", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::DragFloat("AnimSpeed", &mAnimSpeed, 0.1f);
+		auto pos = mCamera.GetPosition();
+		ImGui::DragFloat3("CamPos", &pos.x, 0.1f);
 		mParticleEffect.DebugUI();
 		mParticleSystem.DebugUI();
 	}
