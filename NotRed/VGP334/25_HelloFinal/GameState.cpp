@@ -77,6 +77,8 @@ void MainState::Initialize()
 			.AddPositionKey({ 10.0f, 30.0f, 10.0f }, 0.0f)
 			.AddEventKey([&]() {mCamera.SetPosition({ -9.0f, 3.0f, -4.33f }); mCamera.Yaw(-1.0f); }, 0.1f)
 			.AddEventKey([&]() {mCamera.SetPosition({11.4f, 3.6f, -3.5f});  mCamera.Yaw(2.0f); }, 5.1f)
+			.AddEventKey([&]() {mCamera.SetPosition({0.0f, 5.0f, -10.0f});  mCamera.Yaw(-1.0f); }, 11.1f)
+			.AddEventKey([&]() {mCamera.SetPosition({0.2f, 2.0f, 00.0f});  mCamera.Yaw(-1.0f);  mCamera.Pitch(-0.4f); }, 19.6f)
 			.AddPositionKey({ 10.0f, 30.0f, 10.0f }, 25.0f)
 			.AddPositionKey({ 0.0f, 0.5f, 0.0f }, 28.0f)
 			.AddPositionKey({ 0.0f, 0.5f, 0.0f }, 100.0f)
@@ -103,11 +105,11 @@ void MainState::Initialize()
 				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, 80.0f), 0.0f)
 				.AddScaleKey({ 2.0f, 2.0f, 2.0f }, 0.0f)
 				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(4, true); }, 0.1f)
-				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(1, true); }, 5.0f)
-				.AddPositionKey({ -15.0f, 0.0f, 0.0f }, 5.0f)
-				.AddPositionKey({ -1.0f, 0.0f, 0.0f }, 12.5f)
-				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(2, false); }, 12.6f)
-				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(3, true); }, 14.6f)
+				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(1, true); }, 10.0f)
+				.AddPositionKey({ -15.0f, 0.0f, 0.0f }, 10.0f)
+				.AddPositionKey({ -1.0f, 0.0f, 0.0f }, 17.5f)
+				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(2, false); }, 17.6f)
+				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(3, true); }, 19.6f)
 				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 100.0f)
 				.Build();
 		}
@@ -126,15 +128,15 @@ void MainState::Initialize()
 				.AddPositionKey({ 15.0f, 0.0f, 0.0f }, 0.0f)
 				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, -80.0f), 0.0f)
 				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(0, true); }, 0.1f)
-				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(1, true); }, 6.0f)
-				.AddPositionKey({ 15.0f, 0.0f, 0.0f }, 6.0f)
-				.AddPositionKey({ 0.5f, 0.0f, 0.0f }, 12.5f)
-				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(2, false); }, 12.6f)
-				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, -80.0f), 15.0f)
-				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(3, true); }, 15.1f)
-				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, 80.0f), 16.0f)
-				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 16.0f)
-				.AddPositionKey({ 15.0f, 0.0f, 0.0f }, 31.0f)
+				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(1, true); }, 11.0f)
+				.AddPositionKey({ 15.0f, 0.0f, 0.0f }, 11.0f)
+				.AddPositionKey({ 0.5f, 0.0f, 0.0f }, 17.5f)
+				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(2, false); }, 17.6f)
+				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, -80.0f), 20.0f)
+				.AddEventKey([&]() {mGuyAnimator.PlayAnimation(3, true); }, 20.1f)
+				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, 80.0f), 21.0f)
+				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 21.0f)
+				.AddPositionKey({ 15.0f, 0.0f, 0.0f }, 45.0f)
 				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 100.0f)
 				.Build();
 		}
@@ -172,9 +174,9 @@ void MainState::Initialize()
 		mParticleSystem.SetCamera(mCamera);
 	}
 
-	//SoundEffectManager* sem = SoundEffectManager::Get();
-	//mBackgroundSound = sem->Load("01. CHA-LA HEAD-CHA-LA.wav");
-	//SoundEffectManager::Get()->Play(mBackgroundSound);
+	SoundEffectManager* sem = SoundEffectManager::Get();
+	mBackgroundSound = sem->Load("megamanx_storm_eagle.wav");
+	SoundEffectManager::Get()->Play(mBackgroundSound);
 }
 
 void MainState::Terminate()
