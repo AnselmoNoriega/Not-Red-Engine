@@ -68,7 +68,8 @@ void MainState::Initialize()
 		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/Mike/Bboy.animset");
 		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/WalkingBiker/Walking.animset");
 		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/PunchingBag/PunchingBag.animset");
-		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/Mike/Bboy.animset");//Add dancing here
+		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/Dancing/Dancing.animset");
+		ModelManager::Get()->AddAnimation(mBikerID, "../../Assets/Models/HipHopDancing/HipHopDancing.animset");
 		mBiker = CreateRenderGroup(mBikerID, &mBikerAnimator);
 		mBikerAnimator.Initialize(mBikerID);
 		{
@@ -77,13 +78,12 @@ void MainState::Initialize()
 				.AddPositionKey({ -15.0f, 0.0f, 0.0f }, 0.0f)
 				.AddRotationKey(Quaternion::CreateFromAxisAngle({ 0.0f, 1.0f, 0.0f }, 80.0f), 0.0f)
 				.AddScaleKey({2.0f, 2.0f, 2.0f}, 0.0f)
-				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(0, true); }, 0.1f)
-				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(2, true); }, 1.0f)
+				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(4, true); }, 0.1f)
 				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(1, true); }, 5.0f)
 				.AddPositionKey({ -15.0f, 0.0f, 0.0f }, 5.0f)
 				.AddPositionKey({ -1.0f, 0.0f, 0.0f }, 12.5f)
 				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(2, false); }, 12.6f)
-				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(3, true); }, 14.6f)//Add dancing
+				.AddEventKey([&]() {mBikerAnimator.PlayAnimation(3, true); }, 14.6f)
 				.AddPositionKey({ 0.0f, 0.0f, 0.0f }, 100.0f)
 				.Build();
 		}
