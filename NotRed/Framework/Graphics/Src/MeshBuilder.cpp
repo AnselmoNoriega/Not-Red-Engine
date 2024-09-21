@@ -478,6 +478,11 @@ Mesh NotRed::Graphics::MeshBuilder::CreateSphere(uint32_t slices, uint32_t rings
     return mesh;
 }
 
+// duplicate skyspherepx >> skysphere
+// make "Mesh" instead of "MeshPX"
+// keep position as it is
+// get normal and tangent from CreateSphere
+// set normal to -
 MeshPX NotRed::Graphics::MeshBuilder::CreateSkySpherePX(uint32_t slices, uint32_t rings, float radius)
 {
     MeshPX mesh;

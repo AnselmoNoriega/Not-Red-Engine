@@ -145,10 +145,13 @@ void ParticleSystem::SpawnSingleParticle()
 	float randFloat = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 	float randAngle = mInfo.minSpawnAngle + ((mInfo.maxSpawnAngle - mInfo.minSpawnAngle) * randFloat);
 
+	// rotAngle0 = cross product with up and desired angle (may have case where up and angle are same, resolve)
+	// rotAngle1 = cross produce rotAngle0 and up
+	// mult angle matrices together
 	Vector3 rotAxis = (Abs(Dot(mInfo.spawnDirection, Vector3::YAxis)) >= 0.9f) ? Vector3::XAxis : Vector3::YAxis;
 	Matrix4 matRotA = Matrix4::RotationAxis(rotAxis, randAngle);
 
-	rotAxis = Normalize(Cross(rotAxis, mInfo.spawnDirection));
+	rotAxis = Vector3::ZAxis;// Normalize(Cross(rotAxis, mInfo.spawnDirection));
 	Matrix4 matRot = Matrix4::RotationAxis(rotAxis, randAngle) * matRotA;
 	Vector3 spawnDirection = TransformNormal(mInfo.spawnDirection, matRot);
 
