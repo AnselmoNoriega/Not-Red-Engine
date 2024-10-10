@@ -13,6 +13,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstdint>
+#include <string>
 #include <filesystem>
 #include <functional>
 #include <list>
