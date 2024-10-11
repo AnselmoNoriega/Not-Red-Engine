@@ -60,31 +60,72 @@ int WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
 	TypedAllocator catPool = TypedAllocator<Cat>("CatPool", 70);
 
 	std::vector<Student*> students;
-	for (uint32_t i = 0; i < 100; ++i)
+	std::vector<Dog*> dogs;
+	std::vector<Cat*> cats;
+
 	{
-		Student* newStudent = studentPool.New("Student_" + std::to_string(i), i);
-		students.push_back(newStudent);
+		for (uint32_t i = 0; i < 140; ++i)
+		{
+			Student* newStudent = studentPool.New("Student_" + std::to_string(i), i);
+			students.push_back(newStudent);
+		}
+
+		for (uint32_t i = 0; i < 34; ++i)
+		{
+			Dog* newDog = dogPool.New("GermanShepherd_" + std::to_string(i), i);
+			dogs.push_back(newDog);
+		}
+
+		for (uint32_t i = 0; i < 67; ++i)
+		{
+			Cat* newCats = catPool.New("CatToy_" + std::to_string(i), i);
+			cats.push_back(newCats);
+		}
 	}
 
-	for (uint32_t i = 0; i < 20; ++i)
 	{
-		auto& student = students.back();
-		studentPool.Delete(student);
-		students.pop_back();
+		for (uint32_t i = 0; i < 101; ++i)
+		{
+			auto& student = students.back();
+			studentPool.Delete(student);
+			students.pop_back();
+		}
+
+		for (uint32_t i = 0; i < 21; ++i)
+		{
+			auto& cat = cats.back();
+			catPool.Delete(cat);
+			cats.pop_back();
+		}
+
+		for (uint32_t i = 0; i < 17; ++i)
+		{
+			auto& dog = dogs.back();
+			dogPool.Delete(dog);
+			dogs.pop_back();
+		}
 	}
 
-	for (uint32_t i = 0; i < 100; ++i)
 	{
-		Student* student = studentPool.New("Students_New" + std::to_string(i), i);
-		students.push_back(student);
-	}
+		for (auto& student : students)
+		{
+			studentPool.Delete(student);
+		}
 
-	for (auto& student : students)
-	{
-		studentPool.Delete(student);
+		for (auto& cat : cats)
+		{
+			catPool.Delete(cat);
+		}
+
+		for (auto& dog : dogs)
+		{
+			dogPool.Delete(dog);
+		}
 	}
 
 	students.clear();
+	dogs.clear();
+	cats.clear();
 
 	return 0;
 }
