@@ -147,6 +147,11 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Engine\Not-Red\Not-Red.vcxproj">
+      <Project>{19d5db20-9493-4d45-95ff-ae23a0f6cc19}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
