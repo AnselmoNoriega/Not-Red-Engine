@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.8.34525.116
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32228.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{CA042ACC-0993-41AC-A551-E6EA5BDEA50A}"
 EndProject
@@ -126,6 +126,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTKAudio_Desktop_2022_Win8", "External\DirectXTK\Audio\DirectXTKAudio_Desktop_2022_Win8.vcxproj", "{4F150A30-CECB-49D1-8283-6A3F57438CF5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "25_HelloFinal", "VGP334\25_HelloFinal\25_HelloFinal.vcxproj", "{726D55D8-957E-42AD-9981-F883AB10550B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assignments4", "Assignments4", "{7D5A6519-0A96-43E7-A5DB-73E6B9FF3F08}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "26_HelloMemory", "VGP336\26_HelloMemory\26_HelloMemory.vcxproj", "{AB85B9CE-8878-471E-9199-880BAEE1B58B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -439,6 +443,14 @@ Global
 		{726D55D8-957E-42AD-9981-F883AB10550B}.Release|x64.Build.0 = Release|x64
 		{726D55D8-957E-42AD-9981-F883AB10550B}.Release|x86.ActiveCfg = Release|Win32
 		{726D55D8-957E-42AD-9981-F883AB10550B}.Release|x86.Build.0 = Release|Win32
+		{AB85B9CE-8878-471E-9199-880BAEE1B58B}.Debug|x64.ActiveCfg = Debug|x64
+		{AB85B9CE-8878-471E-9199-880BAEE1B58B}.Debug|x64.Build.0 = Debug|x64
+		{AB85B9CE-8878-471E-9199-880BAEE1B58B}.Debug|x86.ActiveCfg = Debug|Win32
+		{AB85B9CE-8878-471E-9199-880BAEE1B58B}.Debug|x86.Build.0 = Debug|Win32
+		{AB85B9CE-8878-471E-9199-880BAEE1B58B}.Release|x64.ActiveCfg = Release|x64
+		{AB85B9CE-8878-471E-9199-880BAEE1B58B}.Release|x64.Build.0 = Release|x64
+		{AB85B9CE-8878-471E-9199-880BAEE1B58B}.Release|x86.ActiveCfg = Release|Win32
+		{AB85B9CE-8878-471E-9199-880BAEE1B58B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -484,6 +496,7 @@ Global
 		{0FD5D49A-27D1-49A5-B8EC-A620FE704CCC} = {4948C620-62AA-4C8D-B94F-2D41EF543CCF}
 		{4F150A30-CECB-49D1-8283-6A3F57438CF5} = {BE64C3C2-CDAD-4551-90D7-E8121300ABC7}
 		{726D55D8-957E-42AD-9981-F883AB10550B} = {4948C620-62AA-4C8D-B94F-2D41EF543CCF}
+		{AB85B9CE-8878-471E-9199-880BAEE1B58B} = {7D5A6519-0A96-43E7-A5DB-73E6B9FF3F08}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {42C00E3B-185C-4077-85D6-BC4109FB8B55}
