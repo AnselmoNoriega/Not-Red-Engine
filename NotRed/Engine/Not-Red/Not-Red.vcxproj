@@ -165,6 +165,7 @@
     <ClInclude Include="Inc\EventManager.h" />
     <ClInclude Include="Inc\FPSCameraComponent.h" />
     <ClInclude Include="Inc\GameObject.h" />
+    <ClInclude Include="Inc\GameObjectFactory.h" />
     <ClInclude Include="Inc\GameWorld.h" />
     <ClInclude Include="Inc\NotRed.h" />
     <ClInclude Include="Inc\Service.h" />
@@ -179,6 +180,7 @@
     <ClCompile Include="Src\EventManager.cpp" />
     <ClCompile Include="Src\FPSCameraComponent.cpp" />
     <ClCompile Include="Src\GameObject.cpp" />
+    <ClCompile Include="Src\GameObjectFactory.cpp" />
     <ClCompile Include="Src\GameWorld.cpp" />
     <ClCompile Include="Src\NotRed.cpp" />
     <ClCompile Include="Src\Precompiled.cpp">

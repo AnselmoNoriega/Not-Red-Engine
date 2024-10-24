@@ -6,3 +6,9 @@
 #include <Input/Inc/Input.h>
 #include <Audio/Inc/Audio.h>
 #include <Physics/Inc/Physics.h>
+
+#include <rapidjson/document.h>
+#include <rapidjson/filereadstream.h>
+#include <rapidjson/filewritestream.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/prettywriter.h>

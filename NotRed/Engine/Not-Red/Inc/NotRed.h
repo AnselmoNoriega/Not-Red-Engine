@@ -16,6 +16,7 @@
 
 // Game Object
 #include "GameObject.h"
+#include "GameObjectFactory.h"
 
 // Components
 #include "TypeIds.h"
