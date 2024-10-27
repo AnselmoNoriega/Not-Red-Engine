@@ -14,6 +14,9 @@ namespace NotRed
 
 		void DebugUI() override;
 
+		void Serialize(rapidjson::Document& doc, rapidjson::Value& value) override;
+		void Deserialize(const rapidjson::Value& value) override;
+
 		Graphics::Camera& GetCamera();
 		const Graphics::Camera& GetCamera() const;
 

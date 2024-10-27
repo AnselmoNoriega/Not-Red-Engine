@@ -200,6 +200,41 @@ MeshPC MeshBuilder::CreateVerticalPlanePC(uint32_t numRows, uint32_t numCols, fl
     return mesh;
 }
 
+Mesh MeshBuilder::CreateVerticalPlane(uint32_t numRows, uint32_t numCols, float spacing)
+{
+    srand(time(nullptr));
+    int index = rand() % 100;
+
+    Mesh mesh;
+
+    const Math::Vector3 up = Math::Vector3::YAxis;
+    const Math::Vector3 right = Math::Vector3::XAxis;
+
+    const float hpw = static_cast<float>(numCols) * spacing * 0.5f;
+    const float hph = static_cast<float>(numRows) * spacing * 0.5f;
+
+    float x = -hpw;
+    float y = -hph;
+    float u = 0.0f;
+    float v = 1.0f;
+
+    for (uint32_t r = 0; r <= numRows; ++r)
+    {
+        for (uint32_t c = 0; c <= numCols; ++c)
+        {
+            mesh.vertices.push_back({ {x, y, 0.0f}, right, up, {u, v} });
+            x += spacing;
+        }
+
+        x = -hpw;
+        y += spacing;
+    }
+
+    CreatePlaneIndices(mesh.indices, numRows, numCols);
+
+    return mesh;
+}
+
 MeshPC MeshBuilder::CreateHorizontalPlanePC(uint32_t numRows, uint32_t numCols, float spacing)
 {
     srand(time(nullptr));

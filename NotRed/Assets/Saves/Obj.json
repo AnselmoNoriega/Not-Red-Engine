@@ -1,0 +1,30 @@
+{
+    "Components": {
+      "TransformComponent": {
+        "Position": [ 3, 5, 0 ],
+        "Rotation": [ 0, 0, 0, 1 ],
+        "Scale": [ 1, 1, 1 ]
+      },
+      "MeshComponent": {
+        "Shape": {
+          "Type": "Sphere",
+          "Slices": 60,
+          "Rings": 60,
+          "Radius": 1.0
+        },
+        "Material": {
+          "Ambient": [ 0.5, 0.5, 0.5, 1.0 ],
+          "Diffuse": [ 0.8, 0.8, 0.8, 1.0 ],
+          "Specular": [ 1.0, 1.0, 1.0, 1.0 ],
+          "Emissive": [ 0.0, 0.0, 0.0, 1.0 ],
+          "SpecularPower": 10
+        },
+        "Textures": {
+          "DiffuseMap":  "../../Assets/Images/planets/earth/earth.jpg",
+          "NormalMap":  "../../Assets/Images/planets/earth/earth_normal.jpg",
+          "SpecMap":  "../../Assets/Images/planets/earth/earth_spec.jpg",
+          "BumpMap":  "../../Assets/Images/planets/earth/earth_bump.jpg"
+        }
+      }
+    }
+}

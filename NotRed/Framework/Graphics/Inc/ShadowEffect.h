@@ -20,7 +20,7 @@ namespace NotRed::Graphics
 		void Begin(bool farDepth = false);
 		void End(bool farDepth = false);
 
-		void Render(const RenderObject& renderObject, const Math::Matrix4& pos);
+		void Render(const RenderObject& renderObject);
 
 		void DebugUI();
 

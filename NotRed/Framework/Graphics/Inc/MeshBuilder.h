@@ -15,6 +15,8 @@ namespace NotRed::Graphics
 		static MeshPC CreateVerticalPlanePC(uint32_t numRows, uint32_t numCols, float spacing);
 		static MeshPC CreateHorizontalPlanePC(uint32_t numRows, uint32_t numCols, float spacing);
 		static MeshPX CreateVerticalPlanePX(uint32_t numRows, uint32_t numCols, float spacing);
+		static Mesh CreateVerticalPlane(uint32_t numRows, uint32_t numCols, float spacing);
+		
 		static MeshPX CreateHorizontalPlanePX(uint32_t numRows, uint32_t numCols, float spacing);
 		static Mesh CreateHorizontalPlane(uint32_t numRows, uint32_t numCols, float spacing);
 

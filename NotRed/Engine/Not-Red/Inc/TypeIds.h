@@ -8,13 +8,15 @@ namespace NotRed
         Transform,
         Camera,
         FPSCamera,
+        Mesh,
         Count
     };
     enum class ServiceId
     {
         Invalid,
         Camera,
-        Count
+        Count,
+        Render
     };
 }
 

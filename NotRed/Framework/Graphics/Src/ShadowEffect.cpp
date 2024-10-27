@@ -56,14 +56,14 @@ namespace NotRed::Graphics
 		mDepthMapRenderTarget.EndRender();
 	}
 
-	void ShadowEffect::Render(const RenderObject& renderObject, const Math::Matrix4& pos)
+	void ShadowEffect::Render(const RenderObject& renderObject)
 	{
 		const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
 		const Math::Matrix4 matView = mLightCamera.GetViewMatrix();
 		const Math::Matrix4 matProj = mLightCamera.GetProjectionMatrix();
 
 		TransformData data;
-		data.wvp = Math::Transpose(pos * matWorld * matView * matProj);
+		data.wvp = Math::Transpose(matWorld * matView * matProj);
 		mTransformBuffer.Update(data);
 
 		renderObject.meshBuffer.Render();

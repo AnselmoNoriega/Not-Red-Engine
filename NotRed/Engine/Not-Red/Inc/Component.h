@@ -24,6 +24,9 @@ namespace NotRed
 		virtual void Update(float deltaTime) {}
 		virtual void DebugUI() {}
 
+		virtual void Serialize(rapidjson::Document& doc, rapidjson::Value& value) {}
+		virtual void Deserialize(const rapidjson::Value& value) {}
+
 		virtual uint32_t GetTypeId() const = 0;
 		GameObject& GetOwner() { return *mOwner; }
 		const GameObject& GetOwner() const { return *mOwner; }

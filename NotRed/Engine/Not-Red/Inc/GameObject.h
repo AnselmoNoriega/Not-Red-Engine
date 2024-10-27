@@ -79,6 +79,9 @@ namespace NotRed
         }
 
     private:
+        void Save();
+
+    private:
         std::string mName = "EMPTY";
 
         bool mInitialized = false;
@@ -86,6 +89,8 @@ namespace NotRed
         uint32_t mUniqueId = 0;
         Components mComponents;
         GameWorld* mWorld = nullptr;
+
+        std::filesystem::path mTemplateFilePath = "";
 
     private:
         friend class GameWorld;
