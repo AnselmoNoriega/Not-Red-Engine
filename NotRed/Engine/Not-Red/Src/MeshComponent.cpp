@@ -63,15 +63,15 @@ void MeshComponent::Deserialize(const rapidjson::Value& value)
         }
         if (textureData.HasMember("NormalMap"))
         {
-            matData.diffuseMapName = textureData["NormalMap"].GetString();
+            matData.normalMapName = textureData["NormalMap"].GetString();
         }
         if (textureData.HasMember("SpecMap"))
         {
-            matData.diffuseMapName = textureData["SpecMap"].GetString();
+            matData.specularMapName = textureData["SpecMap"].GetString();
         }
         if (textureData.HasMember("BumpMap"))
         {
-            matData.diffuseMapName = textureData["BumpMap"].GetString();
+            matData.bumpMapName = textureData["BumpMap"].GetString();
         }
     }
 }

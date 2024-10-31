@@ -13,7 +13,7 @@ void MainState::Initialize()
 
     mGameWorld.Initialize();
     
-    mGameWorld.CreateGameObject("Camera", "../../Assets/Saves/FPSCamera.json");
+    mGameWorld.CreateGameObject("Camera", "../../Assets/Saves/FPS_Cam.json");
     mGameWorld.CreateGameObject("Object0", "../../Assets/Saves/Obj.json");
 }
 

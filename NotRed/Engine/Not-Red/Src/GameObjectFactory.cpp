@@ -44,14 +44,14 @@ namespace NotRed::GameObjectFactory
 	{
 		FILE* file = nullptr;
 		auto err = fopen_s(&file, templatePath.string().c_str(), "r");
-		ASSERT(err = 0, "GameObjectFactory: Faild to open file");
+		ASSERT(err == 0, "GameObjectFactory: Faild to open file");
 
 		char readBuffer[65536];
 		rapidjson::FileReadStream readStream(file, readBuffer, sizeof(readBuffer));
 		fclose(file);
 
 		rapidjson::Document doc;
-		doc.ParseStream(readBuffer);
+		doc.ParseStream(readStream);
 		auto components = doc["Components"].GetObj();
 		for (auto& component : components)
 		{
