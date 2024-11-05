@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "GameObjectHandle.h"
 
 namespace NotRed
 {
@@ -25,6 +26,7 @@ namespace NotRed
         uint32_t GetUniqueId() const;
         GameWorld& GetWorld() { return *mWorld; }
         const GameWorld& GetWorld() const { return *mWorld; }
+        const GameObjectHandle& GetHandle() const { return mHandle; }
 
         template<class ComponentType>
         ComponentType* AddComponent()
@@ -90,7 +92,8 @@ namespace NotRed
         Components mComponents;
         GameWorld* mWorld = nullptr;
 
-        std::filesystem::path mTemplateFilePath = "";
+        std::string mTemplateFilePath = "";
+        GameObjectHandle mHandle;
 
     private:
         friend class GameWorld;

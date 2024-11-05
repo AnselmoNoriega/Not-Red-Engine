@@ -9,6 +9,7 @@ namespace NotRed::Graphics
 		static MeshPC CreatePyramidPC(float size);
 
 		static MeshPC CreateCubePC(float size);
+		static Mesh CreateCube(float size);
 
 		static MeshPC CreateRectPC(float width, float height, float depth);
 

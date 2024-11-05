@@ -7,8 +7,10 @@ using namespace NotRed::Graphics;
 void MeshComponent::Deserialize(const rapidjson::Value& value)
 {
     RenderObjectComponent::Deserialize(value);
-    Model::MeshData& meshData = mModel.meshData.emplace_back();
-    Model::MeterialData& matData = mModel.meterialData.emplace_back();
+
+    ASSERT(value.HasMember("Shape") || !mModel.meshData.empty(), "MeshComponent: either needs shape data or have data already");
+    Model::MeshData& meshData = (value.HasMember("Shape")) ? mModel.meshData.emplace_back() : mModel.meshData.back();
+    Model::MeterialData& matData = (value.HasMember("Shape")) ? mModel.meterialData.emplace_back() : mModel.meterialData.back();
 
     if (value.HasMember("Shape"))
     {
@@ -50,10 +52,48 @@ void MeshComponent::Deserialize(const rapidjson::Value& value)
 
         }
     }
-    else
+
+    if (value.HasMember("Material"))
     {
-        ASSERT(false, "MeshComponent: must have shape data");
+        const auto& materialData = value["Material"].GetObj();
+        if (materialData.HasMember("Ambient"))
+        {
+            const auto& color = materialData["Ambient"].GetArray();
+            matData.material.ambient.r = color[0].GetFloat();
+            matData.material.ambient.g = color[1].GetFloat();
+            matData.material.ambient.b = color[2].GetFloat();
+            matData.material.ambient.a = color[3].GetFloat();
+        }
+        if (materialData.HasMember("Diffuse"))
+        {
+            const auto& color = materialData["Diffuse"].GetArray();
+            matData.material.diffuse.r = color[0].GetFloat();
+            matData.material.diffuse.g = color[1].GetFloat();
+            matData.material.diffuse.b = color[2].GetFloat();
+            matData.material.diffuse.a = color[3].GetFloat();
+        }
+        if (materialData.HasMember("Specular"))
+        {
+            const auto& color = materialData["Specular"].GetArray();
+            matData.material.specular.r = color[0].GetFloat();
+            matData.material.specular.g = color[1].GetFloat();
+            matData.material.specular.b = color[2].GetFloat();
+            matData.material.specular.a = color[3].GetFloat();
+        }
+        if (materialData.HasMember("Emissive"))
+        {
+            const auto& color = materialData["Emissive"].GetArray();
+            matData.material.emissive.r = color[0].GetFloat();
+            matData.material.emissive.g = color[1].GetFloat();
+            matData.material.emissive.b = color[2].GetFloat();
+            matData.material.emissive.a = color[3].GetFloat();
+        }
+        if (materialData.HasMember("SpecularPower"))
+        {
+            matData.material.power = materialData["SpecularPower"].GetFloat();
+        }
     }
+
     if (value.HasMember("Textures"))
     {
         const auto& textureData = value["Textures"].GetObj();

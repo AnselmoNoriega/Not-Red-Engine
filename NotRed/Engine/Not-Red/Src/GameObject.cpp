@@ -1,6 +1,8 @@
 #include "Precompiled.h"
 #include "GameObject.h"
 
+#include "GameWorld.h"
+
 using namespace NotRed;
 
 static uint32_t gUniqueId = 0;
@@ -23,6 +25,8 @@ void GameObject::Terminate()
 		component->Terminate();
 		component.reset();
 	}
+
+	mComponents.clear();
 }
 
 void NotRed::GameObject::Update(float deltaTime)
@@ -51,6 +55,10 @@ void GameObject::DebugUI()
 			Save();
 		}
 	}
+	if (ImGui::Button("Delete"))
+	{
+		mWorld->DestroyGameObject(mHandle);
+	}
 
 	ImGui::PopID();
 	ImGui::Separator();
@@ -76,9 +84,9 @@ void GameObject::Save()
 
 	// parented objects
 	FILE* file = nullptr;
-	auto err = fopen_s(&file, mTemplateFilePath.string().c_str(), "w");
+	auto err = fopen_s(&file, mTemplateFilePath.c_str(), "w");
 
-	ASSERT(err == 0, "GameObject: failed to open template file %s", mTemplateFilePath.string().c_str());
+	ASSERT(err == 0, "GameObject: failed to open template file %s", mTemplateFilePath.c_str());
 	
 	char writeBuffer[65536];
 	rapidjson::FileWriteStream writeStream(file, writeBuffer, sizeof(writeBuffer));

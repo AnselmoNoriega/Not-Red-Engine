@@ -78,6 +78,15 @@
     <ClInclude Include="Inc\SaveUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\GameObjectHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\AnimatorComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\ModelComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp">
@@ -123,6 +132,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\RenderService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\AnimatorComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ModelComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,0 +1,20 @@
+
+{
+    "Components": {
+      "TransformComponent": {
+        "Position": [ 1.2, 5.0, 0.0 ],
+        "Rotation": [ 0.1, 0.0, 0.0, 1.0 ],
+        "Scale": [ 1.0, 1.0, 1.0 ]
+      },
+      "ModelComponent": {
+        "FileName": "../../Assets/Models/WalkingBiker/Walking.model",
+        "Animations": [
+          "../../Assets/Models/Dancing/Dancing.animset",
+          "../../Assets/Models/WalkingBiker/Walking.animset",
+          "../../Assets/Models/PunchingBag/PunchingBag.animset"
+        ]
+      },
+      "AnimatorComponent": {
+      }
+    }
+}

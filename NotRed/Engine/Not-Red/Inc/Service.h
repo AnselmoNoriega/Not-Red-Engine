@@ -23,6 +23,9 @@ namespace NotRed
 		virtual void Initialize() {}
 		virtual void Terminate() {}
 
+		virtual void Serialize(rapidjson::Document& doc, rapidjson::Value& value) {}
+		virtual void Deserialize(const rapidjson::Value& value) {}
+
 		virtual void Update(float deltaTime) {}
 
 		virtual void Render() {}

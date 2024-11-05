@@ -1,0 +1,31 @@
+
+{
+    "Capacity": 100,
+    "Services": {
+      "CameraService": {
+      },
+      "RenderService": {
+      }
+    },
+    "GameObjects": {
+      "Camera": {
+        "Template": "../../Assets/Saves/FPS_Cam.json"
+      },
+      "Object0": {
+        "Template": "../../Assets/Saves/Obj.json",
+        "Components": {
+          "TransformComponent": {
+            "Position": [ 2.0, 0.0, 0.0 ]
+          }
+        }
+      },
+      "Object1": {
+        "Template": "../../Assets/Saves/TestModel.json",
+        "Components": {
+          "TransformComponent": {
+            "Position": [ -2.0, 0.0, 0.0 ]
+          }
+        }
+      }
+    }
+  }
