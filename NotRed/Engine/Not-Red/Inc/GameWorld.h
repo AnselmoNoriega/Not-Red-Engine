@@ -5,6 +5,8 @@
 
 namespace NotRed
 {
+    using CustomService = std::function<Service* (const std::string&, GameWorld&)>;
+
     class GameWorld final
     {
     private:
@@ -18,6 +20,8 @@ namespace NotRed
         using GameObjectSlots = std::vector<Slot>;
 
     public:
+        static void SetCustomService(CustomService customService);
+
         void Initialize(uint32_t capacity = 10);
         void Terminate();
 

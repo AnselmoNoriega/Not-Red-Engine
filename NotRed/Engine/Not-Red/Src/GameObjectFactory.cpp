@@ -12,9 +12,12 @@
 
 namespace
 {
+	CustomMake TryMake;
+	CustomGet TryGet;
+
 	Component* AddComponent(const std::string& componentName, GameObject& gameObject)
 	{
-		Component* newComponent = nullptr;
+		Component* newComponent = nullptr;;
 		if (componentName == "TransformComponent")
 		{
 			newComponent = gameObject.AddComponent<TransformComponent>();
@@ -41,7 +44,8 @@ namespace
 		}
 		else
 		{
-			ASSERT(false, "Unknown COmponent Type");
+			newComponent = TryMake(componentName, gameObject);
+			ASSERT(newComponent, "Unknown COmponent Type");
 		}
 
 		return newComponent;
@@ -76,7 +80,8 @@ namespace
 		}
 		else
 		{
-			ASSERT(false, "GameObjectFactory: Unrecognized component %s!", componentName.c_str());
+			newComponent = TryGet(componentName, gameObject);
+			ASSERT(newComponent, "GameObjectFactory: Unrecognized component %s!", componentName.c_str());
 		}
 
 		return newComponent;
@@ -85,6 +90,16 @@ namespace
 
 namespace NotRed::GameObjectFactory
 {
+	void SetCustomMake(CustomMake customMake)
+	{
+		TryMake = customMake;
+	}
+
+	void SetCustomGet(CustomGet customGet)
+	{
+		TryGet = customGet;
+	}
+
 	void Make(const std::filesystem::path& templatePath, GameObject& gameObject)
 	{
 		FILE* file = nullptr;

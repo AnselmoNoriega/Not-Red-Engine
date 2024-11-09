@@ -10,6 +10,16 @@
 
 using namespace NotRed;
 
+namespace
+{
+	CustomService TryService;
+}
+
+void GameWorld::SetCustomService(CustomService customService)
+{
+	TryService = customService;
+}
+
 void GameWorld::Initialize(uint32_t capacity)
 {
 	ASSERT(!mInitialized, "GameWorld: is already initialized");
@@ -118,7 +128,8 @@ void GameWorld::LoadLevel(const std::filesystem::path& levelFile)
 		}
 		else
 		{
-			ASSERT(false, "GameWorld: invalid service name %s", serviceName.c_str());
+			newService = TryService(serviceName, *this);
+			ASSERT(newService, "GameWorld: invalid service name %s", serviceName.c_str());
 		}
 		newService->Deserialize(service.value);
 	}

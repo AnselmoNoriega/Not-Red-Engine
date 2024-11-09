@@ -137,10 +137,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CustomDebugDrawComponent.cpp" />
+    <ClCompile Include="CustomDebugDrawService.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CustomDebugDrawComponent.h" />
+    <ClInclude Include="CustomDebugDrawService.h" />
+    <ClInclude Include="CustomTypeIDs.h" />
     <ClInclude Include="GameState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
