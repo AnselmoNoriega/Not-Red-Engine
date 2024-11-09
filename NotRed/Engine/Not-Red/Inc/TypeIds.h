@@ -11,6 +11,7 @@ namespace NotRed
         Mesh,
         Model,
         Animator,
+        RigidBody,
         Count
     };
     enum class ServiceId

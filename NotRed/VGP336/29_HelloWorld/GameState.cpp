@@ -1,5 +1,8 @@
 #include "GameState.h"
 
+#include "CustomDebugDrawComponent.h"
+#include "CustomDebugDrawService.h"
+
 using namespace NotRed;
 using namespace NotRed::Graphics;
 using namespace NotRed::Math;
@@ -8,24 +11,38 @@ using namespace NotRed::Audio;
 
 Component* CustomComponentMake(const std::string& componentName, GameObject& gameObject)
 {
-    if (componentName == "")
+    if (componentName == "CustomDebugDrawComponent")
     {
-        return gameObject.AddComponent<Component>();
+        return gameObject.AddComponent<CustomDebugDrawComponent>();
     }
 
     return nullptr;
 }
 Component* CustomComponentGet(const std::string& componentName, GameObject& gameObject)
 {
+    if (componentName == "CustomDebugDrawComponent")
+    {
+        return gameObject.GetComponent<CustomDebugDrawComponent>();
+    }
+
     return nullptr;
 }
 Service* CustomServiceMake(const std::string& serviceName, GameWorld& gameWorld)
 {
+    if (serviceName == "CustomDebugDrawService")
+    {
+        return gameWorld.AddService<CustomDebugDrawService>();
+    }
+
     return nullptr;
 }
 
 void MainState::Initialize()
 {
+    GameObjectFactory::SetCustomMake(CustomComponentMake);
+    GameObjectFactory::SetCustomGet(CustomComponentGet);
+    GameWorld::SetCustomService(CustomServiceMake);
+
     mGameWorld.LoadLevel(L"../../Assets/Saves/Levels/TestLevel.json");
 }
 
