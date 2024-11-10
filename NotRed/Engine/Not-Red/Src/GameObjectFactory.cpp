@@ -9,6 +9,7 @@
 #include "MeshComponent.h"
 #include "ModelComponent.h"
 #include "AnimatorComponent.h"
+#include "RigidBodyComponent.h"
 
 namespace
 {
@@ -41,6 +42,10 @@ namespace
 		else if (componentName == "AnimatorComponent")
 		{
 			newComponent = gameObject.AddComponent<AnimatorComponent>();
+		}
+		else if (componentName == "RigidBodyComponent")
+		{
+			newComponent = gameObject.AddComponent<RigidBodyComponent>();
 		}
 		else
 		{
@@ -77,6 +82,10 @@ namespace
 		else if (componentName == "AnimatorComponent")
 		{
 			newComponent = gameObject.GetComponent<AnimatorComponent>();
+		}
+		else if (componentName == "RigidBodyComponent")
+		{
+			newComponent = gameObject.GetComponent<RigidBodyComponent>();
 		}
 		else
 		{

@@ -1,17 +1,39 @@
 #include "Precompiled.h"
 #include "RigidBodyComponent.h"
 
+#include "TransformComponent.h"
+
 #include "GameWorld.h"
+#include "PhysicsService.h"
 
 using namespace NotRed;
 using namespace NotRed::Physics;
 
 void RigidBodyComponent::Initialize()
 {
+    PhysicsService* physicsService = GetOwner().GetWorld().GetService<PhysicsService>();
+    if (physicsService)
+    {
+        TransformComponent* transformComponent = GetOwner().GetWorld().GetService<TransformComponent>();
+        mRigidBody.Initialize(*transformComponent, mCollisionShape, mMass);
+        physicsService->Register(this);
+    }
 }
 
 void RigidBodyComponent::Terminate()
 {
+    PhysicsService* physicsService = GetOwner().GetWorld().GetService<PhysicsService>();
+    if (physicsService)
+    {
+        physicsService->Unregister(this);
+    }
+    mRigidBody.Terminate();
+    mCollisionShape.Terminate();
+}
+
+void RigidBodyComponent::DebugUI()
+{
+    ImGui::Text("RigidBody");
 }
 
 void RigidBodyComponent::Deserialize(const rapidjson::Value& value)

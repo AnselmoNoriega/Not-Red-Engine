@@ -11,6 +11,7 @@ namespace NotRed
 
 		void Initialize() override;
 		void Terminate() override;
+		void DebugUI() override;
 
 		void Deserialize(const rapidjson::Value& value) override;
 

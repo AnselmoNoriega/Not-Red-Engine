@@ -16,6 +16,7 @@
 #include "Service.h"
 #include "CameraService.h"
 #include "RenderService.h"
+#include "PhysicsService.h"
 
 // Game Object
 #include "GameObject.h"
@@ -30,6 +31,7 @@
 #include "MeshComponent.h"
 #include "ModelComponent.h"
 #include "AnimatorComponent.h"
+#include "RigidBodyComponent.h"
 #include "RenderObjectComponent.h"
 
 namespace NotRed

@@ -25,6 +25,13 @@
           "SpecMap":  "../../Assets/Images/planets/earth/earth_spec.jpg",
           "BumpMap":  "../../Assets/Images/planets/earth/earth_bump.jpg"
         }
+      },
+      "RigidBodyComponent":{
+        "Mass": 10.0,
+        "ColliderData":{
+          "Shape": "Sphere",
+          "Radius": 1.0
+        }
       }
     }
 }

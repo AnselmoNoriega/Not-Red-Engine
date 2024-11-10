@@ -46,7 +46,7 @@ void PhysicsService::Deserialize(const rapidjson::Value& value)
         const float z = gravity[2].GetFloat();
         settings.gravity = { x, y, z };
     }
-
+      
     if (value.HasMember("SimSteps"))
     {
         settings.simulationStep = value["SimSteps"].GetFloat();
@@ -59,14 +59,17 @@ void PhysicsService::Deserialize(const rapidjson::Value& value)
     PhysicsWorld::Get()->SetSettings(settings);
 }
 
-void PhysicsService::Register(RigidBodyComponent* debugDrawComponent)
+void PhysicsService::Register(RigidBodyComponent* rigidBodyComponent)
 {
+    PhysicsWorld::Get()->Register(&rigidBodyComponent->mRigidBody);
 }
 
-void PhysicsService::Unregister(RigidBodyComponent* debugDrawComponent)
+void PhysicsService::Unregister(RigidBodyComponent* rigidBodyComponent)
 {
+    PhysicsWorld::Get()->Unregister(&rigidBodyComponent->mRigidBody);
 }
 
 void PhysicsService::SetEnabled(bool enabled)
 {
+    mEnabled = enabled;
 }
