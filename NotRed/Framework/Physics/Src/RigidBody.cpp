@@ -20,12 +20,17 @@ void RigidBody::Initialize(NotRed::Graphics::Transform& graphicsTransform, const
 
 	mMotionState = new btDefaultMotionState(ConvertTobtTransform(graphicsTransform));
 	mRigidBody = new btRigidBody(mMass, mMotionState, shape.GetCollisionShape());
+
+#ifndef USE_PHYSICS_SERVICE
 	PhysicsWorld::Get()->Register(this);
+#endif
 }
 
 void RigidBody::Terminate()
 {
+#ifndef USE_PHYSICS_SERVICE
 	PhysicsWorld::Get()->Unregister(this);
+#endif
 	SafeDelete(mRigidBody);
 	SafeDelete(mMotionState);
 	mGraphicsTransform = nullptr;

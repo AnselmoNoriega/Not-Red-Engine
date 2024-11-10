@@ -19,6 +19,7 @@ namespace NotRed
         Invalid,
         Camera,
         Render,
+        Physics,
         Count
     };
 }

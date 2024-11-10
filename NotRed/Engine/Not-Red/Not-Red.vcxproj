@@ -172,6 +172,7 @@
     <ClInclude Include="Inc\MeshComponent.h" />
     <ClInclude Include="Inc\ModelComponent.h" />
     <ClInclude Include="Inc\NotRed.h" />
+    <ClInclude Include="Inc\PhysicsService.h" />
     <ClInclude Include="Inc\RenderObjectComponent.h" />
     <ClInclude Include="Inc\RenderService.h" />
     <ClInclude Include="Inc\RigidBodyComponent.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="Src\MeshComponent.cpp" />
     <ClCompile Include="Src\ModelComponent.cpp" />
     <ClCompile Include="Src\NotRed.cpp" />
+    <ClCompile Include="Src\PhysicsService.cpp" />
     <ClCompile Include="Src\Precompiled.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

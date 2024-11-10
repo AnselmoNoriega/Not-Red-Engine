@@ -90,6 +90,9 @@
     <ClInclude Include="Inc\RigidBodyComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\PhysicsService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp">
@@ -144,6 +147,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\RigidBodyComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\PhysicsService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
