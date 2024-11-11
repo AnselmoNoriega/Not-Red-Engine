@@ -178,6 +178,8 @@
     <ClInclude Include="Inc\RigidBodyComponent.h" />
     <ClInclude Include="Inc\SaveUtil.h" />
     <ClInclude Include="Inc\Service.h" />
+    <ClInclude Include="Inc\SoundBankComponent.h" />
+    <ClInclude Include="Inc\SoundEffectComponent.h" />
     <ClInclude Include="Inc\TransformComponent.h" />
     <ClInclude Include="Inc\TypeIds.h" />
     <ClInclude Include="Src\Precompiled.h" />
@@ -206,6 +208,8 @@
     <ClCompile Include="Src\RenderService.cpp" />
     <ClCompile Include="Src\RigidBodyComponent.cpp" />
     <ClCompile Include="Src\SaveUtil.cpp" />
+    <ClCompile Include="Src\SoundBankComponent.cpp" />
+    <ClCompile Include="Src\SoundEffectComponent.cpp" />
     <ClCompile Include="Src\TransformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -32,6 +32,10 @@
           "Shape": "Sphere",
           "Radius": 1.0
         }
+      },
+      "SoundEffectComponent":{
+        "FileName": "../../Assets/Sounds/explosion.wav",
+        "Looping": false
       }
     }
 }

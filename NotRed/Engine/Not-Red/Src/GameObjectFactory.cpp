@@ -10,6 +10,8 @@
 #include "ModelComponent.h"
 #include "AnimatorComponent.h"
 #include "RigidBodyComponent.h"
+#include "SoundEffectComponent.h"
+#include "SoundBankComponent.h"
 
 namespace
 {
@@ -46,6 +48,14 @@ namespace
 		else if (componentName == "RigidBodyComponent")
 		{
 			newComponent = gameObject.AddComponent<RigidBodyComponent>();
+		}
+		else if (componentName == "SoundBankComponent")
+		{
+			newComponent = gameObject.AddComponent<SoundBankComponent>();
+		}
+		else if (componentName == "SoundEffectComponent")
+		{
+			newComponent = gameObject.AddComponent<SoundEffectComponent>();
 		}
 		else
 		{
@@ -86,6 +96,14 @@ namespace
 		else if (componentName == "RigidBodyComponent")
 		{
 			newComponent = gameObject.GetComponent<RigidBodyComponent>();
+		}
+		else if (componentName == "SoundBankComponent")
+		{
+			newComponent = gameObject.GetComponent<SoundBankComponent>();
+		}
+		else if (componentName == "SoundEffectComponent")
+		{
+			newComponent = gameObject.GetComponent<SoundEffectComponent>();
 		}
 		else
 		{

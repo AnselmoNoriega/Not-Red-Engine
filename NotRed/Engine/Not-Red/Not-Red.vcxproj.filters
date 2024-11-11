@@ -93,6 +93,12 @@
     <ClInclude Include="Inc\PhysicsService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\SoundEffectComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\SoundBankComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp">
@@ -150,6 +156,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\PhysicsService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\SoundEffectComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\SoundBankComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

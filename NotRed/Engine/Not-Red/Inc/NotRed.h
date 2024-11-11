@@ -33,6 +33,8 @@
 #include "AnimatorComponent.h"
 #include "RigidBodyComponent.h"
 #include "RenderObjectComponent.h"
+#include "SoundEffectComponent.h"
+#include "SoundBankComponent.h"
 
 namespace NotRed
 {

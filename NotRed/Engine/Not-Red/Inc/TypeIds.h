@@ -12,6 +12,8 @@ namespace NotRed
         Model,
         Animator,
         RigidBody,
+        SoundEffect,
+        SoundBank,
         Count
     };
     enum class ServiceId
