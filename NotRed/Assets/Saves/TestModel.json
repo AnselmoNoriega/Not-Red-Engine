@@ -20,21 +20,21 @@
       "SoundBankComponent":{
         "SoundEffects":{
           "Shoot":{
-            "FileName": "../Assets/Sounds/megamanx_shot.wav",
+            "FileName": "megamanx_shot.wav",
             "Looping": false
           },
           "MMShot":{
-            "FileName": "../Assets/Sounds/megamanx_shot.wav",
+            "FileName": "megamanx_shot.wav",
             "Looping": false
           },
           "Spark":{
-            "FileName": "../Assets/Sounds/megamanx_shot.wav",
+            "FileName": "megamanx_shot.wav",
             "Looping": false
           }
         }
       },
       "CustomDebugDrawComponent":{
-        "Sliced":30,
+        "Slices":30,
         "Rings":30,
         "Radius":1.0,
         "Position":[0.0, 1.0, 0.0],

@@ -14,7 +14,7 @@ void RigidBodyComponent::Initialize()
     PhysicsService* physicsService = GetOwner().GetWorld().GetService<PhysicsService>();
     if (physicsService)
     {
-        TransformComponent* transformComponent = GetOwner().GetWorld().GetService<TransformComponent>();
+        TransformComponent* transformComponent = GetOwner().GetComponent<TransformComponent>();
         mRigidBody.Initialize(*transformComponent, mCollisionShape, mMass);
         physicsService->Register(this);
     }

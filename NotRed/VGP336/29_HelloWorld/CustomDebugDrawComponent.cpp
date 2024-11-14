@@ -27,7 +27,7 @@ void CustomDebugDrawComponent::Deserialize(const rapidjson::Value& value)
 {
     if (value.HasMember("Slices"))
     {
-        mSlices = static_cast<uint32_t>(value["Rings"].GetInt());
+        mSlices = static_cast<uint32_t>(value["Slices"].GetInt());
     }
     if (value.HasMember("Rings"))
     {
