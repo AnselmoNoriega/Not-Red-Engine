@@ -175,6 +175,8 @@
     <ClInclude Include="Inc\TerrainEffect.h" />
     <ClInclude Include="Inc\Texture.h" />
     <ClInclude Include="Inc\Transform.h" />
+    <ClInclude Include="Inc\UIFont.h" />
+    <ClInclude Include="Inc\UISprite.h" />
     <ClInclude Include="Inc\VertexShader.h" />
     <ClInclude Include="Inc\VertexTypes.h" />
     <ClInclude Include="Inc\WaterEffect.h" />
@@ -214,6 +216,8 @@
     <ClCompile Include="Src\Terrain.cpp" />
     <ClCompile Include="Src\TerrainEffect.cpp" />
     <ClCompile Include="Src\Texture.cpp" />
+    <ClCompile Include="Src\UIFont.cpp" />
+    <ClCompile Include="Src\UISprite.cpp" />
     <ClCompile Include="Src\VertexShader.cpp" />
     <ClCompile Include="Src\StandardEffect.cpp" />
     <ClCompile Include="Src\TextureManager.cpp" />
@@ -222,6 +226,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\External\DirectXTK\DirectXTK_Desktop_2019.vcxproj">
       <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\External\FW1FontWrapper\FW1FontWrapper.vcxproj">
+      <Project>{0d034612-14e2-44e7-993a-72344a2ca7bd}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\External\ImGui\ImGui.vcxproj">
       <Project>{52d656a2-a2f4-4c54-a3c7-653427bed1e8}</Project>

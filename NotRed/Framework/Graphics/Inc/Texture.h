@@ -31,8 +31,14 @@ namespace NotRed::Graphics
 
 		void* GetRawData() const { return mShaderResourceView; }
 
+		uint32_t GetWidth() const;
+		uint32_t GetHeight() const;
+
 	protected:
 		DXGI_FORMAT GetDXGIFormat(Format format);
 		ID3D11ShaderResourceView* mShaderResourceView = nullptr;
+
+		uint32_t mWidth = 0;
+		uint32_t mHeight = 0;
 	};
 }

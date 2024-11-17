@@ -46,6 +46,8 @@
     <ClInclude Include="Inc\ModelManager.h" />
     <ClInclude Include="Inc\Animator.h" />
     <ClInclude Include="Inc\ParticleSystemEffect.h" />
+    <ClInclude Include="Inc\UIFont.h" />
+    <ClInclude Include="Inc\UISprite.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -80,6 +82,8 @@
     <ClCompile Include="Src\ModelManager.cpp" />
     <ClCompile Include="Src\Animator.cpp" />
     <ClCompile Include="Src\ParticleSystemEffect.cpp" />
+    <ClCompile Include="Src\UIFont.cpp" />
+    <ClCompile Include="Src\UISprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
