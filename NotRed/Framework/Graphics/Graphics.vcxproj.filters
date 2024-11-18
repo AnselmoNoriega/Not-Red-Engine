@@ -48,6 +48,7 @@
     <ClInclude Include="Inc\ParticleSystemEffect.h" />
     <ClInclude Include="Inc\UIFont.h" />
     <ClInclude Include="Inc\UISprite.h" />
+    <ClInclude Include="Inc\UISpriteRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -84,6 +85,7 @@
     <ClCompile Include="Src\ParticleSystemEffect.cpp" />
     <ClCompile Include="Src\UIFont.cpp" />
     <ClCompile Include="Src\UISprite.cpp" />
+    <ClCompile Include="Src\UISpriteRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -177,6 +177,7 @@
     <ClInclude Include="Inc\Transform.h" />
     <ClInclude Include="Inc\UIFont.h" />
     <ClInclude Include="Inc\UISprite.h" />
+    <ClInclude Include="Inc\UISpriteRenderer.h" />
     <ClInclude Include="Inc\VertexShader.h" />
     <ClInclude Include="Inc\VertexTypes.h" />
     <ClInclude Include="Inc\WaterEffect.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="Src\Texture.cpp" />
     <ClCompile Include="Src\UIFont.cpp" />
     <ClCompile Include="Src\UISprite.cpp" />
+    <ClCompile Include="Src\UISpriteRenderer.cpp" />
     <ClCompile Include="Src\VertexShader.cpp" />
     <ClCompile Include="Src\StandardEffect.cpp" />
     <ClCompile Include="Src\TextureManager.cpp" />
