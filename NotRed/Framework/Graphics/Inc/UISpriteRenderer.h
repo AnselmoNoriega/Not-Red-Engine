@@ -9,6 +9,7 @@ namespace NotRed::Graphics
     public:
         static void StaticInitialize();
         static void StaticTerminate();
+        static UISpriteRenderer* Get();
 
         UISpriteRenderer() = default;
         ~UISpriteRenderer();
@@ -19,7 +20,7 @@ namespace NotRed::Graphics
         void BeginRender();
         void EndRender();
 
-        void Render();
+        void Render(const UISprite* uiSprite);
 
     private:
         DirectX::CommonStates* mCommonStates = nullptr;

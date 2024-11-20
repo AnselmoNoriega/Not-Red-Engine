@@ -22,6 +22,7 @@ namespace NotRed
         Camera,
         Render,
         Physics,
+        UIRender,
         Count
     };
 }
