@@ -14,6 +14,9 @@ namespace NotRed
         RigidBody,
         SoundEffect,
         SoundBank,
+        UIText,
+        UISprite,
+        UIButton,
         Count
     };
     enum class ServiceId

@@ -12,6 +12,8 @@
 #include "RigidBodyComponent.h"
 #include "SoundEffectComponent.h"
 #include "SoundBankComponent.h"
+#include "UITextComponent.h"
+#include "UISpriteComponent.h"
 
 namespace
 {
@@ -56,6 +58,14 @@ namespace
 		else if (componentName == "SoundEffectComponent")
 		{
 			newComponent = gameObject.AddComponent<SoundEffectComponent>();
+		}
+		else if (componentName == "UITextComponent")
+		{
+			newComponent = gameObject.AddComponent<UITextComponent>();
+		}
+		else if (componentName == "UISpriteComponent")
+		{
+			newComponent = gameObject.AddComponent<UISpriteComponent>();
 		}
 		else
 		{
@@ -104,6 +114,14 @@ namespace
 		else if (componentName == "SoundEffectComponent")
 		{
 			newComponent = gameObject.GetComponent<SoundEffectComponent>();
+		}
+		else if (componentName == "UITextComponent")
+		{
+			newComponent = gameObject.GetComponent<UITextComponent>();
+		}
+		else if (componentName == "UISpriteComponent")
+		{
+			newComponent = gameObject.GetComponent<UISpriteComponent>();
 		}
 		else
 		{

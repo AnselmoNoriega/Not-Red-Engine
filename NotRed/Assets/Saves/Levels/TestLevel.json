@@ -12,7 +12,8 @@
         "FixedTimeStep": 0.016
       },
       "CustomDebugDrawService":{
-        
+      },
+      "UIRenderService": {
       }
     },
     "GameObjects": {
