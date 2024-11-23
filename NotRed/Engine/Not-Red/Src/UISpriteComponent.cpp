@@ -9,7 +9,7 @@ using namespace NotRed::Graphics;
 
 void UISpriteComponent::Initialize()
 {
-	ASSERT(mTexturePath.empty(), "UISpriteComponent: texture path is not set");
+	ASSERT(!mTexturePath.empty(), "UISpriteComponent: texture path is not set");
 	mUISprite.Initialize(mTexturePath);
 	UIRenderService* renderService = GetOwner().GetWorld().GetService<UIRenderService>();
 	renderService->Register(this);
