@@ -1,4 +1,4 @@
-#include "CustomDebugDrawService.h"
+#include "VolumetricLightingService.h"
 
 #include "CustomDebugDrawComponent.h"
 
@@ -6,7 +6,7 @@ using namespace NotRed;
 using namespace NotRed::Graphics;
 using namespace NotRed::Math;
 
-void CustomDebugDrawService::Render()
+void VolumetricLightingService::Render()
 {
     for (auto* debugDrawComponent : mCustomDebugDrawComponents)
     {
@@ -14,7 +14,7 @@ void CustomDebugDrawService::Render()
     }
 }
 
-void CustomDebugDrawService::Register(CustomDebugDrawComponent* debugDrawComponent)
+void VolumetricLightingService::Register(CustomDebugDrawComponent* debugDrawComponent)
 {
     auto iter = std::find(mCustomDebugDrawComponents.begin(), mCustomDebugDrawComponents.end(), debugDrawComponent);
     if (iter == mCustomDebugDrawComponents.end())
@@ -23,7 +23,7 @@ void CustomDebugDrawService::Register(CustomDebugDrawComponent* debugDrawCompone
     }
 }
 
-void CustomDebugDrawService::Unregister(CustomDebugDrawComponent* debugDrawComponent)
+void VolumetricLightingService::Unregister(CustomDebugDrawComponent* debugDrawComponent)
 {
     auto iter = std::find(mCustomDebugDrawComponents.begin(), mCustomDebugDrawComponents.end(), debugDrawComponent);
     if (iter != mCustomDebugDrawComponents.end())

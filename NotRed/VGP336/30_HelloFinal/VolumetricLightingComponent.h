@@ -2,7 +2,7 @@
 
 #include "CustomTypeIDs.h"
 
-class CustomDebugDrawComponent : public NotRed::Component
+class VolumetricLightingComponent : public NotRed::Component
 {
 public: 
     SET_TYPE_ID(CustomComponentID::CustomDebugDraw);

@@ -1,4 +1,4 @@
-#include "CustomDebugDrawComponent.h"
+#include "VolumetricLightingComponent.h"
 
 #include "CustomDebugDrawService.h"
 
@@ -6,24 +6,24 @@ using namespace NotRed;
 using namespace NotRed::Graphics;
 using namespace NotRed::Math;
 
-void CustomDebugDrawComponent::Initialize()
+void VolumetricLightingComponent::Initialize()
 {
     mTransformComponent = GetOwner().GetComponent<TransformComponent>();
     CustomDebugDrawService* drawService = GetOwner().GetWorld().GetService<CustomDebugDrawService>();
     drawService->Register(this);
 }
 
-void CustomDebugDrawComponent::Terminate()
+void VolumetricLightingComponent::Terminate()
 {
     CustomDebugDrawService* drawService = GetOwner().GetWorld().GetService<CustomDebugDrawService>();
     drawService->Unregister(this);
 }
 
-void CustomDebugDrawComponent::Update(float dt)
+void VolumetricLightingComponent::Update(float dt)
 {
 }
 
-void CustomDebugDrawComponent::Deserialize(const rapidjson::Value& value)
+void VolumetricLightingComponent::Deserialize(const rapidjson::Value& value)
 {
     if (value.HasMember("Slices"))
     {
@@ -54,7 +54,7 @@ void CustomDebugDrawComponent::Deserialize(const rapidjson::Value& value)
     }
 }
 
-void CustomDebugDrawComponent::AddDebugDraw() const
+void VolumetricLightingComponent::AddDebugDraw() const
 {
     Vector3 worldSpace = mPosition;
     if (mTransformComponent)

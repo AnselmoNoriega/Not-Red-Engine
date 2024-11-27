@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CustomDebugDrawComponent.cpp">
+    <ClCompile Include="VolumetricLightingComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CustomDebugDrawService.cpp">
+    <ClCompile Include="VolumetricLightingService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameState.cpp">
@@ -29,10 +29,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CustomDebugDrawComponent.h">
+    <ClInclude Include="VolumetricLightingComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CustomDebugDrawService.h">
+    <ClInclude Include="VolumetricLightingService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CustomTypeIDs.h">

@@ -137,14 +137,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CustomDebugDrawComponent.cpp" />
-    <ClCompile Include="CustomDebugDrawService.cpp" />
+    <ClCompile Include="VolumetricLightingComponent.cpp" />
+    <ClCompile Include="VolumetricLightingService.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CustomDebugDrawComponent.h" />
-    <ClInclude Include="CustomDebugDrawService.h" />
+    <ClInclude Include="VolumetricLightingComponent.h" />
+    <ClInclude Include="VolumetricLightingService.h" />
     <ClInclude Include="CustomTypeIDs.h" />
     <ClInclude Include="GameState.h" />
   </ItemGroup>

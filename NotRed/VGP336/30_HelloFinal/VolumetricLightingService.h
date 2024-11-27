@@ -4,7 +4,7 @@
 
 class CustomDebugDrawComponent;
 
-class CustomDebugDrawService : public NotRed::Service
+class VolumetricLightingService : public NotRed::Service
 {
 public:
     SET_TYPE_ID(CustomServiceID::CustomDebugDrawDisplay);
