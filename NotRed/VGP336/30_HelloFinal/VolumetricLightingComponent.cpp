@@ -65,3 +65,16 @@ void VolumetricLightingComponent::AddDebugDraw() const
 
     SimpleDraw::AddSphere(mSlices, mRings, mRadius, worldSpace, mColor);
 }
+
+glm::quat LookAtRotation(const glm::vec3& targetPosition, const glm::vec3& pivotPosition, const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f))
+{
+    glm::vec3 direction = glm::normalize(targetPosition - pivotPosition);
+    glm::vec3 forward = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::quat rotation = glm::rotation(forward, direction);
+
+    glm::vec3 right = glm::normalize(glm::cross(up, direction));
+    glm::vec3 correctedUp = glm::normalize(glm::cross(direction, right));
+    glm::mat3 rotationMatrix = glm::mat3(right, correctedUp, -direction);
+
+    return glm::quat_cast(rotationMatrix);
+}
