@@ -1,21 +1,25 @@
 
+cbuffer TranformBuffer : register(b0)
+{
+    matrix wvp;
+}
+
 struct VS_INPUT
 {
     float3 position : POSITION;
-    float4 color : COLOR;
 };
 
 struct VS_OUTPUT
 {
     float4 position : SV_Position;
-    float4 color : COLOR;
+    float3 fragPos : TEXCOORD0;
+    float3 viewDir : TEXCOORD0;
 };
 
 VS_OUTPUT VS(VS_INPUT input)
 {
     VS_OUTPUT output;
-    output.position = float4(input.position, 1.0f);
-    output.color = input.color;
+    output.position = mul(float4(input.position, 1.0f), wvp);
     return output;
 }
 
@@ -94,16 +98,16 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 // ========================================================================
 // ========================================================================
 
-float4 PSMain(float3 fragPos, float3 viewDir) : SV_Target
+float4 PS(VS_OUTPUT input) : SV_Target
 {
     // Initialize light
     float3 lightPos = float3(0, 10, 0); // Light source position
     float3 lightColor = float3(1, 1, 0.8); // Light color
-    float3 lightDir = normalize(lightPos - fragPos); // Direction from light to point
+    float3 lightDir = normalize(lightPos - input.fragPos); // Direction from light to point
 
     // Raymarch from light to fragment position
     float3 lightRayPos = lightPos; // Starting point of the light ray
-    float3 lightRayStep = normalize(fragPos - lightPos) * stepSize; // Increment along light direction
+    float3 lightRayStep = normalize(input.fragPos - lightPos) * stepSize; // Increment along light direction
     float lightTransmittance = 1.0; // Accumulated attenuation along the light ray
     float lightAbsorptionCoefficient = 0.5; // Accumulated attenuation along the light ray
 
@@ -123,13 +127,13 @@ float4 PSMain(float3 fragPos, float3 viewDir) : SV_Target
         lightRayPos += lightRayStep;
 
         // Stop if the light ray reaches the fragment position
-        if (length(lightRayPos - fragPos) < stepSize)
+        if (length(lightRayPos - input.fragPos) < stepSize)
             break;
     }
 
     // Raymarch through the volume from the fragment's perspective
-    float3 rayPos = fragPos; // Starting point of the view ray
-    float3 rayStep = viewDir * stepSize; // Increment along view direction
+    float3 rayPos = input.fragPos; // Starting point of the view ray
+    float3 rayStep = input.viewDir * stepSize; // Increment along view direction
     float accumulatedLight = 0.0; // Accumulated light contribution
 
     for (int i = 0; i < numSteps; ++i)
@@ -138,7 +142,7 @@ float4 PSMain(float3 fragPos, float3 viewDir) : SV_Target
         float density = GetProceduralDensity(rayPos);
 
         // Compute scattering at the current position
-        float3 scattering = ComputeScattering(lightDir, viewDir, density);
+        float3 scattering = ComputeScattering(lightDir, input.viewDir, density);
 
         // Combine scattering with light attenuation
         accumulatedLight += dot(lightColor * lightTransmittance, scattering) * density * stepSize;
@@ -148,7 +152,7 @@ float4 PSMain(float3 fragPos, float3 viewDir) : SV_Target
     }
 
     // Apply distance attenuation
-    float distanceAttenuation = 1.0 / (1.0 + length(fragPos - lightPos) * 0.1);
+    float distanceAttenuation = 1.0 / (1.0 + length(input.fragPos - lightPos) * 0.1);
     accumulatedLight *= distanceAttenuation;
 
     // Output the final color

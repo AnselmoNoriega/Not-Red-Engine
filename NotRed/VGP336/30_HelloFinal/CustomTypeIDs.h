@@ -8,5 +8,5 @@ enum class CustomComponentID
 };
 enum class CustomServiceID
 {
-    CustomDebugDrawDisplay = static_cast<uint32_t>(NotRed::ServiceId::Count)
+    VolumeRenderer = static_cast<uint32_t>(NotRed::ServiceId::Count)
 };
