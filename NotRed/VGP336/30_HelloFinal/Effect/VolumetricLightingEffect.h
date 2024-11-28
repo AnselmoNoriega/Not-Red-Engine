@@ -29,7 +29,7 @@ namespace NotRed::Graphics
         {
             Math::Matrix4 wvp;
             Math::Matrix4 world;
-            Math::Matrix4 viewDir;
+            Math::Vector3 viewDir;
             // float padding = 0.0f;
         };
 

@@ -2,64 +2,84 @@
 
 namespace NotRed::Graphics
 {
-	void VolumetricLightingEffect::Initialize()
-	{
-		mTransformBuffer.Initialize();
+    void VolumetricLightingEffect::Initialize()
+    {
+        mTransformBuffer.Initialize();
 
-		std::filesystem::path shaderFile = "../../Assets/Shaders/VolumetricLighting.fx";
-		mVertexShader.Initialize<Vertex>(shaderFile);
-		mPixelShader.Initialize(shaderFile);
-		mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
+        std::filesystem::path shaderFile = "../../Assets/Shaders/VolumetricLighting.fx";
+        mVertexShader.Initialize<Vertex>(shaderFile);
+        mPixelShader.Initialize(shaderFile);
+        mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 
-		mBlendState.Initialize(BlendState::Mode::AlphaBlend);
-	}
+        mBlendState.Initialize(BlendState::Mode::AlphaBlend);
+    }
 
-	void VolumetricLightingEffect::Terminate()
-	{
-		mBlendState.Terminate();
+    void VolumetricLightingEffect::Terminate()
+    {
+        mBlendState.Terminate();
 
-		mSampler.Terminate();
-		mPixelShader.Terminate();
-		mVertexShader.Terminate();
+        mSampler.Terminate();
+        mPixelShader.Terminate();
+        mVertexShader.Terminate();
 
-		mTransformBuffer.Terminate();
-	}
+        mTransformBuffer.Terminate();
+    }
 
-	void VolumetricLightingEffect::Render(const std::vector<RenderObject>& renderObjects, const Camera& lightCamera)
-	{
-		RenderDepth();
+    void VolumetricLightingEffect::Render(const std::vector<RenderObject>& renderObjects, const Camera& lightCamera)
+    {
+        RenderDepth();
 
-		mVertexShader.Bind();
-		mPixelShader.Bind();
-		mSampler.BindPS(0);
+        mVertexShader.Bind();
+        mPixelShader.Bind();
+        mSampler.BindPS(0);
 
-		mBlendState.Set();
+        mBlendState.Set();
 
-		SimpleVolumeTransformData data;
-		data.wvp = mCamera;
+        Math::Matrix4 matWorld;
+        const Math::Matrix4 matView = mCamera->GetViewMatrix();
+        const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
 
-		for (auto& obj : renderObjects)
-		{
-			obj.meshBuffer.Render();
-		}
-	}
+        Math::Matrix4 matFinal;
 
-	void VolumetricLightingEffect::SetCamera(const Camera& camera)
-	{
-		mCamera = &camera;
-	}
+        SimpleVolumeTransformData transformData;
+        transformData.viewDir = mCamera->GetDirection();
 
-	void VolumetricLightingEffect::AddObjectForShadows(const RenderObject& obj)
-	{
-		mObjects.push_back(&obj);
-	}
+        //const Math::Matrix4 matLightView = mLightCamera->GetViewMatrix();
+        //const Math::Matrix4 matLightProj = mLightCamera->GetProjectionMatrix();
+        //transformData.lwvp = Transpose(matWorld * matLightView * matLightProj);
 
-	void VolumetricLightingEffect::RenderDepth()
-	{
+        mTransformBuffer.Update(transformData);
 
-	}
+        for (auto& obj : renderObjects)
+        {
+            matWorld = obj.transform.GetMatrix();
+            matFinal = matWorld * matView * matProj;
 
-	void VolumetricLightingEffect::DebugUI()
-	{
-	}
+            transformData.wvp = Math::Transpose(matFinal);
+            transformData.world = Math::Transpose(matWorld);
+
+            mTransformBuffer.Update(transformData);
+
+            obj.meshBuffer.Render();
+        }
+    }
+
+    void VolumetricLightingEffect::SetCamera(const Camera& camera)
+    {
+        mCamera = &camera;
+    }
+
+    void VolumetricLightingEffect::AddObjectForShadows(const RenderObject& obj)
+    {
+        mObjects.push_back(&obj);
+    }
+
+    void VolumetricLightingEffect::RenderDepth()
+    {
+
+    }
+
+    void VolumetricLightingEffect::DebugUI()
+    {
+    }
 }

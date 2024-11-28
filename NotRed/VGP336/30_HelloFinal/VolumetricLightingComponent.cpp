@@ -1,4 +1,4 @@
-#include "VolumetricLightingComponent.h"
+/*#include "VolumetricLightingComponent.h"
 
 #include "CustomDebugDrawService.h"
 
@@ -77,4 +77,4 @@ glm::quat LookAtRotation(const glm::vec3& targetPosition, const glm::vec3& pivot
     glm::mat3 rotationMatrix = glm::mat3(right, correctedUp, -direction);
 
     return glm::quat_cast(rotationMatrix);
-}
+}*/

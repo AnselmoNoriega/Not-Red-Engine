@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 #include "CustomTypeIDs.h"
 
 class VolumetricLightingComponent : public NotRed::Component
@@ -21,4 +21,4 @@ private:
     uint32_t mSlices = 0;
     uint32_t mRings = 0;
     float mRadius = 0.0f;
-};
+};*/
