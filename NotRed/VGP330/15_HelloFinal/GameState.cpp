@@ -157,20 +157,20 @@ void MainState::Render()
 	mShadowEffect.SetFocus(mCamera.GetPosition());
 
 	mShadowEffect.Begin();
-	DrawRenderGroup(mShadowEffect, mCharacter, mCharacterPos);
+	DrawRenderGroup(mShadowEffect, mCharacter);
 	mShadowEffect.End();
 
 	mRenderTarget.BeginRender();
 	mStandardEffect.Begin();
-	mStandardEffect.Render(mGround, mGroundPos);
-	DrawRenderGroup(mStandardEffect, mCharacter, mCharacterPos);
+	mStandardEffect.Render(mGround);
+	DrawRenderGroup(mStandardEffect, mCharacter);
 	mStandardEffect.End();
 	mRenderTarget.EndRender();
 
 	mDepthBuffer.BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
 	mDepthEffect.Begin();
 	mDepthEffect.Render(mGround, mGroundPos);
-	DrawRenderGroup(mDepthEffect, mCharacter, mCharacterPos);
+	DrawRenderGroup(mDepthEffect, mCharacter);
 	mDepthEffect.End();
 	mDepthBuffer.EndRender();
 

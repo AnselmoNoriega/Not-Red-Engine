@@ -2,44 +2,64 @@
 
 namespace NotRed::Graphics
 {
-    void VolumetricLightingEffect::Initialize(const std::filesystem::path& filePath)
-    {
-        mTransformBuffer.Initialize();
+	void VolumetricLightingEffect::Initialize()
+	{
+		mTransformBuffer.Initialize();
 
-        mVertexShader.Initialize<Vertex>(filePath);
-        mPixelShader.Initialize(filePath);
-        mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
-    }
+		std::filesystem::path shaderFile = "../../Assets/Shaders/VolumetricLighting.fx";
+		mVertexShader.Initialize<Vertex>(shaderFile);
+		mPixelShader.Initialize(shaderFile);
+		mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 
-    void VolumetricLightingEffect::Terminate()
-    {
-        mSampler.Terminate();
-        mPixelShader.Terminate();
-        mVertexShader.Terminate();
-        
-        mTransformBuffer.Terminate();
-    }
+		mBlendState.Initialize(BlendState::Mode::AlphaBlend);
+	}
 
-    void VolumetricLightingEffect::Begin()
-    {
-        mVertexShader.Bind();
-        mPixelShader.Bind();
+	void VolumetricLightingEffect::Terminate()
+	{
+		mBlendState.Terminate();
 
-        mSampler.BindVS(0);
-        mSampler.BindPS(0);
+		mSampler.Terminate();
+		mPixelShader.Terminate();
+		mVertexShader.Terminate();
 
-        mTransformBuffer.BindVS(0);
-    }
+		mTransformBuffer.Terminate();
+	}
 
-    void VolumetricLightingEffect::End()
-    {
-    }
+	void VolumetricLightingEffect::Render(const std::vector<RenderObject>& renderObjects, const Camera& lightCamera)
+	{
+		RenderDepth();
 
-    void VolumetricLightingEffect::Render(const RenderObject& renderObject)
-    {
-    }
+		mVertexShader.Bind();
+		mPixelShader.Bind();
+		mSampler.BindPS(0);
 
-    void VolumetricLightingEffect::DebugUI()
-    {
-    }
+		mBlendState.Set();
+
+		SimpleVolumeTransformData data;
+		data.wvp = mCamera;
+
+		for (auto& obj : renderObjects)
+		{
+			obj.meshBuffer.Render();
+		}
+	}
+
+	void VolumetricLightingEffect::SetCamera(const Camera& camera)
+	{
+		mCamera = &camera;
+	}
+
+	void VolumetricLightingEffect::AddObjectForShadows(const RenderObject& obj)
+	{
+		mObjects.push_back(&obj);
+	}
+
+	void VolumetricLightingEffect::RenderDepth()
+	{
+
+	}
+
+	void VolumetricLightingEffect::DebugUI()
+	{
+	}
 }

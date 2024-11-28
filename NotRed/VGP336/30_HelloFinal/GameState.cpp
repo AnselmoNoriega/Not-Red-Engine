@@ -1,7 +1,7 @@
 #include "GameState.h"
 
-#include "CustomDebugDrawComponent.h"
-#include "CustomDebugDrawService.h"
+#include "VolumetricLightingComponent.h"
+#include "VolumetricLightingService.h"
 
 using namespace NotRed;
 using namespace NotRed::Graphics;

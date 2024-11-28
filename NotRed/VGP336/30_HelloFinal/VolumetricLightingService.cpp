@@ -1,13 +1,5 @@
 #include "VolumetricLightingService.h"
 
-#include "CameraService.h"
-
-#include "RenderObjectComponent.h"
-#include "TransformComponent.h"
-#include "AnimatorComponent.h"
-
-#include "GameWorld.h"
-
 using namespace NotRed;
 using namespace NotRed::Graphics;
 

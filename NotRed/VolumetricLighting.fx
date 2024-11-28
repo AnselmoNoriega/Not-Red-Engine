@@ -2,6 +2,8 @@
 cbuffer TranformBuffer : register(b0)
 {
     matrix wvp;
+    matrix world;
+    float3 viewDir;
 }
 
 struct VS_INPUT
@@ -20,6 +22,8 @@ VS_OUTPUT VS(VS_INPUT input)
 {
     VS_OUTPUT output;
     output.position = mul(float4(input.position, 1.0f), wvp);
+    output.viewDir = viewDir;
+    output.fragPos = mul(float4(input.position, 1.0f), world);
     return output;
 }
 
