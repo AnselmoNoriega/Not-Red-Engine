@@ -439,6 +439,49 @@ Mesh NotRed::Graphics::MeshBuilder::CreateHorizontalPlane(uint32_t numRows, uint
     return mesh;
 }
 
+Mesh MeshBuilder::CreateCone(uint32_t numSlices, float height, float radius)
+{
+    Mesh mesh;
+
+    const Math::Vector3 up = Math::Vector3::YAxis;
+    const Math::Vector3 right = Math::Vector3::XAxis;
+
+    float angleStep = 2.0f * Math::PI() / static_cast<float>(numSlices);
+
+    mesh.vertices.push_back({ {0.0f, height, 0.0f}, up, right, {0.5f, 1.0f} });
+
+    mesh.vertices.push_back({ {0.0f, 0.0f, 0.0f}, -up, -right, {0.5f, 0.5f} });
+
+    for (uint32_t i = 0; i <= numSlices; ++i)
+    {
+        float angle = i * angleStep;
+        float x = radius * cos(angle);
+        float z = radius * sin(angle);
+
+        mesh.vertices.push_back({ {x, 0.0f, z}, -up, -right, {0.5f + 0.5f * cos(angle), 0.5f + 0.5f * sin(angle)} });
+    }
+
+    uint32_t apexIndex = 0;
+    uint32_t centerIndex = 1;
+    uint32_t baseStartIndex = 2;
+
+    for (uint32_t i = 0; i < numSlices; ++i)
+    {
+        mesh.indices.push_back(apexIndex);
+        mesh.indices.push_back(baseStartIndex + i);
+        mesh.indices.push_back(baseStartIndex + i + 1);
+    }
+
+    for (uint32_t i = 0; i < numSlices; ++i)
+    {
+        mesh.indices.push_back(centerIndex);
+        mesh.indices.push_back(baseStartIndex + i + 1);
+        mesh.indices.push_back(baseStartIndex + i);
+    }
+
+    return mesh;
+}
+
 MeshPC MeshBuilder::CreateCylinderPC(uint32_t slices, uint32_t rings)
 {
     srand(time(nullptr));

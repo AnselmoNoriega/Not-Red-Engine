@@ -14,12 +14,11 @@ namespace NotRed::Graphics
         void Initialize();
         void Terminate();
 
-        void Render(const std::vector<RenderObject>& renderObjects, const Camera& lightCamera);
+        void Render(const RenderObject& renderObject, const RenderObject& renderTarget);
 
         void DebugUI();
 
         void SetCamera(const Camera& camera);
-        void AddObjectForShadows(const RenderObject& obj);
 
     private:
         void RenderDepth();
@@ -43,8 +42,6 @@ namespace NotRed::Graphics
         BlendState mBlendState;
         VertexShader mVertexShader;
         PixelShader mPixelShader;
-
-        std::vector<const RenderObject*> mObjects;
 
         const Camera* mCamera = nullptr;
     };

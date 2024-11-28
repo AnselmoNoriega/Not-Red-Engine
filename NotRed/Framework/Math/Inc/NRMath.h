@@ -163,4 +163,9 @@ namespace NotRed::Math
 	{
 		return { m._31, m._32, m._33 };
 	}
+
+	inline float PI()
+	{
+		return 3.1415927f;
+	}
 }

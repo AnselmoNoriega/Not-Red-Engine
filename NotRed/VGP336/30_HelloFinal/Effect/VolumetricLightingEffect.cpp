@@ -25,7 +25,7 @@ namespace NotRed::Graphics
         mTransformBuffer.Terminate();
     }
 
-    void VolumetricLightingEffect::Render(const std::vector<RenderObject>& renderObjects, const Camera& lightCamera)
+    void VolumetricLightingEffect::Render(const RenderObject& renderObject, const RenderObject& renderTarget)
     {
         RenderDepth();
 
@@ -35,13 +35,15 @@ namespace NotRed::Graphics
 
         mBlendState.Set();
 
-        Math::Matrix4 matWorld;
+        Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
         const Math::Matrix4 matView = mCamera->GetViewMatrix();
         const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
 
-        Math::Matrix4 matFinal;
+        Math::Matrix4 matFinal = matWorld * matView * matProj;
 
         SimpleVolumeTransformData transformData;
+        transformData.wvp = Math::Transpose(matFinal);
+        transformData.world = Math::Transpose(matWorld);
         transformData.viewDir = mCamera->GetDirection();
 
         //const Math::Matrix4 matLightView = mLightCamera->GetViewMatrix();
@@ -50,28 +52,12 @@ namespace NotRed::Graphics
 
         mTransformBuffer.Update(transformData);
 
-        for (auto& obj : renderObjects)
-        {
-            matWorld = obj.transform.GetMatrix();
-            matFinal = matWorld * matView * matProj;
-
-            transformData.wvp = Math::Transpose(matFinal);
-            transformData.world = Math::Transpose(matWorld);
-
-            mTransformBuffer.Update(transformData);
-
-            obj.meshBuffer.Render();
-        }
+        renderObject.meshBuffer.Render();
     }
 
     void VolumetricLightingEffect::SetCamera(const Camera& camera)
     {
         mCamera = &camera;
-    }
-
-    void VolumetricLightingEffect::AddObjectForShadows(const RenderObject& obj)
-    {
-        mObjects.push_back(&obj);
     }
 
     void VolumetricLightingEffect::RenderDepth()
