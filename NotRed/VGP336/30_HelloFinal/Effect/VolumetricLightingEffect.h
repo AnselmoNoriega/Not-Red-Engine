@@ -19,14 +19,18 @@ namespace NotRed::Graphics
         void DebugUI();
 
         void SetCamera(const Camera& camera);
+        inline void SetTextures(const Texture* renderTarget, const Texture* depthTarget)
+        {
+            mGeometryTexture = renderTarget;
+            mGeometryPositionTetxure = depthTarget;
+        }
 
     private:
-        void RenderDepth();
+        void RenderDepth(const RenderObject& renderObject);
 
     private:
         struct SimpleVolumeTransformData
         {
-            Math::Matrix4 wvp;
             Math::Matrix4 world;
             Math::Vector3 viewDir;
             // float padding = 0.0f;
@@ -44,5 +48,11 @@ namespace NotRed::Graphics
         PixelShader mPixelShader;
 
         const Camera* mCamera = nullptr;
+
+        const Texture* mGeometryTexture = nullptr;
+        const Texture* mGeometryPositionTetxure = nullptr;
+
+        const Texture* mLightGeometryTexture = nullptr;
+        const Texture* mLightGeometryPositionTetxure = nullptr;
     };
 }

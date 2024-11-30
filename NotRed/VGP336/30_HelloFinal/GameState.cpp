@@ -92,7 +92,7 @@ void MainState::Initialize()
 	mShadowEffect.SetDirectionalLight(mDirectionalLight);
 
 	//PostProcessing
-	//mVolumetricLighting.SetTextures(&mRenderTarget, &mDepthBuffer);
+	mVolumetricLighting.SetTextures(&mRenderTarget, &mDepthBuffer);
 
 	GraphicsSystem* gs = GraphicsSystem::Get();
 	const uint32_t screenWidth = gs->GetBackBufferWidth();

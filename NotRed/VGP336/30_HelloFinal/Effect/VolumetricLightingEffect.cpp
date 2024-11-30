@@ -27,8 +27,33 @@ namespace NotRed::Graphics
 
     void VolumetricLightingEffect::Render(const RenderObject& renderObject, const RenderObject& renderTarget)
     {
-        RenderDepth();
+        RenderDepth(renderObject);
 
+        mVertexShader.Bind();
+        mPixelShader.Bind();
+        mSampler.BindPS(0);
+
+        mBlendState.Set();
+
+        //TODO: Set all textures for shader
+
+        SimpleVolumeTransformData transformData;
+        transformData.world = Math::Transpose(renderObject.transform.GetMatrix());
+        transformData.viewDir = mCamera->GetDirection();
+
+        mTransformBuffer.Update(transformData);
+
+        renderTarget.meshBuffer.Render();
+    }
+
+    void VolumetricLightingEffect::SetCamera(const Camera& camera)
+    {
+        mCamera = &camera;
+    }
+
+    void VolumetricLightingEffect::RenderDepth(const RenderObject& renderObject)
+    {
+        // TODO: Change to render with the transform fx
         mVertexShader.Bind();
         mPixelShader.Bind();
         mSampler.BindPS(0);
@@ -53,16 +78,6 @@ namespace NotRed::Graphics
         mTransformBuffer.Update(transformData);
 
         renderObject.meshBuffer.Render();
-    }
-
-    void VolumetricLightingEffect::SetCamera(const Camera& camera)
-    {
-        mCamera = &camera;
-    }
-
-    void VolumetricLightingEffect::RenderDepth()
-    {
-
     }
 
     void VolumetricLightingEffect::DebugUI()
