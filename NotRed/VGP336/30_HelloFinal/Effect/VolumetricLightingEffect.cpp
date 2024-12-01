@@ -36,6 +36,7 @@ namespace NotRed::Graphics
         mBlendState.Set();
 
         //TODO: Set all textures for shader
+        //mTextures->BindPS(i);
 
         SimpleVolumeTransformData transformData;
         transformData.world = Math::Transpose(renderObject.transform.GetMatrix());
