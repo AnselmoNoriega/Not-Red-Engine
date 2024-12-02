@@ -1,6 +1,7 @@
 
 cbuffer TranformBuffer : register(b0)
 {
+    matrix wvp;
     matrix world;
     float3 viewDir;
 }
@@ -18,7 +19,7 @@ struct VS_OUTPUT
 {
     float4 position : SV_Position;
     float3 fragPos : TEXCOORD0;
-    float3 viewDir : TEXCOORD0;
+    float3 viewDir : TEXCOORD1;
 };
 
 VS_OUTPUT VS(VS_INPUT input)
@@ -26,7 +27,7 @@ VS_OUTPUT VS(VS_INPUT input)
     VS_OUTPUT output;
     output.position = float4(input.position, 1.0f);
     output.viewDir = viewDir;
-    output.fragPos = mul(float4(input.position, 1.0f), world);
+    output.fragPos = mul(float4(input.position, 1.0f), world).xyz;
     return output;
 }
 
@@ -107,10 +108,14 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
+    return float4(1.0, 1.0, 1.0, 1.0);/*
     // Initialize light
     float3 lightPos = float3(0, 10, 0); // Light source position
     float3 lightColor = float3(1, 1, 0.8); // Light color
     float3 lightDir = normalize(lightPos - input.fragPos); // Direction from light to point
+    
+    int numSteps = 10;
+    float stepSize = 0.1;
 
     // Raymarch from light to fragment position
     float3 lightRayPos = lightPos; // Starting point of the light ray
@@ -164,4 +169,5 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
     // Output the final color
     return float4(accumulatedLight, accumulatedLight, accumulatedLight, 1.0);
+    */
 }

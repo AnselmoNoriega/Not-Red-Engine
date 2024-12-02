@@ -5,6 +5,7 @@ namespace NotRed::Graphics
     void VolumetricLightingEffect::Initialize()
     {
         mTransformBuffer.Initialize();
+        mLightTransformBuffer.Initialize();
 
         std::filesystem::path shaderFile = "../../Assets/Shaders/VolumetricLighting.fx";
         mVertexShader.Initialize<Vertex>(shaderFile);
@@ -14,7 +15,7 @@ namespace NotRed::Graphics
         mBlendState.Initialize(BlendState::Mode::AlphaBlend);
 
         shaderFile = "../../Assets/Shaders/Transform.fx";
-        mLightVertexShader.Initialize<Vertex>(shaderFile);
+        mLightVertexShader.Initialize<VertexPC>(shaderFile);
 
         GraphicsSystem* gs = GraphicsSystem::Get();
         const uint32_t screenWidth = gs->GetBackBufferWidth();
@@ -33,6 +34,8 @@ namespace NotRed::Graphics
         mVertexShader.Terminate();
 
         mTransformBuffer.Terminate();
+        mLightTransformBuffer.Terminate();
+        mLightGeometryTarget.Terminate();
     }
 
     void VolumetricLightingEffect::Render(const RenderObject& renderObject, const RenderObject& renderTarget)
@@ -50,10 +53,16 @@ namespace NotRed::Graphics
             mGeometryPositionTetxure->BindPS(1);
 
             mLightGeometryTexture->BindPS(2);
-            mLightGeometryPositionTetxure->BindPS(3);
         }
 
+        Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
+        const Math::Matrix4 matView = mCamera->GetViewMatrix();
+        const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
+
+        Math::Matrix4 matFinal = matWorld * matView * matProj;
+
         SimpleVolumeTransformData transformData;
+        transformData.wvp = Math::Transpose(matFinal);
         transformData.world = Math::Transpose(renderObject.transform.GetMatrix());
         transformData.viewDir = mCamera->GetDirection();
 
@@ -61,7 +70,7 @@ namespace NotRed::Graphics
 
         renderTarget.meshBuffer.Render();
 
-        for (size_t i = 0; i < 4; ++i)
+        for (int i = 0; i < 3; ++i)
         {
             Texture::UnbindPS(i);
         }

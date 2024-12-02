@@ -12,7 +12,6 @@ namespace NotRed::Graphics
 
         mTransformBuffer.Initialize();
         mVertexShader.Initialize<Vertex>(shaderFile);
-        mPixelShader.Initialize(shaderFile);
 
         mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
     }
@@ -20,7 +19,6 @@ namespace NotRed::Graphics
     void DepthEffect::Terminate()
     {
         mSampler.Terminate();
-        mPixelShader.Terminate();
         mVertexShader.Terminate();
         mTransformBuffer.Terminate();
     }
@@ -28,26 +26,23 @@ namespace NotRed::Graphics
     void DepthEffect::Begin()
     {
         mVertexShader.Bind();
-        mPixelShader.Bind();
 
         mSampler.BindVS(0);
-        mSampler.BindPS(0);
 
         mTransformBuffer.BindVS(0);
-        mTransformBuffer.BindPS(0);
     }
 
     void DepthEffect::End()
     {
     }
 
-    void DepthEffect::Render(const RenderObject& renderObject, const Math::Matrix4& pos)
+    void DepthEffect::Render(const RenderObject& renderObject)
     {
         const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
         const Math::Matrix4 matView = mCamera->GetViewMatrix();
         const Math::Matrix4 matProj = mCamera->GetProjectionMatrix(); 
         
-        Math::Matrix4 matFinal = pos * matWorld * matView * matProj;
+        Math::Matrix4 matFinal = matWorld * matView * matProj;
 
         Transform transformData;
         transformData.wvp = Math::Transpose(matFinal);

@@ -21,7 +21,7 @@ private:
 
 	NotRed::Graphics::StandardEffect mStandardEffect;
 	NotRed::Graphics::ShadowEffect mShadowEffect;
-	VolumetricLightingEffect mVolumetricLighting;
+	NotRed::Graphics::VolumetricLightingEffect mVolumetricLighting;
 
 	NotRed::Graphics::RenderGroup mCharacter;
 

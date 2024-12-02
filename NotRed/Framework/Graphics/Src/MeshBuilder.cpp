@@ -439,14 +439,14 @@ Mesh NotRed::Graphics::MeshBuilder::CreateHorizontalPlane(uint32_t numRows, uint
     return mesh;
 }
 
-MeshP MeshBuilder::CreateCone(uint32_t numSlices, float height, float radius)
+MeshPC MeshBuilder::CreateCone(uint32_t numSlices, float height, float radius)
 {
-    MeshP mesh;
+    MeshPC mesh;
 
-    mesh.vertices.push_back({ {0.0f, height, 0.0f} });
+    mesh.vertices.push_back({ {0.0f, height, 0.0f}, { 1.0f, 1.0f, 1.0f, 1.0f } });
     uint32_t apexIndex = 0;
 
-    mesh.vertices.push_back({ {0.0f, 0.0f, 0.0f} });
+    mesh.vertices.push_back({ {0.0f, 0.0f, 0.0f}, { 1.0f, 1.0f, 1.0f, 1.0f } });
     uint32_t centerIndex = 1;
 
     float angleStep = 2.0f * Math::PI() / static_cast<float>(numSlices);
@@ -456,7 +456,7 @@ MeshP MeshBuilder::CreateCone(uint32_t numSlices, float height, float radius)
         float angle = i * angleStep;
         float x = radius * cos(angle);
         float z = radius * sin(angle);
-        mesh.vertices.push_back({ {x, 0.0f, z} });
+        mesh.vertices.push_back({ {x, 0.0f, z} , { 1.0f, 1.0f, 1.0f, 1.0f } });
     }
 
     for (uint32_t i = 0; i < numSlices; ++i)

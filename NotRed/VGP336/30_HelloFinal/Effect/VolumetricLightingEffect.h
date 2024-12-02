@@ -31,6 +31,7 @@ namespace NotRed::Graphics
     private:
         struct SimpleVolumeTransformData
         {
+            Math::Matrix4 wvp;
             Math::Matrix4 world;
             Math::Vector3 viewDir;
             float padding = 0.0f;
@@ -63,6 +64,5 @@ namespace NotRed::Graphics
 
         RenderTarget mLightGeometryTarget;
         const Texture* mLightGeometryTexture = nullptr;
-        const Texture* mLightGeometryPositionTetxure = nullptr;
     };
 }
