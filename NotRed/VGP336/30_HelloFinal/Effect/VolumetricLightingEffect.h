@@ -33,25 +33,35 @@ namespace NotRed::Graphics
         {
             Math::Matrix4 world;
             Math::Vector3 viewDir;
-            // float padding = 0.0f;
+            float padding = 0.0f;
+        };
+
+        struct SimpleLightTransformData
+        {
+            Math::Matrix4 wvp;
         };
 
         using SimpleVolumeTransformBuffer = TypedConstantBuffer<SimpleVolumeTransformData>;
+        using SimpleLightTransformBuffer = TypedConstantBuffer<SimpleLightTransformData>;
 
     private:
 
         SimpleVolumeTransformBuffer mTransformBuffer;
+        SimpleLightTransformBuffer mLightTransformBuffer;
 
         Sampler mSampler;
         BlendState mBlendState;
         VertexShader mVertexShader;
         PixelShader mPixelShader;
 
+        VertexShader mLightVertexShader;
+
         const Camera* mCamera = nullptr;
 
         const Texture* mGeometryTexture = nullptr;
         const Texture* mGeometryPositionTetxure = nullptr;
 
+        RenderTarget mLightGeometryTarget;
         const Texture* mLightGeometryTexture = nullptr;
         const Texture* mLightGeometryPositionTetxure = nullptr;
     };

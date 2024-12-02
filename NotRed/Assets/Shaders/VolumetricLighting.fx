@@ -8,7 +8,6 @@ cbuffer TranformBuffer : register(b0)
 Texture2D geometryTexture : register(t0);
 Texture2D geometryPositionTetxure : register(t1);
 Texture2D lightGeometryTexture : register(t2);
-Texture2D lightGeometryPositionTetxure : register(t3);
 
 struct VS_INPUT
 {

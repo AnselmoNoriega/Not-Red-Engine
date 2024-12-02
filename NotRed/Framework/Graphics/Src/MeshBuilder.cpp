@@ -160,31 +160,31 @@ Mesh MeshBuilder::CreateCube(float size)
     mesh.vertices.push_back({ { hs,  hs, -hs}, -Math::Vector3::XAxis, Math::Vector3::ZAxis, {0.0f, t} });
     mesh.vertices.push_back({ { hs,  hs,  hs}, -Math::Vector3::XAxis, Math::Vector3::ZAxis, {q, t} });
     mesh.vertices.push_back({ { hs, -hs,  hs}, -Math::Vector3::XAxis, Math::Vector3::ZAxis, {q, t2} });
-    
+
     // Top
     mesh.vertices.push_back({ { hs,  hs,  hs}, Math::Vector3::YAxis, Math::Vector3::XAxis, {q, t} });
     mesh.vertices.push_back({ { hs,  hs, -hs}, Math::Vector3::YAxis, Math::Vector3::XAxis, {q, 0.0f} });
     mesh.vertices.push_back({ {-hs,  hs, -hs}, Math::Vector3::YAxis, Math::Vector3::XAxis, {q2, 0.0f} });
     mesh.vertices.push_back({ {-hs,  hs,  hs}, Math::Vector3::YAxis, Math::Vector3::XAxis, {q2, t} });
-   
+
     // Front
     mesh.vertices.push_back({ {-hs, -hs,  hs}, -Math::Vector3::ZAxis, Math::Vector3::XAxis, {q2, t2} });
     mesh.vertices.push_back({ {-hs,  hs,  hs}, -Math::Vector3::ZAxis, Math::Vector3::XAxis, {q2, t} });
     mesh.vertices.push_back({ { hs,  hs,  hs}, -Math::Vector3::ZAxis, Math::Vector3::XAxis, {q, t} });
     mesh.vertices.push_back({ { hs, -hs,  hs}, -Math::Vector3::ZAxis, Math::Vector3::XAxis, {q, t2} });
-    
+
     // Bottom				    
     mesh.vertices.push_back({ { hs, -hs,  hs}, -Math::Vector3::YAxis, -Math::Vector3::XAxis, {q, t2} });
     mesh.vertices.push_back({ { hs, -hs, -hs}, -Math::Vector3::YAxis, -Math::Vector3::XAxis, {q, 1.0f} });
     mesh.vertices.push_back({ {-hs, -hs, -hs}, -Math::Vector3::YAxis, -Math::Vector3::XAxis, {q2, 1.0f} });
     mesh.vertices.push_back({ {-hs, -hs,  hs}, -Math::Vector3::YAxis, -Math::Vector3::XAxis, {q2, t2} });
-    
+
     // Right
     mesh.vertices.push_back({ {-hs, -hs, -hs}, Math::Vector3::XAxis, -Math::Vector3::ZAxis, {q3, t2} });
     mesh.vertices.push_back({ {-hs,  hs, -hs}, Math::Vector3::XAxis, -Math::Vector3::ZAxis, {q3, t} });
     mesh.vertices.push_back({ {-hs,  hs,  hs}, Math::Vector3::XAxis, -Math::Vector3::ZAxis, {q2, t} });
     mesh.vertices.push_back({ {-hs, -hs,  hs}, Math::Vector3::XAxis, -Math::Vector3::ZAxis, {q2, t2} });
-    
+
     // Back
     mesh.vertices.push_back({ {-hs,-hs, -hs}, Math::Vector3::ZAxis, -Math::Vector3::XAxis, {q3, t2} });
     mesh.vertices.push_back({ {-hs, hs, -hs}, Math::Vector3::ZAxis, -Math::Vector3::XAxis, {q3, t} });
@@ -439,31 +439,25 @@ Mesh NotRed::Graphics::MeshBuilder::CreateHorizontalPlane(uint32_t numRows, uint
     return mesh;
 }
 
-Mesh MeshBuilder::CreateCone(uint32_t numSlices, float height, float radius)
+MeshP MeshBuilder::CreateCone(uint32_t numSlices, float height, float radius)
 {
-    Mesh mesh;
+    MeshP mesh;
 
-    const Math::Vector3 up = Math::Vector3::YAxis;
-    const Math::Vector3 right = Math::Vector3::XAxis;
+    mesh.vertices.push_back({ {0.0f, height, 0.0f} });
+    uint32_t apexIndex = 0;
+
+    mesh.vertices.push_back({ {0.0f, 0.0f, 0.0f} });
+    uint32_t centerIndex = 1;
 
     float angleStep = 2.0f * Math::PI() / static_cast<float>(numSlices);
-
-    mesh.vertices.push_back({ {0.0f, height, 0.0f}, up, right, {0.5f, 1.0f} });
-
-    mesh.vertices.push_back({ {0.0f, 0.0f, 0.0f}, -up, -right, {0.5f, 0.5f} });
-
+    uint32_t baseStartIndex = 2;
     for (uint32_t i = 0; i <= numSlices; ++i)
     {
         float angle = i * angleStep;
         float x = radius * cos(angle);
         float z = radius * sin(angle);
-
-        mesh.vertices.push_back({ {x, 0.0f, z}, -up, -right, {0.5f + 0.5f * cos(angle), 0.5f + 0.5f * sin(angle)} });
+        mesh.vertices.push_back({ {x, 0.0f, z} });
     }
-
-    uint32_t apexIndex = 0;
-    uint32_t centerIndex = 1;
-    uint32_t baseStartIndex = 2;
 
     for (uint32_t i = 0; i < numSlices; ++i)
     {
@@ -499,7 +493,7 @@ MeshPC MeshBuilder::CreateCylinderPC(uint32_t slices, uint32_t rings)
             float sPos = static_cast<float>(s);
             float rotation = (sPos / static_cast<float>(slices)) * Math::Constants::TwoPi;
 
-            mesh.vertices.push_back( { { cos(rotation), rPos - hh,  sin(rotation) }, GetNextColor(index) });
+            mesh.vertices.push_back({ { cos(rotation), rPos - hh,  sin(rotation) }, GetNextColor(index) });
         }
     }
 
@@ -532,14 +526,14 @@ MeshPC MeshBuilder::CreateSpherePC(uint32_t slices, uint32_t rings, float radius
             float rotation = sPos * horzRotation;
 
             mesh.vertices.push_back
-            ({ 
+            ({
                 {
                     radius * sin(rotation) * sin(phi),
                     radius * cos(phi),
                     radius * cos(rotation) * sin(phi)
                 },
-                    GetNextColor(index) 
-            });
+                    GetNextColor(index)
+                });
         }
     }
 
@@ -572,7 +566,7 @@ MeshPX NotRed::Graphics::MeshBuilder::CreateSpherePX(uint32_t slices, uint32_t r
                     radius * sin(rotation) * sin(phi),
                     radius * cos(phi),
                     radius * cos(rotation) * sin(phi)},
-                    {u, v } 
+                    {u, v }
                 });
         }
     }
@@ -655,7 +649,7 @@ MeshPX NotRed::Graphics::MeshBuilder::CreateSkySpherePX(uint32_t slices, uint32_
                     radius * cos(rotation) * sin(phi),
                     radius * cos(phi),
                     radius * sin(rotation) * sin(phi)},
-                    {u, v } 
+                    {u, v }
                 });
         }
     }

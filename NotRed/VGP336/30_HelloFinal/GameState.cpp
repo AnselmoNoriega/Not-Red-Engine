@@ -59,10 +59,10 @@ void MainState::Initialize()
 		mCharacter = CreateRenderGroup(model);
 	}
 	{
-		const Mesh& m = NotRed::Graphics::MeshBuilder::CreateCone(100, 10.0f, 5.0f);
+		const MeshP& m = NotRed::Graphics::MeshBuilder::CreateCone(100, 10.0f, 5.0f);
 		mLight.meshBuffer.Initialize(
 			m.vertices.data(),
-			static_cast<uint32_t>(sizeof(Vertex)),
+			static_cast<uint32_t>(sizeof(VertexP)),
 			static_cast<uint32_t>(m.vertices.size()),
 			m.indices.data(),
 			static_cast<uint32_t>(m.indices.size())

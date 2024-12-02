@@ -8,7 +8,8 @@ namespace NotRed::Graphics
 		enum class Format
 		{
 			RGBA_U8,
-			RGBA_U32
+			RGBA_U32,
+			R32_FLOAT
 		};
 
 		static void UnbindPS(uint32_t slot = 0);
