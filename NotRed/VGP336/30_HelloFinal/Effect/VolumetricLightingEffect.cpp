@@ -24,8 +24,6 @@ namespace NotRed::Graphics
         mLightGeometryTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::R32_FLOAT);
         mLightInGeometryTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::R32_FLOAT);
         mLightViewTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::R32_FLOAT);
-
-        //mLightGeometryTexture = &mLightGeometryTarget;
     }
 
     void VolumetricLightingEffect::Terminate()
@@ -75,6 +73,8 @@ namespace NotRed::Graphics
         transformData.wvp = Math::Transpose(matFinal);
         transformData.world = Math::Transpose(renderObject.transform.GetMatrix());
         transformData.viewDir = mCamera->GetDirection();
+        SpotLight light;
+        transformData.LightViewProj = Math::Transpose(light.cameraObj.GetViewMatrix() * light.cameraObj.GetProjectionMatrix());
 
         mTransformBuffer.Update(transformData);
 

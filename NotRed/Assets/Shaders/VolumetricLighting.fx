@@ -4,17 +4,21 @@ cbuffer TranformBuffer : register(b0)
     matrix wvp;
     matrix world;
     float3 viewDir;
+    matrix lightViewProj;
 }
 
 Texture2D geometryTexture : register(t0);
 Texture2D geometryPositionTetxure : register(t1);
 Texture2D lightGeometryTexture : register(t2);
 Texture2D lightInGeometryTexture : register(t3);
-Texture2D mLightViewTarget : register(t4);
+Texture2D lightViewTarget : register(t4);
+
+SamplerState textureSampler : register(s0);
 
 struct VS_INPUT
 {
     float3 position : POSITION;
+    float2 texCoord : TEXCOORD;
 };
 
 struct VS_OUTPUT
@@ -22,7 +26,55 @@ struct VS_OUTPUT
     float4 position : SV_Position;
     float3 fragPos : TEXCOORD0;
     float3 viewDir : TEXCOORD1;
+    
+    float4 geometryColor : TEXCOORD2;
+    float geometryPositionDepth : TEXCOORD3;
+    float lightGeometryDepth : TEXCOORD4;
+    float lightInGeometryDepth : TEXCOORD5;
+    float lightViewDepth : TEXCOORD6;
 };
+
+float4x4 Inverse(float4x4 m)
+{
+    float4x4 result;
+    
+    // Compute the determinant of the matrix
+    float det = dot(m._m00, cross(m._m10, m._m20))
+              - dot(m._m01, cross(m._m11, m._m21))
+              + dot(m._m02, cross(m._m12, m._m22));
+    
+    if (det == 0.0)
+    {
+        return result; // non-invertible
+    }
+    
+    // Compute the adjugate matrix (Cofactor method)
+    
+    result._m00 = dot(m._m11, cross(m._m21, m._m31)) - dot(m._m12, cross(m._m22, m._m32)) + dot(m._m13, cross(m._m23, m._m33));
+    result._m01 = -(dot(m._m10, cross(m._m20, m._m30)) - dot(m._m12, cross(m._m22, m._m32)) + dot(m._m13, cross(m._m23, m._m33)));
+    result._m02 = dot(m._m10, cross(m._m20, m._m30)) - dot(m._m11, cross(m._m21, m._m31)) + dot(m._m13, cross(m._m23, m._m33));
+    result._m03 = -(dot(m._m10, cross(m._m20, m._m30)) - dot(m._m11, cross(m._m21, m._m31)) + dot(m._m12, cross(m._m22, m._m32)));
+
+    result._m10 = -(dot(m._m01, cross(m._m21, m._m31)) - dot(m._m02, cross(m._m22, m._m32)) + dot(m._m03, cross(m._m23, m._m33)));
+    result._m11 = dot(m._m00, cross(m._m20, m._m30)) - dot(m._m02, cross(m._m22, m._m32)) + dot(m._m03, cross(m._m23, m._m33));
+    result._m12 = -(dot(m._m00, cross(m._m10, m._m30)) - dot(m._m02, cross(m._m12, m._m32)) + dot(m._m03, cross(m._m13, m._m33)));
+    result._m13 = dot(m._m00, cross(m._m10, m._m30)) - dot(m._m01, cross(m._m11, m._m31)) + dot(m._m03, cross(m._m13, m._m33));
+
+    result._m20 = dot(m._m01, cross(m._m11, m._m21)) - dot(m._m02, cross(m._m12, m._m22)) + dot(m._m03, cross(m._m13, m._m23));
+    result._m21 = -(dot(m._m00, cross(m._m10, m._m20)) - dot(m._m02, cross(m._m12, m._m22)) + dot(m._m03, cross(m._m13, m._m23)));
+    result._m22 = dot(m._m00, cross(m._m10, m._m20)) - dot(m._m01, cross(m._m11, m._m21)) + dot(m._m03, cross(m._m13, m._m23));
+    result._m23 = -(dot(m._m00, cross(m._m10, m._m20)) - dot(m._m01, cross(m._m11, m._m21)) + dot(m._m02, cross(m._m12, m._m22)));
+
+    result._m30 = -(dot(m._m01, cross(m._m11, m._m21)) - dot(m._m02, cross(m._m12, m._m22)) + dot(m._m03, cross(m._m13, m._m23)));
+    result._m31 = dot(m._m00, cross(m._m10, m._m20)) - dot(m._m01, cross(m._m11, m._m21)) + dot(m._m02, cross(m._m12, m._m22));
+    result._m32 = -(dot(m._m00, cross(m._m10, m._m20)) - dot(m._m01, cross(m._m11, m._m21)) + dot(m._m02, cross(m._m12, m._m22)));
+    result._m33 = dot(m._m00, cross(m._m10, m._m20)) - dot(m._m01, cross(m._m11, m._m21)) + dot(m._m02, cross(m._m12, m._m22));
+
+    // Divide by the determinant to get the final inverse matrix
+    result = result / det;
+
+    return result;
+}
 
 VS_OUTPUT VS(VS_INPUT input)
 {
@@ -30,6 +82,13 @@ VS_OUTPUT VS(VS_INPUT input)
     output.position = float4(input.position, 1.0f);
     output.viewDir = viewDir;
     output.fragPos = mul(float4(input.position, 1.0f), world).xyz;
+    
+    output.geometryColor = geometryTexture.Sample(textureSampler, input.texCoord);
+    output.geometryPositionDepth = geometryPositionTetxure.Sample(textureSampler, input.texCoord).r;
+    output.lightGeometryDepth = lightGeometryTexture.Sample(textureSampler, input.texCoord).r;
+    output.lightInGeometryDepth = lightInGeometryTexture.Sample(textureSampler, input.texCoord).r;
+    output.lightViewDepth = lightViewTarget.Sample(textureSampler, input.texCoord).r;
+    
     return output;
 }
 
@@ -110,7 +169,13 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    return float4(1.0, 1.0, 1.0, 1.0);/*
+    return float4(1.0, 1.0, 1.0, 1.0); /*
+    
+    float depth = lightGeometryTexture.Sample(textureSampler, input.texCoord).r;
+    float4 clipPos = float4(input.texCoord.x, input.texCoord.y, depth, 1.0f);
+    float4 viewPos = mul(Inverse(lightViewProj), clipPos);
+    float3 worldPos = viewPos.xyz / viewPos.w;
+    
     // Initialize light
     float3 lightPos = float3(0, 10, 0); // Light source position
     float3 lightColor = float3(1, 1, 0.8); // Light color
