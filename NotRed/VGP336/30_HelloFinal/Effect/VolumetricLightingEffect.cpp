@@ -62,6 +62,7 @@ namespace NotRed::Graphics
 
             mLightGeometryTarget.BindPS(2);
             mLightInGeometryTarget.BindPS(3);
+            mLightViewTarget.BindPS(4);
         }
 
         Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
