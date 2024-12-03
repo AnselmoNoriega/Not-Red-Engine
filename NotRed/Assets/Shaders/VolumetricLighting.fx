@@ -24,14 +24,9 @@ struct VS_INPUT
 struct VS_OUTPUT
 {
     float4 position : SV_Position;
+    float2 texCoord : TEXCOORD2;
     float3 fragPos : TEXCOORD0;
     float3 viewDir : TEXCOORD1;
-    
-    float4 geometryColor : TEXCOORD2;
-    float geometryPositionDepth : TEXCOORD3;
-    float lightGeometryDepth : TEXCOORD4;
-    float lightInGeometryDepth : TEXCOORD5;
-    float lightViewDepth : TEXCOORD6;
 };
 
 float4x4 Inverse(float4x4 m)
@@ -82,12 +77,12 @@ VS_OUTPUT VS(VS_INPUT input)
     output.position = float4(input.position, 1.0f);
     output.viewDir = viewDir;
     output.fragPos = mul(float4(input.position, 1.0f), world).xyz;
+    output.texCoord = input.texCoord;
     
-    output.geometryColor = geometryTexture.Sample(textureSampler, input.texCoord);
-    output.geometryPositionDepth = geometryPositionTetxure.Sample(textureSampler, input.texCoord).r;
-    output.lightGeometryDepth = lightGeometryTexture.Sample(textureSampler, input.texCoord).r;
-    output.lightInGeometryDepth = lightInGeometryTexture.Sample(textureSampler, input.texCoord).r;
-    output.lightViewDepth = lightViewTarget.Sample(textureSampler, input.texCoord).r;
+    //output.geometryPositionDepth = geometryPositionTetxure.Sample(textureSampler, input.texCoord).r;
+    //output.lightGeometryDepth = lightGeometryTexture.Sample(textureSampler, input.texCoord).r;
+    //output.lightInGeometryDepth = lightInGeometryTexture.Sample(textureSampler, input.texCoord).r;
+    //output.lightViewDepth = lightViewTarget.Sample(textureSampler, input.texCoord).r;
     
     return output;
 }
@@ -169,7 +164,8 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    return float4(1.0, 1.0, 1.0, 1.0); /*
+    float4 geometryColor = geometryTexture.Sample(textureSampler, input.texCoord);
+    return geometryColor; /*
     
     float depth = lightGeometryTexture.Sample(textureSampler, input.texCoord).r;
     float4 clipPos = float4(input.texCoord.x, input.texCoord.y, depth, 1.0f);
