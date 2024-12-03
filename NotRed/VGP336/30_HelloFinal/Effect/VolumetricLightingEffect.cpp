@@ -14,15 +14,16 @@ namespace NotRed::Graphics
 
         mBlendState.Initialize(BlendState::Mode::AlphaBlend);
 
-        shaderFile = "../../Assets/Shaders/Transform.fx";
+        shaderFile = "../../Assets/Shaders/Depth.fx";
         mLightVertexShader.Initialize<VertexPC>(shaderFile);
 
         GraphicsSystem* gs = GraphicsSystem::Get();
         const uint32_t screenWidth = gs->GetBackBufferWidth();
         const uint32_t screenHeight = gs->GetBackBufferHeight();
         mLightGeometryTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::R32_FLOAT);
+        mLightInGeometryTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::R32_FLOAT);
 
-        mLightGeometryTexture = &mLightGeometryTarget;
+        //mLightGeometryTexture = &mLightGeometryTarget;
     }
 
     void VolumetricLightingEffect::Terminate()
@@ -35,12 +36,15 @@ namespace NotRed::Graphics
 
         mTransformBuffer.Terminate();
         mLightTransformBuffer.Terminate();
+
         mLightGeometryTarget.Terminate();
+        mLightInGeometryTarget.Terminate();
     }
 
-    void VolumetricLightingEffect::Render(const RenderObject& renderObject, const RenderObject& renderTarget)
+    void VolumetricLightingEffect::Render(const RenderObject& renderObject, const RenderObject& inRenderObject, const RenderObject& renderTarget)
     {
-        RenderDepth(renderObject);
+        RenderDepth(renderObject, mLightGeometryTarget);
+        RenderDepth(renderObject, mLightInGeometryTarget);
 
         mVertexShader.Bind();
         mPixelShader.Bind();
@@ -52,7 +56,8 @@ namespace NotRed::Graphics
             mGeometryTexture->BindPS(0);
             mGeometryPositionTetxure->BindPS(1);
 
-            mLightGeometryTexture->BindPS(2);
+            mLightGeometryTarget.BindPS(2);
+            mLightInGeometryTarget.BindPS(3);
         }
 
         Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
@@ -81,9 +86,9 @@ namespace NotRed::Graphics
         mCamera = &camera;
     }
 
-    void VolumetricLightingEffect::RenderDepth(const RenderObject& renderObject)
+    void VolumetricLightingEffect::RenderDepth(const RenderObject& renderObject, RenderTarget& target)
     {
-        mLightGeometryTarget.BeginRender();
+        target.BeginRender();
 
         mLightVertexShader.Bind();
 
@@ -104,10 +109,41 @@ namespace NotRed::Graphics
 
         renderObject.meshBuffer.Render();
 
-        mLightGeometryTarget.EndRender();
+        target.EndRender();
     }
 
     void VolumetricLightingEffect::DebugUI()
     {
+        if (ImGui::CollapsingHeader("Textures:"))
+        {
+            ImGui::Image(
+                mGeometryTexture->GetRawData(),
+                { 144, 144 },
+                { 0, 0 },
+                { 1, 1 },
+                { 1, 1, 1, 1 },
+                { 1, 1, 1, 1 });
+            ImGui::Image(
+                mGeometryPositionTetxure->GetRawData(),
+                { 144, 144 },
+                { 0, 0 },
+                { 1, 1 },
+                { 1, 1, 1, 1 },
+                { 1, 1, 1, 1 });
+            ImGui::Image(
+                mLightGeometryTarget.GetRawData(),
+                { 144, 144 },
+                { 0, 0 },
+                { 1, 1 },
+                { 1, 1, 1, 1 },
+                { 1, 1, 1, 1 });
+            ImGui::Image(
+                mLightInGeometryTarget.GetRawData(),
+                { 144, 144 },
+                { 0, 0 },
+                { 1, 1 },
+                { 1, 1, 1, 1 },
+                { 1, 1, 1, 1 });
+        }
     }
 }

@@ -69,6 +69,16 @@ void MainState::Initialize()
 		);
 	}
 	{
+		const MeshPC& m = NotRed::Graphics::MeshBuilder::CreateInCone(100, 10.0f, 5.0f);
+		mInLight.meshBuffer.Initialize(
+			m.vertices.data(),
+			static_cast<uint32_t>(sizeof(VertexPC)),
+			static_cast<uint32_t>(m.vertices.size()),
+			m.indices.data(),
+			static_cast<uint32_t>(m.indices.size())
+		);
+	}
+	{
 		std::filesystem::path shaderFilePath = (L"../../Assets/Shaders/Standard.fx");
 		mStandardEffect.Initialize(shaderFilePath);
 	}
@@ -113,6 +123,7 @@ void MainState::Terminate()
 	mStandardEffect.Terminate();
 
 	mLight.Terminate();
+	mInLight.Terminate();
 	CleanRenderGroup(mCharacter);
 }
 
@@ -144,11 +155,13 @@ void MainState::Render()
 	mDepthEffect.End();
 	mDepthBuffer.EndRender();
 
-	mVolumetricLighting.Render(mLight, mScreenQuad);
+	mVolumetricLighting.Render(mLight, mInLight, mScreenQuad);
 }
 
 void MainState::DebugUI()
-{/*
+{
+	mVolumetricLighting.DebugUI();
+	/*
 	ImGui::Begin("Debug Controls", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
 	if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))

@@ -26,6 +26,7 @@ private:
 	NotRed::Graphics::RenderGroup mCharacter;
 
 	NotRed::Graphics::RenderObject mLight;
+	NotRed::Graphics::RenderObject mInLight;
 
 	NotRed::Graphics::DepthEffect mDepthEffect;
 

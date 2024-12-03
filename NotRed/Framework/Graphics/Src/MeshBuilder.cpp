@@ -476,6 +476,43 @@ MeshPC MeshBuilder::CreateCone(uint32_t numSlices, float height, float radius)
     return mesh;
 }
 
+MeshPC MeshBuilder::CreateInCone(uint32_t numSlices, float height, float radius)
+{
+    MeshPC mesh;
+
+    mesh.vertices.push_back({ {0.0f, height, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f} });
+    uint32_t apexIndex = 0;
+
+    mesh.vertices.push_back({ {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f} });
+    uint32_t centerIndex = 1;
+
+    float angleStep = 2.0f * Math::PI() / static_cast<float>(numSlices);
+    uint32_t baseStartIndex = 2;
+    for (uint32_t i = 0; i <= numSlices; ++i)
+    {
+        float angle = i * angleStep;
+        float x = radius * cos(angle);
+        float z = radius * sin(angle);
+        mesh.vertices.push_back({ {x, 0.0f, z}, {1.0f, 1.0f, 1.0f, 1.0f} });
+    }
+
+    for (uint32_t i = 0; i < numSlices; ++i)
+    {
+        mesh.indices.push_back(baseStartIndex + i + 1);
+        mesh.indices.push_back(baseStartIndex + i);
+        mesh.indices.push_back(apexIndex);
+    }
+
+    for (uint32_t i = 0; i < numSlices; ++i)
+    {
+        mesh.indices.push_back(baseStartIndex + i);
+        mesh.indices.push_back(baseStartIndex + i + 1);
+        mesh.indices.push_back(centerIndex);
+    }
+
+    return mesh;
+}
+
 MeshPC MeshBuilder::CreateCylinderPC(uint32_t slices, uint32_t rings)
 {
     srand(time(nullptr));

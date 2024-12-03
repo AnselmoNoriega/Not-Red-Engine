@@ -14,7 +14,7 @@ namespace NotRed::Graphics
         void Initialize();
         void Terminate();
 
-        void Render(const RenderObject& renderObject, const RenderObject& renderTarget);
+        void Render(const RenderObject& renderObject, const RenderObject& inRenderObject, const RenderObject& renderTarget);
 
         void DebugUI();
 
@@ -26,7 +26,7 @@ namespace NotRed::Graphics
         }
 
     private:
-        void RenderDepth(const RenderObject& renderObject);
+        void RenderDepth(const RenderObject& renderObject, RenderTarget& target);
 
     private:
         struct SimpleVolumeTransformData
@@ -63,6 +63,6 @@ namespace NotRed::Graphics
         const Texture* mGeometryPositionTetxure = nullptr;
 
         RenderTarget mLightGeometryTarget;
-        const Texture* mLightGeometryTexture = nullptr;
+        RenderTarget mLightInGeometryTarget;
     };
 }
