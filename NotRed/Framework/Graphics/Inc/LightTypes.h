@@ -18,8 +18,8 @@ namespace NotRed::Graphics
 
 	};
 
-	struct SpotLight
-	{
+	//struct SpotLight
+	//{
 
-	};
+	//};
 }

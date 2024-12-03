@@ -20,8 +20,10 @@ namespace NotRed::Graphics
         GraphicsSystem* gs = GraphicsSystem::Get();
         const uint32_t screenWidth = gs->GetBackBufferWidth();
         const uint32_t screenHeight = gs->GetBackBufferHeight();
+
         mLightGeometryTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::R32_FLOAT);
         mLightInGeometryTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::R32_FLOAT);
+        mLightViewTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::R32_FLOAT);
 
         //mLightGeometryTexture = &mLightGeometryTarget;
     }
@@ -39,12 +41,14 @@ namespace NotRed::Graphics
 
         mLightGeometryTarget.Terminate();
         mLightInGeometryTarget.Terminate();
+        mLightViewTarget.Terminate();
     }
 
     void VolumetricLightingEffect::Render(const RenderObject& renderObject, const RenderObject& inRenderObject, const RenderObject& renderTarget)
     {
         RenderDepth(renderObject, mLightGeometryTarget);
         RenderDepth(renderObject, mLightInGeometryTarget);
+        RenderLightCam();
 
         mVertexShader.Bind();
         mPixelShader.Bind();
@@ -112,6 +116,34 @@ namespace NotRed::Graphics
         target.EndRender();
     }
 
+    void VolumetricLightingEffect::RenderLightCam()
+    {
+        mLightViewTarget.BeginRender();
+
+        mLightVertexShader.Bind();
+
+        SpotLight light;
+        const Math::Matrix4 matView = light.cameraObj.GetViewMatrix();
+        const Math::Matrix4 matProj = light.cameraObj.GetProjectionMatrix();
+
+        for (const auto& obj : mCharacters)
+        {
+            for (const RenderObject& renderObject : *obj)
+            {
+                const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
+                Math::Matrix4 matFinal = matWorld * matView * matProj;
+
+                SimpleLightTransformData transformData;
+                transformData.wvp = Math::Transpose(matFinal);
+                mLightTransformBuffer.Update(transformData);
+
+                renderObject.meshBuffer.Render();
+            }
+        }
+
+        mLightViewTarget.EndRender();
+    }
+
     void VolumetricLightingEffect::DebugUI()
     {
         if (ImGui::CollapsingHeader("Textures:"))
@@ -144,6 +176,17 @@ namespace NotRed::Graphics
                 { 1, 1 },
                 { 1, 1, 1, 1 },
                 { 1, 1, 1, 1 });
+            ImGui::Image(
+                mLightViewTarget.GetRawData(),
+                { 144, 144 },
+                { 0, 0 },
+                { 1, 1 },
+                { 1, 1, 1, 1 },
+                { 1, 1, 1, 1 });
         }
+    }
+
+    void VolumetricLightingEffect::Render(const RenderObject& renderObject)
+    {
     }
 }

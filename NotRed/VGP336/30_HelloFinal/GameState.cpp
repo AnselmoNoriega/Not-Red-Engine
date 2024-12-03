@@ -103,6 +103,7 @@ void MainState::Initialize()
 
 	//PostProcessing
 	mVolumetricLighting.SetTextures(&mRenderTarget, &mDepthBuffer);
+	mVolumetricLighting.RegisterObject(mCharacter);
 
 	GraphicsSystem* gs = GraphicsSystem::Get();
 	const uint32_t screenWidth = gs->GetBackBufferWidth();

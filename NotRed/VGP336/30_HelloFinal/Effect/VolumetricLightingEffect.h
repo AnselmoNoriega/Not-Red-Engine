@@ -8,6 +8,17 @@ namespace NotRed::Graphics
     class Texture;
     struct RenderObject;
 
+    struct SpotLight
+    {
+        SpotLight()
+        {
+            cameraObj.SetPosition({ 0.0f, 10.0f, 0.0f });
+            cameraObj.SetLookAt({ 0.0f, -1.0f,0.0f });
+        }
+
+        Camera cameraObj;
+    };
+
     class VolumetricLightingEffect
     {
     public:
@@ -18,6 +29,8 @@ namespace NotRed::Graphics
 
         void DebugUI();
 
+        void Render(const RenderObject& renderObject);
+
         void SetCamera(const Camera& camera);
         inline void SetTextures(const Texture* renderTarget, const Texture* depthTarget)
         {
@@ -25,8 +38,14 @@ namespace NotRed::Graphics
             mGeometryPositionTetxure = depthTarget;
         }
 
+        inline void RegisterObject(const RenderGroup& obj)
+        {
+            mCharacters.push_back(&obj);
+        }
+
     private:
         void RenderDepth(const RenderObject& renderObject, RenderTarget& target);
+        void RenderLightCam();
 
     private:
         struct SimpleVolumeTransformData
@@ -64,5 +83,8 @@ namespace NotRed::Graphics
 
         RenderTarget mLightGeometryTarget;
         RenderTarget mLightInGeometryTarget;
+        RenderTarget mLightViewTarget;
+
+        std::vector<const RenderGroup*> mCharacters;
     };
 }
