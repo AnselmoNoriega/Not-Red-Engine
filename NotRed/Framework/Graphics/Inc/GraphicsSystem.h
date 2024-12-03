@@ -49,6 +49,8 @@ namespace NotRed::Graphics
 		ID3D11Device* mD3DDevice = nullptr;
 		ID3D11DeviceContext* mImmediateContext = nullptr;
 
+		ID3D11DepthStencilState* mDepthStencilState;
+
 		IDXGISwapChain* mSwapChain = nullptr;
 		ID3D11RenderTargetView* mRenderTargetView = nullptr;
 

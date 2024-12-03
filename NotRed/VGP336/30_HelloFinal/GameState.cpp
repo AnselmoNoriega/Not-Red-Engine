@@ -162,23 +162,4 @@ void MainState::Render()
 void MainState::DebugUI()
 {
 	mVolumetricLighting.DebugUI();
-	/*
-	ImGui::Begin("Debug Controls", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-
-	if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		if (ImGui::DragFloat3("Direction", &mDirectionalLight.direction.x, 0.01f))
-		{
-			mDirectionalLight.direction = Math::Normalize(mDirectionalLight.direction);
-		}
-
-		ImGui::ColorEdit4("Ambient##Light", &mDirectionalLight.ambient.r);
-		ImGui::ColorEdit4("Diffuse##Light", &mDirectionalLight.diffuse.r);
-		ImGui::ColorEdit4("Specular##Light", &mDirectionalLight.specular.r);
-	}
-
-	mStandardEffect.DebugUI();
-	mWaterEffect.DebugUI();
-	mShadowEffect.DebugUI();
-	ImGui::End();*/
 }

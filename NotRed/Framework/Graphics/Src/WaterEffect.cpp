@@ -22,7 +22,6 @@ namespace NotRed::Graphics
 
 		shaderFile = "../../Assets/Shaders/WaterDepth.fx";
 		mVertexShader[DEPTH].Initialize<VertexPX>(shaderFile);
-		mPixelShader[DEPTH].Initialize(shaderFile);
 
 		shaderFile = "../../Assets/Shaders/Refraction.fx";
 		mVertexShader[EFFECT].Initialize<VertexPX>(shaderFile);
@@ -178,12 +177,9 @@ namespace NotRed::Graphics
 		mWaterTarget[DEPTH].BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
 
 		mVertexShader[DEPTH].Bind();
-		mPixelShader[DEPTH].Bind();
 		mSimpleTransformBuffer.BindVS(0);
-		mSimpleTransformBuffer.BindPS(0);
 		mWaveBuffer.BindVS(1);
 		mSampler.BindVS(0);
-		mSampler.BindPS(0);
 
 		const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
 		const Math::Matrix4 matView = mCamera->GetViewMatrix();

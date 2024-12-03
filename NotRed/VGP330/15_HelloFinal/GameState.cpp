@@ -75,6 +75,10 @@ void MainState::Initialize()
 		ModelIO::LoadModel("../../Assets/Models/Maw/Maw.model", model);
 		ModelIO::LoadMaterial("../../Assets/Models/Maw/Maw.model", model);
 		mCharacter = CreateRenderGroup(model);
+		for (auto& t : mCharacter)
+		{
+			t.transform.position.y += 10;
+		}
 	}
 	{
 		const Mesh& m = NotRed::Graphics::MeshBuilder::CreateHorizontalPlane(500, 500, 0.05f);
