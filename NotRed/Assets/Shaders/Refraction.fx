@@ -30,19 +30,18 @@ VS_OUTPUT VS(VS_INPUT input)
 
 double UnpackDepth(double4 packedDepth)
 {
-    double depth = packedDepth.x;// + packedDepth.y / 256.0 + packedDepth.z / 65536.0;
+    double depth = packedDepth.x; // + packedDepth.y / 256.0 + packedDepth.z / 65536.0;
     return depth;
 }
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    double wDepth = waterDepth.Sample(textureSampler, input.texCoord).r;
-    double tDepth = targetsDepth.Sample(textureSampler, input.texCoord).r;
-    wDepth = 0.1 * 100.f / (100.f - wDepth * (100.f - 0.1));
-    tDepth = 0.1 * 100.f / (100.f - tDepth * (100.f - 0.1));
+    double wDepth = UnpackDepth(waterDepth.Sample(textureSampler, input.texCoord));
+    double tDepth = UnpackDepth(targetsDepth.Sample(textureSampler, input.texCoord));
     
-    return waterDepth.Sample(textureSampler, input.texCoord);
-    if (wDepth > tDepth)
+    double depthBias = 0.001;
+    
+    if (wDepth + depthBias > tDepth)
     {
         float2 wNormal = waterNormal.Sample(textureSampler, input.texCoord).rb * 0.1f * wDepth; //check with b-g
         

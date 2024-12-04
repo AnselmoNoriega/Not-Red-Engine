@@ -77,7 +77,7 @@ void MainState::Initialize()
 		mCharacter = CreateRenderGroup(model);
 		for (auto& t : mCharacter)
 		{
-			t.transform.position.y += 10;
+			t.transform.position.y += 0.0f;
 		}
 	}
 	{
@@ -95,6 +95,7 @@ void MainState::Initialize()
 		Mesh groundMesh = MeshBuilder::CreateHorizontalPlane(20, 20, 1.0f);
 		mGround.meshBuffer.Initialize(groundMesh);
 		mGround.diffuseMapID = TextureManager::Get()->LoadTexture("misc/concrete.jpg");
+		mGround.transform.position.y -= 2.0f;
 	}
 	{
 		std::filesystem::path shaderFilePath = (L"../../Assets/Shaders/Standard.fx");
@@ -129,9 +130,7 @@ void MainState::Initialize()
 	mRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 	mDepthBuffer.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 
-	mCharacterPos = GetMatrix({ 1.0f, 2.0f, 0.0f });
 	mWaterPos = GetMatrix({ 1.0f, -0.2f, 0.0f });
-	mGroundPos = GetMatrix({ 1.0f, 3.0f, 0.0f });
 }
 
 void MainState::Terminate()

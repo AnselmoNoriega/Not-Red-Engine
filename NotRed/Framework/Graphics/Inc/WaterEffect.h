@@ -41,6 +41,13 @@ namespace NotRed::Graphics
 		void RenderEffect(const RenderObject& renderObject);
 
 	private:
+		struct SimpleTransformDepth
+		{
+			Math::Matrix4 modelTransform;
+			Math::Matrix4 viewMatrix;
+			Math::Matrix4 viewProjectionMatrix;
+		};
+
 		struct SimpleTransform
 		{
 			Math::Matrix4 wvp;
@@ -66,6 +73,7 @@ namespace NotRed::Graphics
 			float padding[2];
         };
 		
+        using SimpleTransformBufferDepth = TypedConstantBuffer<SimpleTransformDepth>;
         using SimpleTransformBuffer = TypedConstantBuffer<SimpleTransform>;
         using WaveBuffer = TypedConstantBuffer<WaterData>;
         using RefractionHelperBuffer = TypedConstantBuffer<RefractionHelper>;
@@ -79,6 +87,7 @@ namespace NotRed::Graphics
 		};
 
 		SimpleTransformBuffer mSimpleTransformBuffer;
+		SimpleTransformBufferDepth mSimpleTransformBufferDepth;
 		WaveBuffer mWaveBuffer;
 		RefractionHelperBuffer mRefractionHelperBuffer;
 

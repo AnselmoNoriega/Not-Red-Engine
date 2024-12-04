@@ -30,7 +30,9 @@ namespace NotRed::Graphics
     private:
         struct Transform
         {
-            Math::Matrix4 wvp;
+            Math::Matrix4 modelTransform;
+            Math::Matrix4 viewMatrix;
+            Math::Matrix4 viewProjectionMatrix;
         };
 
         using TransformBuffer = TypedConstantBuffer<Transform>;
@@ -39,6 +41,7 @@ namespace NotRed::Graphics
 
         Sampler mSampler;
         VertexShader mVertexShader;
+        PixelShader mPixelShader;
 
         const Camera* mCamera = nullptr;
     };
