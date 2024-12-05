@@ -49,7 +49,7 @@ namespace NotRed::Graphics
     void VolumetricLightingEffect::Render(const RenderObject& renderObject, const RenderObject& inRenderObject, const RenderObject& renderTarget)
     {
         RenderDepth(renderObject, mLightGeometryTarget);
-        RenderDepth(renderObject, mLightInGeometryTarget);
+        RenderDepth(inRenderObject, mLightInGeometryTarget);
         RenderLightCam();
 
         mVertexShader.Bind();
