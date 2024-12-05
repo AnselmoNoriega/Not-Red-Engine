@@ -8,7 +8,7 @@ namespace NotRed::Graphics
         mLightTransformBuffer.Initialize();
 
         std::filesystem::path shaderFile = "../../Assets/Shaders/VolumetricLighting.fx";
-        mVertexShader.Initialize<Vertex>(shaderFile);
+        mVertexShader.Initialize<VertexPX>(shaderFile);
         mPixelShader.Initialize(shaderFile);
         mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 
@@ -124,11 +124,11 @@ namespace NotRed::Graphics
         mLightPixelShader.Bind();
         mLightTransformBuffer.BindVS(0);
         mLightTransformBuffer.BindPS(0);
-
-        SpotLight light;
+        
+        auto light = SpotLight();
         SimpleLightTransformData transformData;
-        transformData.viewMatrix = mCamera->GetViewMatrix();
-        transformData.viewProjectionMatrix = mCamera->GetViewMatrix() * mCamera->GetProjectionMatrix();
+        transformData.viewMatrix = light.cameraObj.GetViewMatrix();
+        transformData.viewProjectionMatrix = light.cameraObj.GetViewMatrix() * light.cameraObj.GetProjectionMatrix();
 
         for (const auto& obj : mCharacters)
         {

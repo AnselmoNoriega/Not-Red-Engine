@@ -24,9 +24,9 @@ struct VS_INPUT
 struct VS_OUTPUT
 {
     float4 position : SV_Position;
-    float2 texCoord : TEXCOORD2;
-    float3 fragPos : TEXCOORD0;
-    float3 viewDir : TEXCOORD1;
+    float2 texCoord : TEXCOORD0;
+    float3 fragPos : TEXCOORD1;
+    float3 viewDir : TEXCOORD2;
 };
 
 float4x4 Inverse(float4x4 m)
