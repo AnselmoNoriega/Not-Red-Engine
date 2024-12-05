@@ -22,7 +22,7 @@ VSOutput VS(VSInput input)
     
     float4 worldPosition = mul(modelTransform, float4(input.position, 1.0f));
     float4 viewPosition = mul(viewMatrix, worldPosition);
-    output.linearDepth = viewPosition;
+    output.linearDepth = viewPosition.xyz;
     output.position = mul(viewProjectionMatrix, worldPosition);
 
     return output;
@@ -30,6 +30,6 @@ VSOutput VS(VSInput input)
 
 float4 PS(VSOutput input) : SV_Target
 {
-    float depth = 1.0 - saturate(length(input.linearDepth) / 100.0f);
-    return float4(depth, depth, depth, 1.0);
+    float3 depth = input.linearDepth / 100.0f;
+    return float4(depth, 1.0);
 }

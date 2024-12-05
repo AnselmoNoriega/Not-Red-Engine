@@ -6,9 +6,9 @@
 
 namespace NotRed::Graphics
 {
-    void DepthEffect::Initialize()
+    void DepthEffect::Initialize(std::string overrideDepth)
     {
-        std::filesystem::path shaderFile = "../../Assets/Shaders/Depth.fx";
+        std::filesystem::path shaderFile = overrideDepth;
 
         mTransformBuffer.Initialize();
         mVertexShader.Initialize<Vertex>(shaderFile);

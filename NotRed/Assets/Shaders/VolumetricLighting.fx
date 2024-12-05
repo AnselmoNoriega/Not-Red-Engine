@@ -1,10 +1,10 @@
 
 cbuffer TranformBuffer : register(b0)
 {
-    matrix wvp;
     matrix world;
     float3 viewDir;
     matrix lightViewProj;
+    matrix viewMatrix;
 }
 
 Texture2D geometryTexture : register(t0);
@@ -28,6 +28,17 @@ struct VS_OUTPUT
     float3 fragPos : TEXCOORD1;
     float3 viewDir : TEXCOORD2;
 };
+
+VS_OUTPUT VS(VS_INPUT input)
+{
+    VS_OUTPUT output;
+    output.position = float4(input.position, 1.0f);
+    output.viewDir = viewDir;
+    output.fragPos = mul(float4(input.position, 1.0f), world).xyz;
+    output.texCoord = input.texCoord;
+    
+    return output;
+}
 
 float4x4 Inverse(float4x4 m)
 {
@@ -69,22 +80,6 @@ float4x4 Inverse(float4x4 m)
     result = result / det;
 
     return result;
-}
-
-VS_OUTPUT VS(VS_INPUT input)
-{
-    VS_OUTPUT output;
-    output.position = float4(input.position, 1.0f);
-    output.viewDir = viewDir;
-    output.fragPos = mul(float4(input.position, 1.0f), world).xyz;
-    output.texCoord = input.texCoord;
-    
-    //output.geometryPositionDepth = geometryPositionTetxure.Sample(textureSampler, input.texCoord).r;
-    //output.lightGeometryDepth = lightGeometryTexture.Sample(textureSampler, input.texCoord).r;
-    //output.lightInGeometryDepth = lightInGeometryTexture.Sample(textureSampler, input.texCoord).r;
-    //output.lightViewDepth = lightViewTarget.Sample(textureSampler, input.texCoord).r;
-    
-    return output;
 }
 
 // Functions for 3D noise =================================================
@@ -164,33 +159,26 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    float3 conePosition = float3(0.0, 0.0, 0.0);
-    float coneHeight = 10.0;
-    float coneRadius = 5.0;
-    float4 coneColor = (0.0, 1.0, 0.0, 1.0);
-    
-    float4 baseColor = geometryTexture.Sample(textureSampler, input.texCoord);
-
-    // Calculate cone properties in view space
-    /*float3 pixelPos = float3(input.texCoord * 2.0f - 1.0f, 0.0f); // Normalized device coordinates
-    float3 coneDir = normalize(conePosition - pixelPos); // Direction to cone center
-
-    float heightFactor = saturate((coneHeight - length(pixelPos.xy - conePosition.xy)) / coneHeight);
-    float radiusFactor = saturate(1.0f - length(pixelPos.xy - conePosition.xy) / coneRadius);
-
-    // Check if the pixel lies within the cone
-    if (heightFactor > 0.0f && radiusFactor > 0.0f)
+    float3 depth = lightGeometryTexture.Sample(textureSampler, input.texCoord);
+    if (length(depth) <= 0.001)
     {
-        float blendFactor = heightFactor * radiusFactor;
-        baseColor = lerp(baseColor, coneColor, blendFactor); // Blend cone color with base color
+        return geometryTexture.Sample(textureSampler, input.texCoord);
     }
-    */
-    return baseColor;
+    
+    float3 viewPosition = depth * 100.0f;
+    float3 worldPosition = mul(float4(viewPosition, 1.0f), Inverse(viewMatrix)).xyz;
+    
+    // input.position * invScreenMat * invCameraProj * invCameraView = positionInWorld
+    // positionWorld = mul(mul(mul(input.position, invScreenMat), invCameraProj), invCameraView)
+    // pass in screenToWorldMat = invScreenMat * invCameraProj * invCameraView; (transpose)
+    // pixelInWorld = mul(input.position, screenToWorldMat)
+    
+    
     /*
-    float depth = lightGeometryTexture.Sample(textureSampler, input.texCoord).r;
     float4 clipPos = float4(input.texCoord.x, input.texCoord.y, depth, 1.0f);
     float4 viewPos = mul(Inverse(lightViewProj), clipPos);
-    float3 worldPos = viewPos.xyz / viewPos.w;
+    float3 worldPos2 = viewPos.xyz / viewPos.w;
+    */
     
     // Initialize light
     float3 lightPos = float3(0, 10, 0); // Light source position
@@ -252,5 +240,4 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
     // Output the final color
     return float4(accumulatedLight, accumulatedLight, accumulatedLight, 1.0);
-    */
 }

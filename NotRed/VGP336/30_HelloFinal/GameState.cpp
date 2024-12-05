@@ -91,7 +91,7 @@ void MainState::Initialize()
 	mStandardEffect.SetLightCamera(mShadowEffect.GetLightCamera());
 	mStandardEffect.SetShadowMap(mShadowEffect.GetDepthMap());
 
-	mDepthEffect.Initialize();
+	mDepthEffect.Initialize("../../Assets/Shaders/NewDepth.fx");
 	mDepthEffect.SetCamera(mCamera);
 
 	mVolumetricLighting.Initialize();

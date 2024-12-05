@@ -50,10 +50,10 @@ namespace NotRed::Graphics
 	private:
 		struct SimpleVolumeTransformData
 		{
-			Math::Matrix4 wvp;
 			Math::Matrix4 world;
 			Math::Vector3 viewDir;
 			Math::Matrix4 LightViewProj;
+			Math::Matrix4 viewMatrix;
 			float padding = 0.0f;
 		};
 

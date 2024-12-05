@@ -14,7 +14,7 @@ namespace NotRed::Graphics
 
         mBlendState.Initialize(BlendState::Mode::AlphaBlend);
 
-        shaderFile = "../../Assets/Shaders/Depth.fx";
+        shaderFile = "../../Assets/Shaders/NewDepth.fx";
         mLightVertexShader.Initialize<VertexP>(shaderFile);
         mLightPixelShader.Initialize(shaderFile);
 
@@ -22,9 +22,9 @@ namespace NotRed::Graphics
         const uint32_t screenWidth = gs->GetBackBufferWidth();
         const uint32_t screenHeight = gs->GetBackBufferHeight();
 
-        mLightGeometryTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::R32_FLOAT);
-        mLightInGeometryTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::R32_FLOAT);
-        mLightViewTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::R32_FLOAT);
+        mLightGeometryTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U32);
+        mLightInGeometryTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U32);
+        mLightViewTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U32);
     }
 
     void VolumetricLightingEffect::Terminate()
@@ -66,20 +66,16 @@ namespace NotRed::Graphics
             mLightInGeometryTarget.BindPS(3);
             mLightViewTarget.BindPS(4);
         }
-
-        Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
-        const Math::Matrix4 matView = mCamera->GetViewMatrix();
-        const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
-
-        Math::Matrix4 matFinal = matWorld * matView * matProj;
-
-        SimpleVolumeTransformData transformData;
-        transformData.wvp = Math::Transpose(matFinal);
+        \
+        SimpleVolumeTransformData transformData;\
         transformData.world = Math::Transpose(renderObject.transform.GetMatrix());
         transformData.viewDir = mCamera->GetDirection();
+        transformData.viewMatrix = mCamera->GetViewMatrix();
         SpotLight light;
         transformData.LightViewProj = Math::Transpose(light.cameraObj.GetViewMatrix() * light.cameraObj.GetProjectionMatrix());
 
+        mTransformBuffer.BindVS(0);
+        mTransformBuffer.BindPS(0);
         mTransformBuffer.Update(transformData);
 
         renderTarget.meshBuffer.Render();

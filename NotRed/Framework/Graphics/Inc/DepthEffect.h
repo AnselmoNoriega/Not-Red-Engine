@@ -15,7 +15,7 @@ namespace NotRed::Graphics
     class DepthEffect
     {
     public:
-        void Initialize();
+        void Initialize(std::string overrideDepth = "../../Assets/Shaders/Depth.fx");
         void Terminate();
 
         void Begin();

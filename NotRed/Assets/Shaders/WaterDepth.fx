@@ -15,7 +15,7 @@ cbuffer WaterBuffer : register(b1)
 struct VS_OUTPUT
 {
     float4 position : SV_Position;
-    float linearDepth : TEXCOORD0;
+    float3 linearDepth : TEXCOORD0;
 };
 
 float3 GerstnerWave(float4 wave, float3 p)
@@ -44,7 +44,7 @@ VS_OUTPUT VS(float3 position : POSITION)
     
     float4 worldPosition = mul(modelTransform, float4(p, 1.0f));
     float4 viewPosition = mul(viewMatrix, worldPosition);
-    output.linearDepth = viewPosition.z;
+    output.linearDepth = viewPosition;
     output.position = mul(viewProjectionMatrix, worldPosition);
     
     return output;
@@ -52,6 +52,6 @@ VS_OUTPUT VS(float3 position : POSITION)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    float depth = 1.0 - saturate(input.linearDepth / 100.0f);
+    float depth = 1.0 - saturate(length(input.linearDepth) / 100.0f);
     return float4(depth, depth, depth, 1.0);
 }
