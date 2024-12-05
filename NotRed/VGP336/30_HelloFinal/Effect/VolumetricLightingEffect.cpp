@@ -15,7 +15,8 @@ namespace NotRed::Graphics
         mBlendState.Initialize(BlendState::Mode::AlphaBlend);
 
         shaderFile = "../../Assets/Shaders/Depth.fx";
-        mLightVertexShader.Initialize<VertexPC>(shaderFile);
+        mLightVertexShader.Initialize<VertexP>(shaderFile);
+        mLightPixelShader.Initialize(shaderFile);
 
         GraphicsSystem* gs = GraphicsSystem::Get();
         const uint32_t screenWidth = gs->GetBackBufferWidth();
@@ -33,6 +34,9 @@ namespace NotRed::Graphics
         mSampler.Terminate();
         mPixelShader.Terminate();
         mVertexShader.Terminate();
+
+        mLightVertexShader.Terminate();
+        mLightPixelShader.Terminate();
 
         mTransformBuffer.Terminate();
         mLightTransformBuffer.Terminate();
@@ -96,20 +100,15 @@ namespace NotRed::Graphics
         target.BeginRender();
 
         mLightVertexShader.Bind();
-
-        Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
-        const Math::Matrix4 matView = mCamera->GetViewMatrix();
-        const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
-
-        Math::Matrix4 matFinal = matWorld * matView * matProj;
+        mLightPixelShader.Bind();
+        mLightTransformBuffer.BindVS(0);
+        mLightTransformBuffer.BindPS(0);
 
         SimpleLightTransformData transformData;
-        transformData.wvp = Math::Transpose(matFinal);
-
-        //const Math::Matrix4 matLightView = mLightCamera->GetViewMatrix();
-        //const Math::Matrix4 matLightProj = mLightCamera->GetProjectionMatrix();
-        //transformData.lwvp = Transpose(matWorld * matLightView * matLightProj);
-
+        transformData.modelTransform = renderObject.transform.GetMatrix();
+        transformData.viewMatrix = mCamera->GetViewMatrix();
+        transformData.viewProjectionMatrix = mCamera->GetViewMatrix() * mCamera->GetProjectionMatrix();
+        
         mLightTransformBuffer.Update(transformData);
 
         renderObject.meshBuffer.Render();
@@ -122,20 +121,20 @@ namespace NotRed::Graphics
         mLightViewTarget.BeginRender();
 
         mLightVertexShader.Bind();
+        mLightPixelShader.Bind();
+        mLightTransformBuffer.BindVS(0);
+        mLightTransformBuffer.BindPS(0);
 
         SpotLight light;
-        const Math::Matrix4 matView = light.cameraObj.GetViewMatrix();
-        const Math::Matrix4 matProj = light.cameraObj.GetProjectionMatrix();
+        SimpleLightTransformData transformData;
+        transformData.viewMatrix = mCamera->GetViewMatrix();
+        transformData.viewProjectionMatrix = mCamera->GetViewMatrix() * mCamera->GetProjectionMatrix();
 
         for (const auto& obj : mCharacters)
         {
             for (const RenderObject& renderObject : *obj)
             {
-                const Math::Matrix4 matWorld = renderObject.transform.GetMatrix();
-                Math::Matrix4 matFinal = matWorld * matView * matProj;
-
-                SimpleLightTransformData transformData;
-                transformData.wvp = Math::Transpose(matFinal);
+                transformData.modelTransform = renderObject.transform.GetMatrix();
                 mLightTransformBuffer.Update(transformData);
 
                 renderObject.meshBuffer.Render();

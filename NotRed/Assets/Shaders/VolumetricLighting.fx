@@ -164,9 +164,29 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    float4 geometryColor = geometryTexture.Sample(textureSampler, input.texCoord);
-    return geometryColor; /*
+    float3 conePosition = float3(0.0, 0.0, 0.0);
+    float coneHeight = 10.0;
+    float coneRadius = 5.0;
+    float4 coneColor = (0.0, 1.0, 0.0, 1.0);
     
+    float4 baseColor = geometryTexture.Sample(textureSampler, input.texCoord);
+
+    // Calculate cone properties in view space
+    /*float3 pixelPos = float3(input.texCoord * 2.0f - 1.0f, 0.0f); // Normalized device coordinates
+    float3 coneDir = normalize(conePosition - pixelPos); // Direction to cone center
+
+    float heightFactor = saturate((coneHeight - length(pixelPos.xy - conePosition.xy)) / coneHeight);
+    float radiusFactor = saturate(1.0f - length(pixelPos.xy - conePosition.xy) / coneRadius);
+
+    // Check if the pixel lies within the cone
+    if (heightFactor > 0.0f && radiusFactor > 0.0f)
+    {
+        float blendFactor = heightFactor * radiusFactor;
+        baseColor = lerp(baseColor, coneColor, blendFactor); // Blend cone color with base color
+    }
+    */
+    return baseColor;
+    /*
     float depth = lightGeometryTexture.Sample(textureSampler, input.texCoord).r;
     float4 clipPos = float4(input.texCoord.x, input.texCoord.y, depth, 1.0f);
     float4 viewPos = mul(Inverse(lightViewProj), clipPos);

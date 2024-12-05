@@ -59,7 +59,9 @@ namespace NotRed::Graphics
 
         struct SimpleLightTransformData
         {
-            Math::Matrix4 wvp;
+            Math::Matrix4 modelTransform;
+            Math::Matrix4 viewMatrix;
+            Math::Matrix4 viewProjectionMatrix;
         };
 
         using SimpleVolumeTransformBuffer = TypedConstantBuffer<SimpleVolumeTransformData>;
@@ -76,6 +78,7 @@ namespace NotRed::Graphics
         PixelShader mPixelShader;
 
         VertexShader mLightVertexShader;
+        PixelShader mLightPixelShader;
 
         const Camera* mCamera = nullptr;
 
