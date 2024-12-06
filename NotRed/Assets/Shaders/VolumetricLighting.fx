@@ -40,46 +40,59 @@ VS_OUTPUT VS(VS_INPUT input)
     return output;
 }
 
-float4x4 Inverse(float4x4 m)
+matrix Inverse(matrix m)
 {
-    float4x4 result;
-    
-    // Compute the determinant of the matrix
-    float det = dot(m._m00, cross(m._m10, m._m20))
-              - dot(m._m01, cross(m._m11, m._m21))
-              + dot(m._m02, cross(m._m12, m._m22));
-    
-    if (det == 0.0)
-    {
-        return result; // non-invertible
+    matrix adjugate;
+    float det;
+
+    // Calculate the determinant
+    det = m._11 * (m._22 * (m._33 * m._44 - m._43 * m._34) - m._32 * (m._23 * m._44 - m._43 * m._24) + m._42 * (m._23 * m._34 - m._33 * m._24))
+        - m._21 * (m._12 * (m._33 * m._44 - m._43 * m._34) - m._32 * (m._13 * m._44 - m._43 * m._14) + m._42 * (m._13 * m._34 - m._33 * m._14))
+        + m._31 * (m._12 * (m._23 * m._44 - m._43 * m._24) - m._22 * (m._13 * m._44 - m._43 * m._14) + m._42 * (m._13 * m._24 - m._23 * m._14))
+        - m._41 * (m._12 * (m._23 * m._34 - m._33 * m._24) - m._22 * (m._13 * m._34 - m._33 * m._14) + m._32 * (m._13 * m._24 - m._23 * m._14));
+
+    if (abs(det) < 1e-6) // Check for singularity
+    { 
+        return adjugate; // Non-invertible matrix
     }
-    
-    // Compute the adjugate matrix (Cofactor method)
-    
-    result._m00 = dot(m._m11, cross(m._m21, m._m31)) - dot(m._m12, cross(m._m22, m._m32)) + dot(m._m13, cross(m._m23, m._m33));
-    result._m01 = -(dot(m._m10, cross(m._m20, m._m30)) - dot(m._m12, cross(m._m22, m._m32)) + dot(m._m13, cross(m._m23, m._m33)));
-    result._m02 = dot(m._m10, cross(m._m20, m._m30)) - dot(m._m11, cross(m._m21, m._m31)) + dot(m._m13, cross(m._m23, m._m33));
-    result._m03 = -(dot(m._m10, cross(m._m20, m._m30)) - dot(m._m11, cross(m._m21, m._m31)) + dot(m._m12, cross(m._m22, m._m32)));
 
-    result._m10 = -(dot(m._m01, cross(m._m21, m._m31)) - dot(m._m02, cross(m._m22, m._m32)) + dot(m._m03, cross(m._m23, m._m33)));
-    result._m11 = dot(m._m00, cross(m._m20, m._m30)) - dot(m._m02, cross(m._m22, m._m32)) + dot(m._m03, cross(m._m23, m._m33));
-    result._m12 = -(dot(m._m00, cross(m._m10, m._m30)) - dot(m._m02, cross(m._m12, m._m32)) + dot(m._m03, cross(m._m13, m._m33)));
-    result._m13 = dot(m._m00, cross(m._m10, m._m30)) - dot(m._m01, cross(m._m11, m._m31)) + dot(m._m03, cross(m._m13, m._m33));
+    // Adjugate matrix computation
+    adjugate._11 = m._22 * (m._33 * m._44 - m._43 * m._34) - m._32 * (m._23 * m._44 - m._43 * m._24) + m._42 * (m._23 * m._34 - m._33 * m._24);
+    adjugate._12 = -(m._21 * (m._33 * m._44 - m._43 * m._34) - m._31 * (m._23 * m._44 - m._43 * m._24) + m._41 * (m._23 * m._34 - m._33 * m._24));
+    adjugate._13 = m._21 * (m._32 * m._44 - m._42 * m._34) - m._31 * (m._22 * m._44 - m._42 * m._24) + m._41 * (m._22 * m._34 - m._32 * m._24);
+    adjugate._14 = -(m._21 * (m._32 * m._43 - m._42 * m._33) - m._31 * (m._22 * m._43 - m._42 * m._23) + m._41 * (m._22 * m._33 - m._32 * m._23));
 
-    result._m20 = dot(m._m01, cross(m._m11, m._m21)) - dot(m._m02, cross(m._m12, m._m22)) + dot(m._m03, cross(m._m13, m._m23));
-    result._m21 = -(dot(m._m00, cross(m._m10, m._m20)) - dot(m._m02, cross(m._m12, m._m22)) + dot(m._m03, cross(m._m13, m._m23)));
-    result._m22 = dot(m._m00, cross(m._m10, m._m20)) - dot(m._m01, cross(m._m11, m._m21)) + dot(m._m03, cross(m._m13, m._m23));
-    result._m23 = -(dot(m._m00, cross(m._m10, m._m20)) - dot(m._m01, cross(m._m11, m._m21)) + dot(m._m02, cross(m._m12, m._m22)));
+    adjugate._21 = -(m._12 * (m._33 * m._44 - m._43 * m._34) - m._32 * (m._13 * m._44 - m._43 * m._14) + m._42 * (m._13 * m._34 - m._33 * m._14));
+    adjugate._22 = m._11 * (m._33 * m._44 - m._43 * m._34) - m._31 * (m._13 * m._44 - m._43 * m._14) + m._41 * (m._13 * m._34 - m._33 * m._14);
+    adjugate._23 = -(m._11 * (m._32 * m._44 - m._42 * m._34) - m._31 * (m._12 * m._44 - m._42 * m._14) + m._41 * (m._12 * m._34 - m._32 * m._14));
+    adjugate._24 = m._11 * (m._32 * m._43 - m._42 * m._33) - m._31 * (m._12 * m._43 - m._42 * m._13) + m._41 * (m._12 * m._33 - m._32 * m._13);
 
-    result._m30 = -(dot(m._m01, cross(m._m11, m._m21)) - dot(m._m02, cross(m._m12, m._m22)) + dot(m._m03, cross(m._m13, m._m23)));
-    result._m31 = dot(m._m00, cross(m._m10, m._m20)) - dot(m._m01, cross(m._m11, m._m21)) + dot(m._m02, cross(m._m12, m._m22));
-    result._m32 = -(dot(m._m00, cross(m._m10, m._m20)) - dot(m._m01, cross(m._m11, m._m21)) + dot(m._m02, cross(m._m12, m._m22)));
-    result._m33 = dot(m._m00, cross(m._m10, m._m20)) - dot(m._m01, cross(m._m11, m._m21)) + dot(m._m02, cross(m._m12, m._m22));
+    adjugate._31 = m._12 * (m._23 * m._44 - m._43 * m._24) - m._22 * (m._13 * m._44 - m._43 * m._14) + m._42 * (m._13 * m._24 - m._23 * m._14);
+    adjugate._32 = -(m._11 * (m._23 * m._44 - m._43 * m._24) - m._21 * (m._13 * m._44 - m._43 * m._14) + m._41 * (m._13 * m._24 - m._23 * m._14));
+    adjugate._33 = m._11 * (m._22 * m._44 - m._42 * m._24) - m._21 * (m._12 * m._44 - m._42 * m._14) + m._41 * (m._12 * m._24 - m._22 * m._14);
+    adjugate._34 = -(m._11 * (m._22 * m._43 - m._42 * m._23) - m._21 * (m._12 * m._43 - m._42 * m._13) + m._41 * (m._12 * m._23 - m._22 * m._13));
 
-    // Divide by the determinant to get the final inverse matrix
-    result = result / det;
+    adjugate._41 = -(m._12 * (m._23 * m._34 - m._33 * m._24) - m._22 * (m._13 * m._34 - m._33 * m._14) + m._32 * (m._13 * m._24 - m._23 * m._14));
+    adjugate._42 = m._11 * (m._23 * m._34 - m._33 * m._24) - m._21 * (m._13 * m._34 - m._33 * m._14) + m._31 * (m._13 * m._24 - m._23 * m._14);
+    adjugate._43 = -(m._11 * (m._22 * m._34 - m._32 * m._24) - m._21 * (m._12 * m._34 - m._32 * m._14) + m._31 * (m._12 * m._24 - m._22 * m._14));
+    adjugate._44 = m._11 * (m._22 * m._33 - m._32 * m._23) - m._21 * (m._12 * m._33 - m._32 * m._13) + m._31 * (m._12 * m._23 - m._22 * m._13);
 
-    return result;
+    // Divide by determinant to get the inverse
+    return adjugate / det;
+}
+
+float3 GetWorldPosition(float3 viewSpacePosition, matrix invViewMatrix, matrix invModelMatrix)
+{
+    // Sample the view-space position from the texture
+    //float3 viewSpacePosition = linearDepthTexture.Sample(samplerState, screenUV).xyz;
+
+    // Convert to world-space position
+    float4 worldSpacePosition = mul(float4(viewSpacePosition, 1.0), invViewMatrix);
+
+    // Convert to object-space position (original position)
+    float4 originalPosition = mul(worldSpacePosition, invModelMatrix);
+
+    return originalPosition.xyz;
 }
 
 // Functions for 3D noise =================================================
