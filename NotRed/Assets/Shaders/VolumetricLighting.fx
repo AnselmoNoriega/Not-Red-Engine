@@ -178,8 +178,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
         return geometryTexture.Sample(textureSampler, input.texCoord);
     }
     
-    float3 viewPosition = depth * 100.0f;
-    float3 worldPosition = mul(float4(viewPosition, 1.0f), Inverse(viewMatrix)).xyz;
+    float3 lightPos = GetWorldPosition(depth * 100.0f, Inverse(camViewMatrix), Inverse(modelMatrix));
     
     // input.position * invScreenMat * invCameraProj * invCameraView = positionInWorld
     // positionWorld = mul(mul(mul(input.position, invScreenMat), invCameraProj), invCameraView)
