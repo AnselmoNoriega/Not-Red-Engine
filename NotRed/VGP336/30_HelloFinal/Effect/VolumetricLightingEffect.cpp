@@ -4,8 +4,11 @@ namespace NotRed::Graphics
 {
     void VolumetricLightingEffect::Initialize()
     {
-        mTransformBuffer.Initialize();
-        mLightTransformBuffer.Initialize();
+        mViewDataBuffer.Initialize();
+        mLightDataBuffer.Initialize();
+        mMatrixDataBuffer.Initialize();
+
+        mDepthDataBuffer.Initialize();
 
         std::filesystem::path shaderFile = "../../Assets/Shaders/VolumetricLighting.fx";
         mVertexShader.Initialize<VertexPX>(shaderFile);
@@ -38,8 +41,11 @@ namespace NotRed::Graphics
         mLightVertexShader.Terminate();
         mLightPixelShader.Terminate();
 
-        mTransformBuffer.Terminate();
-        mLightTransformBuffer.Terminate();
+        mDepthDataBuffer.Terminate();
+
+        mViewDataBuffer.Terminate();
+        mMatrixDataBuffer.Terminate();
+        mLightDataBuffer.Terminate();
 
         mLightGeometryTarget.Terminate();
         mLightInGeometryTarget.Terminate();
@@ -50,7 +56,7 @@ namespace NotRed::Graphics
     {
         RenderDepth(renderObject, mLightGeometryTarget);
         RenderDepth(inRenderObject, mLightInGeometryTarget);
-        RenderLightCam();
+        RenderDepthFromLight();
 
         mVertexShader.Bind();
         mPixelShader.Bind();
@@ -66,17 +72,32 @@ namespace NotRed::Graphics
             mLightInGeometryTarget.BindPS(3);
             mLightViewTarget.BindPS(4);
         }
-        \
-        SimpleVolumeTransformData transformData;\
-        transformData.world = Math::Transpose(renderObject.transform.GetMatrix());
-        transformData.viewDir = mCamera->GetDirection();
-        transformData.viewMatrix = mCamera->GetViewMatrix();
-        SpotLight light;
-        transformData.LightViewProj = Math::Transpose(light.cameraObj.GetViewMatrix() * light.cameraObj.GetProjectionMatrix());
+        
+        ViewData viewData;
+        viewData.viewDir = mCamera->GetDirection();
+        viewData.viewMatrix = mCamera->GetViewMatrix();
+        viewData.camPos = mCamera->GetPosition();
 
-        mTransformBuffer.BindVS(0);
-        mTransformBuffer.BindPS(0);
-        mTransformBuffer.Update(transformData);
+        mViewDataBuffer.BindVS(0);
+        mViewDataBuffer.BindPS(0);
+        mViewDataBuffer.Update(viewData);
+
+        LightData lightData;
+        SpotLight light;
+        lightData.lightPos = light.cameraObj.GetPosition();
+        lightData.lightViewProj = Math::Transpose(light.cameraObj.GetViewMatrix() * light.cameraObj.GetProjectionMatrix());
+
+        mLightDataBuffer.BindVS(1);
+        mLightDataBuffer.BindPS(1);
+        mLightDataBuffer.Update(lightData);
+
+        MatrixData matrixData;
+        matrixData.geoMatrix = Math::Matrix4::Identity;
+        matrixData.lightMatrix = Math::Matrix4::Identity;
+
+        mMatrixDataBuffer.BindVS(2);
+        mMatrixDataBuffer.BindPS(2);
+        mMatrixDataBuffer.Update(matrixData);
 
         renderTarget.meshBuffer.Render();
 
@@ -97,32 +118,32 @@ namespace NotRed::Graphics
 
         mLightVertexShader.Bind();
         mLightPixelShader.Bind();
-        mLightTransformBuffer.BindVS(0);
-        mLightTransformBuffer.BindPS(0);
+        mDepthDataBuffer.BindVS(0);
+        mDepthDataBuffer.BindPS(0);
 
-        SimpleLightTransformData transformData;
+        DepthData transformData;
         transformData.modelTransform = renderObject.transform.GetMatrix();
         transformData.viewMatrix = mCamera->GetViewMatrix();
         transformData.viewProjectionMatrix = mCamera->GetViewMatrix() * mCamera->GetProjectionMatrix();
         
-        mLightTransformBuffer.Update(transformData);
+        mDepthDataBuffer.Update(transformData);
 
         renderObject.meshBuffer.Render();
 
         target.EndRender();
     }
 
-    void VolumetricLightingEffect::RenderLightCam()
+    void VolumetricLightingEffect::RenderDepthFromLight()
     {
         mLightViewTarget.BeginRender();
 
         mLightVertexShader.Bind();
         mLightPixelShader.Bind();
-        mLightTransformBuffer.BindVS(0);
-        mLightTransformBuffer.BindPS(0);
+        mDepthDataBuffer.BindVS(0);
+        mDepthDataBuffer.BindPS(0);
         
         auto light = SpotLight();
-        SimpleLightTransformData transformData;
+        DepthData transformData;
         transformData.viewMatrix = light.cameraObj.GetViewMatrix();
         transformData.viewProjectionMatrix = light.cameraObj.GetViewMatrix() * light.cameraObj.GetProjectionMatrix();
 
@@ -131,7 +152,7 @@ namespace NotRed::Graphics
             for (const RenderObject& renderObject : *obj)
             {
                 transformData.modelTransform = renderObject.transform.GetMatrix();
-                mLightTransformBuffer.Update(transformData);
+                mDepthDataBuffer.Update(transformData);
 
                 renderObject.meshBuffer.Render();
             }

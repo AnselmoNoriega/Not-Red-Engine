@@ -1,10 +1,21 @@
 
-cbuffer TranformBuffer : register(b0)
+cbuffer ViewBuffer : register(b0)
 {
-    matrix world;
     float3 viewDir;
-    matrix lightViewProj;
     matrix viewMatrix;
+    float3 camPos;
+}
+
+cbuffer LightBuffer : register(b1)
+{
+    matrix lightViewProj;
+    float3 lightPos;
+}
+
+cbuffer MatrixBuffer : register(b2)
+{
+    matrix lightMatrix;
+    matrix geoMatrix;
 }
 
 Texture2D geometryTexture : register(t0);
@@ -25,8 +36,7 @@ struct VS_OUTPUT
 {
     float4 position : SV_Position;
     float2 texCoord : TEXCOORD0;
-    float3 fragPos : TEXCOORD1;
-    float3 viewDir : TEXCOORD2;
+    float3 viewDir : TEXCOORD1;
 };
 
 VS_OUTPUT VS(VS_INPUT input)
@@ -34,7 +44,6 @@ VS_OUTPUT VS(VS_INPUT input)
     VS_OUTPUT output;
     output.position = float4(input.position, 1.0f);
     output.viewDir = viewDir;
-    output.fragPos = mul(float4(input.position, 1.0f), world).xyz;
     output.texCoord = input.texCoord;
     
     return output;
@@ -52,7 +61,7 @@ matrix Inverse(matrix m)
         - m._41 * (m._12 * (m._23 * m._34 - m._33 * m._24) - m._22 * (m._13 * m._34 - m._33 * m._14) + m._32 * (m._13 * m._24 - m._23 * m._14));
 
     if (abs(det) < 1e-6) // Check for singularity
-    { 
+    {
         return adjugate; // Non-invertible matrix
     }
 
@@ -172,84 +181,82 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    float3 depth = lightGeometryTexture.Sample(textureSampler, input.texCoord);
-    if (length(depth) <= 0.001)
+    // Sample necessary textures
+    float3 lightDepth = lightGeometryTexture.Sample(textureSampler, input.texCoord);
+    float3 lightDepthIn = lightInGeometryTexture.Sample(textureSampler, input.texCoord);
+    float3 geometryPos = geometryPositionTetxure.Sample(textureSampler, input.texCoord);
+
+    if (length(lightDepth) <= 0.001)
     {
-        return geometryTexture.Sample(textureSampler, input.texCoord);
-    }
-    
-    float3 lightPos = GetWorldPosition(depth * 100.0f, Inverse(camViewMatrix), Inverse(modelMatrix));
-    
-    // input.position * invScreenMat * invCameraProj * invCameraView = positionInWorld
-    // positionWorld = mul(mul(mul(input.position, invScreenMat), invCameraProj), invCameraView)
-    // pass in screenToWorldMat = invScreenMat * invCameraProj * invCameraView; (transpose)
-    // pixelInWorld = mul(input.position, screenToWorldMat)
-    
-    
-    /*
-    float4 clipPos = float4(input.texCoord.x, input.texCoord.y, depth, 1.0f);
-    float4 viewPos = mul(Inverse(lightViewProj), clipPos);
-    float3 worldPos2 = viewPos.xyz / viewPos.w;
-    */
-    
-    // Initialize light
-    float3 lightPos = float3(0, 10, 0); // Light source position
-    float3 lightColor = float3(1, 1, 0.8); // Light color
-    float3 lightDir = normalize(lightPos - input.fragPos); // Direction from light to point
-    
-    int numSteps = 10;
-    float stepSize = 0.1;
-
-    // Raymarch from light to fragment position
-    float3 lightRayPos = lightPos; // Starting point of the light ray
-    float3 lightRayStep = normalize(input.fragPos - lightPos) * stepSize; // Increment along light direction
-    float lightTransmittance = 1.0; // Accumulated attenuation along the light ray
-    float lightAbsorptionCoefficient = 0.5; // Accumulated attenuation along the light ray
-
-    for (int i = 0; i < numSteps; ++i)
-    {
-        // Sample density along the light ray
-        float density = GetProceduralDensity(lightRayPos);
-
-        // Attenuate light based on density
-        lightTransmittance *= exp(-density * lightAbsorptionCoefficient);
-
-        // Early exit if light is fully absorbed
-        if (lightTransmittance < 0.01)
-            break;
-
-        // Move to the next position along the light ray
-        lightRayPos += lightRayStep;
-
-        // Stop if the light ray reaches the fragment position
-        if (length(lightRayPos - input.fragPos) < stepSize)
-            break;
+        return geometryTexture.Sample(textureSampler, input.texCoord); // No volumetric effect if light depth is invalid
     }
 
-    // Raymarch through the volume from the fragment's perspective
-    float3 rayPos = input.fragPos; // Starting point of the view ray
-    float3 rayStep = input.viewDir * stepSize; // Increment along view direction
-    float accumulatedLight = 0.0; // Accumulated light contribution
+    // Transform positions to world space
+    float3 lightGeomPos = GetWorldPosition(lightDepth * 100.0f, Inverse(viewMatrix), Inverse(lightMatrix));
+    float3 lightGeomInPos = GetWorldPosition(lightDepthIn * 100.0f, Inverse(viewMatrix), Inverse(lightMatrix));
+    float3 worldGeoPos = GetWorldPosition(geometryPos * 100.0f, Inverse(viewMatrix), Inverse(geoMatrix));
 
-    for (int i = 0; i < numSteps; ++i)
+    // Light source properties
+    float3 lightPos = float3(0.0f, 10.0f, 0.0f);
+    float3 lightColor = float3(1.0f, 1.0f, 0.8f);
+
+    // Raymarch settings
+    float stepSize = 0.1f;
+    float lightAbsorptionCoefficient = 0.5f;
+
+    float accumulatedLight = 0.0f;
+    float lightTransmittance = 1.0f;
+
+    // Raymarch from geometry to light
+    float3 rayPos = lightGeomPos;
+    float3 rayStep = normalize(lightGeomInPos - lightGeomPos) * stepSize;
+
+    while (distance(rayPos, lightGeomInPos) > stepSize)
     {
-        // Sample the dust density from the 3D noise texture
+        // Sample density at the current position
         float density = GetProceduralDensity(rayPos);
 
-        // Compute scattering at the current position
+        // Compute scattering based on light direction and view direction
+        float3 lightDir = normalize(lightPos - rayPos);
         float3 scattering = ComputeScattering(lightDir, input.viewDir, density);
 
-        // Combine scattering with light attenuation
-        accumulatedLight += dot(lightColor * lightTransmittance, scattering) * density * stepSize;
+        // Initialize light transmittance for this step
+        float transmittanceForStep = 1.0f;
+        float3 lightRayPos = rayPos;
+        float3 lightRayStep = normalize(lightPos - lightRayPos) * stepSize;
+
+        // Raymarch from the current position to the light source
+        while (distance(lightRayPos, lightPos) > stepSize)
+        {
+            // Sample density along the light ray
+            float densityAlongRay = GetProceduralDensity(lightRayPos);
+
+            // Attenuate light transmittance along the ray
+            transmittanceForStep *= exp(-densityAlongRay * lightAbsorptionCoefficient);
+
+            // Early exit if light is fully absorbed
+            if (transmittanceForStep < 0.01f)
+                break;
+
+            // Move to the next position along the light ray
+            lightRayPos += lightRayStep;
+        }
+
+        // Combine scattering with light transmittance from the current step
+        accumulatedLight += dot(lightColor * transmittanceForStep, scattering) * density * stepSize;
 
         // Move to the next position along the ray
         rayPos += rayStep;
     }
 
     // Apply distance attenuation
-    float distanceAttenuation = 1.0 / (1.0 + length(input.fragPos - lightPos) * 0.1);
+    float distanceAttenuation = 1.0f / (1.0f + length(lightGeomPos - lightPos) * 0.1f);
     accumulatedLight *= distanceAttenuation;
 
-    // Output the final color
-    return float4(accumulatedLight, accumulatedLight, accumulatedLight, 1.0);
+    // Blend the volumetric light with the base geometry texture
+    float4 baseColor = geometryTexture.Sample(textureSampler, input.texCoord);
+    float alpha = saturate(accumulatedLight); // Use accumulated light as blending factor
+    float3 finalColor = lerp(baseColor.rgb, lightColor, alpha);
+
+    return float4(finalColor, 1.0f);
 }

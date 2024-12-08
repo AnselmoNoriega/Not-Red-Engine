@@ -4,91 +4,108 @@
 
 namespace NotRed::Graphics
 {
-	class Camera;
-	class Texture;
-	struct RenderObject;
+    class Camera;
+    class Texture;
+    struct RenderObject;
 
-	struct SpotLight
-	{
-		SpotLight()
-		{
-			cameraObj.SetPosition({ 0.0f, 10.0f, 0.0f });
-			cameraObj.SetDirection({ 0.0f, -0.99f, 0.1f });
-		}
+    struct SpotLight
+    {
+        SpotLight()
+        {
+            cameraObj.SetPosition({ 0.0f, 10.0f, 0.0f });
+            cameraObj.SetDirection({ 0.0f, -0.99f, 0.1f });
+        }
 
-		Camera cameraObj;
-	};
+        Camera cameraObj;
+    };
 
-	class VolumetricLightingEffect
-	{
-	public:
-		void Initialize();
-		void Terminate();
+    class VolumetricLightingEffect
+    {
+    public:
+        void Initialize();
+        void Terminate();
 
-		void Render(const RenderObject& renderObject, const RenderObject& inRenderObject, const RenderObject& renderTarget);
+        void Render(const RenderObject& renderObject, const RenderObject& inRenderObject, const RenderObject& renderTarget);
 
-		void DebugUI();
+        void DebugUI();
 
-		void Render(const RenderObject& renderObject);
+        void Render(const RenderObject& renderObject);
 
-		void SetCamera(const Camera& camera);
-		inline void SetTextures(const Texture* renderTarget, const Texture* depthTarget)
-		{
-			mGeometryTexture = renderTarget;
-			mGeometryPositionTetxure = depthTarget;
-		}
+        void SetCamera(const Camera& camera);
+        inline void SetTextures(const Texture* renderTarget, const Texture* depthTarget)
+        {
+            mGeometryTexture = renderTarget;
+            mGeometryPositionTetxure = depthTarget;
+        }
 
-		inline void RegisterObject(const RenderGroup& obj)
-		{
-			mCharacters.push_back(&obj);
-		}
+        inline void RegisterObject(const RenderGroup& obj)
+        {
+            mCharacters.push_back(&obj);
+        }
 
-	private:
-		void RenderDepth(const RenderObject& renderObject, RenderTarget& target);
-		void RenderLightCam();
+    private:
+        void RenderDepth(const RenderObject& renderObject, RenderTarget& target);
+        void RenderDepthFromLight();
 
-	private:
-		struct SimpleVolumeTransformData
-		{
-			Math::Matrix4 world;
-			Math::Vector3 viewDir;
-			Math::Matrix4 LightViewProj;
-			Math::Matrix4 viewMatrix;
-			float padding = 0.0f;
-		};
+    private:
 
-		struct SimpleLightTransformData
-		{
-			Math::Matrix4 modelTransform;
-			Math::Matrix4 viewMatrix;
-			Math::Matrix4 viewProjectionMatrix;
-		};
+        struct ViewData
+        {
+            Math::Vector3 viewDir;
+            Math::Matrix4 viewMatrix;
+            Math::Vector3 camPos;
+            float padding[2];
+        };
+        struct LightData
+        {
+            Math::Matrix4 lightViewProj;
+            Math::Vector3 lightPos;
+            float padding;
+        };
+        struct MatrixData
+        {
+            Math::Matrix4 lightMatrix;
+            Math::Matrix4 geoMatrix;
+        };
 
-		using SimpleVolumeTransformBuffer = TypedConstantBuffer<SimpleVolumeTransformData>;
-		using SimpleLightTransformBuffer = TypedConstantBuffer<SimpleLightTransformData>;
+        struct DepthData
+        {
+            Math::Matrix4 modelTransform;
+            Math::Matrix4 viewMatrix;
+            Math::Matrix4 viewProjectionMatrix;
+        };
 
-	private:
+        using ViewDataBuffer = TypedConstantBuffer<ViewData>;
+        using LightDataBuffer = TypedConstantBuffer<LightData>;
+        using MatrixDataBuffer = TypedConstantBuffer<MatrixData>;
 
-		SimpleVolumeTransformBuffer mTransformBuffer;
-		SimpleLightTransformBuffer mLightTransformBuffer;
+        using DepthDataBuffer = TypedConstantBuffer<DepthData>;
 
-		Sampler mSampler;
-		BlendState mBlendState;
-		VertexShader mVertexShader;
-		PixelShader mPixelShader;
+    private:
 
-		VertexShader mLightVertexShader;
-		PixelShader mLightPixelShader;
+        ViewDataBuffer mViewDataBuffer;
+        LightDataBuffer mLightDataBuffer;
+        MatrixDataBuffer mMatrixDataBuffer;
 
-		const Camera* mCamera = nullptr;
+        DepthDataBuffer mDepthDataBuffer;
 
-		const Texture* mGeometryTexture = nullptr;
-		const Texture* mGeometryPositionTetxure = nullptr;
+        Sampler mSampler;
+        BlendState mBlendState;
+        VertexShader mVertexShader;
+        PixelShader mPixelShader;
 
-		RenderTarget mLightGeometryTarget;
-		RenderTarget mLightInGeometryTarget;
-		RenderTarget mLightViewTarget;
+        VertexShader mLightVertexShader;
+        PixelShader mLightPixelShader;
 
-		std::vector<const RenderGroup*> mCharacters;
-	};
+        const Camera* mCamera = nullptr;
+
+        const Texture* mGeometryTexture = nullptr;
+        const Texture* mGeometryPositionTetxure = nullptr;
+
+        RenderTarget mLightGeometryTarget;
+        RenderTarget mLightInGeometryTarget;
+        RenderTarget mLightViewTarget;
+
+        std::vector<const RenderGroup*> mCharacters;
+    };
 }
