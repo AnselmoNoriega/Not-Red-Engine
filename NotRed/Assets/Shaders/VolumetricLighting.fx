@@ -188,7 +188,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
     if (length(lightDepth) <= 0.001)
     {
-        return geometryTexture.Sample(textureSampler, input.texCoord); // No volumetric effect if light depth is invalid
+        return float4(0.0, 1.0, 1.0, 1.0);
+        // return geometryTexture.Sample(textureSampler, input.texCoord); // No volumetric effect if light depth is invalid
     }
 
     // Transform positions to world space
@@ -201,52 +202,53 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float3 lightColor = float3(1.0f, 1.0f, 0.8f);
 
     // Raymarch settings
-    float stepSize = 0.1f;
+    int numStepsMain = 10; // Number of steps for the main raymarch
+    int numStepsLight = 10; // Number of steps for the light raymarch
     float lightAbsorptionCoefficient = 0.5f;
 
     float accumulatedLight = 0.0f;
-    float lightTransmittance = 1.0f;
+
+    // Calculate the main ray step
+    float3 mainDirection = normalize(lightGeomInPos - lightGeomPos);
+    float mainStepSize = length(lightGeomInPos - lightGeomPos) / numStepsMain;
 
     // Raymarch from geometry to light
-    float3 rayPos = lightGeomPos;
-    float3 rayStep = normalize(lightGeomInPos - lightGeomPos) * stepSize;
-
-    while (distance(rayPos, lightGeomInPos) > stepSize)
+    for (int i = 0; i < numStepsMain; i++)
     {
-        // Sample density at the current position
+        float3 rayPos = lightGeomPos + mainDirection * (i * mainStepSize);
+
+    // Sample density at the current position
         float density = GetProceduralDensity(rayPos);
 
-        // Compute scattering based on light direction and view direction
+    // Compute scattering based on light direction and view direction
         float3 lightDir = normalize(lightPos - rayPos);
         float3 scattering = ComputeScattering(lightDir, input.viewDir, density);
 
-        // Initialize light transmittance for this step
+    // Initialize light transmittance for this step
         float transmittanceForStep = 1.0f;
-        float3 lightRayPos = rayPos;
-        float3 lightRayStep = normalize(lightPos - lightRayPos) * stepSize;
 
-        // Raymarch from the current position to the light source
-        while (distance(lightRayPos, lightPos) > stepSize)
+    // Calculate the light ray step
+        float3 lightDirection = normalize(lightPos - rayPos);
+        float lightStepSize = length(lightPos - rayPos) / numStepsLight;
+
+    // Raymarch from the current position to the light source
+        for (int j = 0; j < numStepsLight; j++)
         {
-            // Sample density along the light ray
+            float3 lightRayPos = rayPos + lightDirection * (j * lightStepSize);
+
+        // Sample density along the light ray
             float densityAlongRay = GetProceduralDensity(lightRayPos);
 
-            // Attenuate light transmittance along the ray
+        // Attenuate light transmittance along the ray
             transmittanceForStep *= exp(-densityAlongRay * lightAbsorptionCoefficient);
 
-            // Early exit if light is fully absorbed
+        // Early exit if light is fully absorbed
             if (transmittanceForStep < 0.01f)
                 break;
-
-            // Move to the next position along the light ray
-            lightRayPos += lightRayStep;
         }
 
         // Combine scattering with light transmittance from the current step
-        accumulatedLight += dot(lightColor * transmittanceForStep, scattering) * density * stepSize;
-
-        // Move to the next position along the ray
-        rayPos += rayStep;
+        accumulatedLight += dot(lightColor * transmittanceForStep, scattering) * density * mainStepSize;
     }
 
     // Apply distance attenuation
