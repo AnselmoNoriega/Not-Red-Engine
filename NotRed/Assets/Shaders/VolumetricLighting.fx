@@ -166,7 +166,7 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 {
     // Henyey-Greenstein phase function for anisotropic scattering
     float g = 0.5; // Anisotropy factor (-1: backward, 0: isotropic, 1: forward)
-    float phase = (1.0 - g * g) / pow(1.0 + g * g - 2.0 * g * dot(lightDir, viewDir), 1.5);
+    float phase = (1.0 - g * g) / pow(max(1.0e-6, 1.0 + g * g - 2.0 * g * dot(lightDir, viewDir)), 1.5);
 
     // Scattering contribution is proportional to density and phase
     float scattering = density * phase;
@@ -179,14 +179,14 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 float4 PS(VS_OUTPUT input) : SV_Target
 {
     // Sample necessary textures
-    float3 lightDepth = lightGeometryTexture.Sample(textureSampler, input.texCoord);
-    float3 lightDepthIn = lightInGeometryTexture.Sample(textureSampler, input.texCoord);
-    float3 geometryPos = geometryPositionTetxure.Sample(textureSampler, input.texCoord);
+    float3 lightDepth = lightGeometryTexture.Sample(textureSampler, input.texCoord).xyz;
+    float3 lightDepthIn = lightInGeometryTexture.Sample(textureSampler, input.texCoord).xyz;
+    float3 geometryPos = geometryPositionTetxure.Sample(textureSampler, input.texCoord).xyz;
 
     if (length(lightDepth) <= 0.001)
     {
-        return float4(0.0, 1.0, 1.0, 1.0);
-        // return geometryTexture.Sample(textureSampler, input.texCoord); // No volumetric effect if light depth is invalid
+        // return float4(0.0, 1.0, 1.0, 1.0);
+        return geometryTexture.Sample(textureSampler, input.texCoord); // No volumetric effect if light depth is invalid
     }
 
     // Transform positions to world space
@@ -201,63 +201,73 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float3 lightColor = float3(1.0f, 1.0f, 0.8f);
 
     // Raymarch settings
-    int numStepsMain = 10; // Number of steps for the main raymarch
-    int numStepsLight = 10; // Number of steps for the light raymarch
+    float mainRayLength = length(lightGeomInPos - lightGeomPos);
+    float lightRayLength = length(lightPos - lightGeomPos);
+    
+    int numStepsMain = int(mainRayLength * 2.0f); // Number of steps for the main raymarch
+    int numStepsLight = int(lightRayLength * 2.0f); // Number of steps for the light raymarch
     float lightAbsorptionCoefficient = 0.5f;
 
     float accumulatedLight = 0.0f;
 
     // Calculate the main ray step
     float3 mainDirection = normalize(lightGeomInPos - lightGeomPos);
-    float mainStepSize = length(lightGeomInPos - lightGeomPos) / numStepsMain;
-
+    float mainStepSize = length(mainDirection) / numStepsMain;
+    
+    // Initialize overall transmittance
+    float transmittance = 1.0f;
+    
     // Raymarch from geometry to light
+    [loop]
     for (int i = 0; i < numStepsMain; i++)
     {
         float3 rayPos = lightGeomPos + mainDirection * (i * mainStepSize);
 
-    // Sample density at the current position
+        //======================== Check Light Occlusion ========================
+        float4 projectedPos = mul(lightViewProj, float4(rayPos, 1.0f));
+        float2 lightTexCoords = projectedPos.xy / projectedPos.w;
+
+        if (lightTexCoords.x >= 0.0 && lightTexCoords.x <= 1.0 &&
+            lightTexCoords.y >= 0.0 && lightTexCoords.y <= 1.0)
+        {
+            float depthFromLightView = lightViewTarget.Sample(textureSampler, lightTexCoords).r;
+
+            if (projectedPos.z > depthFromLightView + 0.005)
+            {
+                // Light is occluded; no contribution from this step
+                transmittance *= 0.5; // Gradually reduce intensity due to occlusion
+                continue;
+            }
+        }
+        //=======================================================================
+
+        // Sample density at the current position
         float density = GetProceduralDensity(rayPos);
 
-    // Compute scattering based on light direction and view direction
+        // Calculate scattering for this position
         float3 lightDir = normalize(lightPos - rayPos);
         float3 scattering = ComputeScattering(lightDir, camViewDir, density);
 
-    // Initialize light transmittance for this step
-        float transmittanceForStep = 1.0f;
+        // Attenuate light due to density
+        transmittance *= exp(-density * lightAbsorptionCoefficient);
 
-    // Calculate the light ray step
-        float3 lightDirection = normalize(lightPos - rayPos);
-        float lightStepSize = length(lightPos - rayPos) / numStepsLight;
+        // Early exit if light intensity drops below visibility
+        if (transmittance < 0.01f)
+            break;
 
-        // Raymarch from the current position to the light source
-        for (int j = 0; j < numStepsLight; j++)
-        {
-            float3 lightRayPos = rayPos + lightDirection * (j * lightStepSize);
-
-        // Sample density along the light ray
-            float densityAlongRay = GetProceduralDensity(lightRayPos);
-
-        // Attenuate light transmittance along the ray
-            transmittanceForStep *= exp(-densityAlongRay * lightAbsorptionCoefficient);
-
-        // Early exit if light is fully absorbed
-            if (transmittanceForStep < 0.01f)
-                break;
-        }
-
-        // Combine scattering with light transmittance from the current step
-        accumulatedLight += dot(lightColor * transmittanceForStep, scattering) * density * mainStepSize;
+        // Accumulate light considering scattering and transmittance
+        accumulatedLight += 10 * (transmittance * scattering * mainStepSize) / length(lightPos - rayPos);
     }
 
-    // Apply distance attenuation
-    float distanceAttenuation = 1.0f / (1.0f + length(lightGeomPos - lightPos) * 0.1f);
+    // Apply distance attenuation to the accumulated light
+    float distanceToLight = length(lightGeomPos - lightPos);
+    float distanceAttenuation = 1.0f / (1.0f + distanceToLight * 0.1f);
     accumulatedLight *= distanceAttenuation;
 
-    // Blend the volumetric light with the base geometry texture
+    // Blend accumulated light with the base geometry texture
     float4 baseColor = geometryTexture.Sample(textureSampler, input.texCoord);
-    float alpha = saturate(accumulatedLight); // Use accumulated light as blending factor
-    float3 finalColor = lerp(baseColor.rgb, lightColor, alpha);
+    float alpha = saturate(accumulatedLight);// / (5 / (length(lightGeomInPos - lightGeomPos) / 2)); // Scale blending factor
+    float3 finalColor = lerp(baseColor.rgb, lightColor, alpha * 3);
 
     return float4(finalColor, 1.0f);
 }
