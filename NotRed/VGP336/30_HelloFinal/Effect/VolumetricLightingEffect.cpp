@@ -74,7 +74,6 @@ namespace NotRed::Graphics
         }
         
         ViewData viewData;
-        viewData.viewDir = mCamera->GetDirection();
         viewData.viewMatrix = mCamera->GetViewMatrix();
         viewData.camPos = mCamera->GetPosition();
 

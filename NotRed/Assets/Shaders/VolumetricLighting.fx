@@ -1,7 +1,6 @@
 
 cbuffer ViewBuffer : register(b0)
 {
-    float3 viewDir;
     matrix viewMatrix;
     float3 camPos;
 }
@@ -36,14 +35,12 @@ struct VS_OUTPUT
 {
     float4 position : SV_Position;
     float2 texCoord : TEXCOORD0;
-    float3 viewDir : TEXCOORD1;
 };
 
 VS_OUTPUT VS(VS_INPUT input)
 {
     VS_OUTPUT output;
     output.position = float4(input.position, 1.0f);
-    output.viewDir = viewDir;
     output.texCoord = input.texCoord;
     
     return output;
@@ -196,7 +193,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float3 lightGeomPos = GetWorldPosition(lightDepth * 100.0f, Inverse(viewMatrix), Inverse(lightMatrix));
     float3 lightGeomInPos = GetWorldPosition(lightDepthIn * 100.0f, Inverse(viewMatrix), Inverse(lightMatrix));
     float3 worldGeoPos = GetWorldPosition(geometryPos * 100.0f, Inverse(viewMatrix), Inverse(geoMatrix));
-
+    
+    float3 camViewDir = normalize(camPos - lightGeomPos);
+    
     // Light source properties
     float3 lightPos = float3(0.0f, 10.0f, 0.0f);
     float3 lightColor = float3(1.0f, 1.0f, 0.8f);
@@ -222,7 +221,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
     // Compute scattering based on light direction and view direction
         float3 lightDir = normalize(lightPos - rayPos);
-        float3 scattering = ComputeScattering(lightDir, input.viewDir, density);
+        float3 scattering = ComputeScattering(lightDir, camViewDir, density);
 
     // Initialize light transmittance for this step
         float transmittanceForStep = 1.0f;
@@ -231,7 +230,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
         float3 lightDirection = normalize(lightPos - rayPos);
         float lightStepSize = length(lightPos - rayPos) / numStepsLight;
 
-    // Raymarch from the current position to the light source
+        // Raymarch from the current position to the light source
         for (int j = 0; j < numStepsLight; j++)
         {
             float3 lightRayPos = rayPos + lightDirection * (j * lightStepSize);

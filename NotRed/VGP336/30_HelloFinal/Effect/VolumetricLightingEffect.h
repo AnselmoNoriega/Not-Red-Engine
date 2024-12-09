@@ -51,10 +51,9 @@ namespace NotRed::Graphics
 
         struct ViewData
         {
-            Math::Vector3 viewDir;
             Math::Matrix4 viewMatrix;
             Math::Vector3 camPos;
-            float padding[2];
+            float padding;
         };
         struct LightData
         {
