@@ -18,16 +18,10 @@
     <ClCompile Include="VolumetricLightingComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VolumetricLightingService.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WinMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Effect\VolumetricLightingEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,16 +29,10 @@
     <ClInclude Include="VolumetricLightingComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VolumetricLightingService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CustomTypeIDs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Effect\VolumetricLightingEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

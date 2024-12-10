@@ -46,4 +46,5 @@
 #include "TextureManager.h"
 #include "VertexTypes.h"
 #include "VertexShader.h"
+#include "VolumetricLightingEffect.h"
 #include "WaterEffect.h"

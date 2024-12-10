@@ -1,10 +1,21 @@
 #pragma once
 
-#include <Not-Red/Inc/NotRed.h>
+#include "ConstantBuffer.h"
+#include "LightTypes.h"
+#include "Material.h"
+#include "PixelShader.h"
+#include "GeometryShader.h"
+#include "Sampler.h"
+#include "VertexShader.h"
+#include "BlendState.h"
+#include "RenderTarget.h"
+#include "Texture.h"
+
+#include "Camera.h"
+#include "RenderObject.h"
 
 namespace NotRed::Graphics
 {
-    class Camera;
     class Texture;
     struct RenderObject;
 

@@ -49,6 +49,7 @@
     <ClInclude Include="Inc\UIFont.h" />
     <ClInclude Include="Inc\UISprite.h" />
     <ClInclude Include="Inc\UISpriteRenderer.h" />
+    <ClInclude Include="Inc\VolumetricLightingEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp" />
@@ -86,6 +87,7 @@
     <ClCompile Include="Src\UIFont.cpp" />
     <ClCompile Include="Src\UISprite.cpp" />
     <ClCompile Include="Src\UISpriteRenderer.cpp" />
+    <ClCompile Include="Src\VolumetricLightingEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

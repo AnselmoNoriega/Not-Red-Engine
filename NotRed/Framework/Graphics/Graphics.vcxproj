@@ -180,6 +180,7 @@
     <ClInclude Include="Inc\UISpriteRenderer.h" />
     <ClInclude Include="Inc\VertexShader.h" />
     <ClInclude Include="Inc\VertexTypes.h" />
+    <ClInclude Include="Inc\VolumetricLightingEffect.h" />
     <ClInclude Include="Inc\WaterEffect.h" />
     <ClInclude Include="Inc\ParticleSystemEffect.h" />
     <ClInclude Include="Src\Precompiled.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="Src\VertexShader.cpp" />
     <ClCompile Include="Src\StandardEffect.cpp" />
     <ClCompile Include="Src\TextureManager.cpp" />
+    <ClCompile Include="Src\VolumetricLightingEffect.cpp" />
     <ClCompile Include="Src\WaterEffect.cpp" />
   </ItemGroup>
   <ItemGroup>

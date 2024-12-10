@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Not-Red/Inc/NotRed.h>
-#include "Effect/VolumetricLightingEffect.h"
 
 class MainState : public NotRed::AppState
 {

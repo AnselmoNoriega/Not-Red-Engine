@@ -1,4 +1,9 @@
+#include "Precompiled.h"
 #include "VolumetricLightingEffect.h"
+
+#include "RenderTarget.h"
+#include "VertexTypes.h"
+#include "GraphicsSystem.h"
 
 namespace NotRed::Graphics
 {
