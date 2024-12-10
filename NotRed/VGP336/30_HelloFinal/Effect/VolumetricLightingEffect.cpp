@@ -74,6 +74,7 @@ namespace NotRed::Graphics
         }
         
         ViewData viewData;
+        viewData.viewProjection = Math::Transpose(mCamera->GetViewMatrix() * mCamera->GetProjectionMatrix());
         viewData.viewMatrix = mCamera->GetViewMatrix();
         viewData.camPos = mCamera->GetPosition();
 
@@ -83,8 +84,9 @@ namespace NotRed::Graphics
 
         LightData lightData;
         SpotLight light;
-        lightData.lightPos = light.cameraObj.GetPosition();
         lightData.lightViewProj = Math::Transpose(light.cameraObj.GetViewMatrix() * light.cameraObj.GetProjectionMatrix());
+        lightData.lightPos = light.cameraObj.GetPosition();
+        lightData.wvp = lightData.lightViewProj;
 
         mLightDataBuffer.BindVS(1);
         mLightDataBuffer.BindPS(1);

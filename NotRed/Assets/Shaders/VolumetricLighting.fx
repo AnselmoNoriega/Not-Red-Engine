@@ -2,11 +2,13 @@
 cbuffer ViewBuffer : register(b0)
 {
     matrix viewMatrix;
+    matrix viewProjection;
     float3 camPos;
 }
 
 cbuffer LightBuffer : register(b1)
 {
+    matrix lwvp;
     matrix lightViewProj;
     float3 lightPos;
 }
@@ -175,6 +177,34 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 }
 // ========================================================================
 // ========================================================================
+float4 LitTexture(float4 color, float3 worldPos, float2 texCoord)
+{
+    float4 cameraDepthColor = geometryPositionTetxure.Sample(textureSampler, texCoord);
+    float cameraDepth = length(cameraDepthColor.rgb) * 100.0f;
+    float4 clipSpacePosition = float4(texCoord * 2.0 - 1.0, cameraDepth, 1.0);
+    float4 viewSpacePosition = mul(Inverse(viewProjection), clipSpacePosition);
+    //viewSpacePosition /= viewSpacePosition.w;
+    
+    float4 lightSpacePosition = mul(lightViewProj, viewSpacePosition);
+    //lightSpacePosition /= lightSpacePosition.w;
+    
+    float2 lightUV = lightSpacePosition.xy * 0.5 + 0.5;
+    
+    float4 lightDepthColor = lightViewTarget.Sample(textureSampler, lightUV);
+    if(lightDepthColor.a <= 0.001)
+    {
+        return color;
+    }
+    
+    return float4(1.0, 0.5, 0.0, 1.0);
+    float lightDepth = length(lightDepthColor.rgb) * 100.0f;
+    if (lightSpacePosition.z <= lightDepth + 0.005)
+    {
+        return float4(1.0, 0.5, 0.0, 1.0); // Highlight in red
+    }
+    
+    return color;
+}
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
@@ -225,7 +255,10 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
         //======================== Check Light Occlusion ========================
         float4 projectedPos = mul(lightViewProj, float4(rayPos, 1.0f));
-        float2 lightTexCoords = projectedPos.xy / projectedPos.w;
+        float2 lightTexCoords = projectedPos.xyz / projectedPos.w;
+        
+        /*float3 ndcPos = lightClipPos.xyz / lightClipPos.w;
+        float2 lightTexCoords = ndcPos.xy * 0.5 + 0.5;*/
 
         if (lightTexCoords.x >= 0.0 && lightTexCoords.x <= 1.0 &&
             lightTexCoords.y >= 0.0 && lightTexCoords.y <= 1.0)
@@ -266,6 +299,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
     // Blend accumulated light with the base geometry texture
     float4 baseColor = geometryTexture.Sample(textureSampler, input.texCoord);
+    baseColor = LitTexture(baseColor, worldGeoPos, input.texCoord);
     float alpha = saturate(accumulatedLight);// / (5 / (length(lightGeomInPos - lightGeomPos) / 2)); // Scale blending factor
     float3 finalColor = lerp(baseColor.rgb, lightColor, alpha * 3);
 

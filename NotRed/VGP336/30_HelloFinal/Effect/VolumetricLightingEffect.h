@@ -52,11 +52,13 @@ namespace NotRed::Graphics
         struct ViewData
         {
             Math::Matrix4 viewMatrix;
+            Math::Matrix4 viewProjection;
             Math::Vector3 camPos;
             float padding;
         };
         struct LightData
         {
+            Math::Matrix4 wvp;
             Math::Matrix4 lightViewProj;
             Math::Vector3 lightPos;
             float padding;
