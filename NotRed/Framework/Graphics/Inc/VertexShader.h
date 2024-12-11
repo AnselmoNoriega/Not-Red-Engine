@@ -12,7 +12,7 @@ namespace NotRed::Graphics
 		}
 		void Initialize(const std::filesystem::path& filePath, uint32_t format);
 		void Terminate();
-		void Bind();
+		void Bind() const;
 
 	private:
 		ID3D11VertexShader* mVertexShader = nullptr;

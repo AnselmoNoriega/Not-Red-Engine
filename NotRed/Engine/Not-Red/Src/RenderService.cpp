@@ -4,6 +4,7 @@
 #include "CameraService.h"
 
 #include "RenderObjectComponent.h"
+#include "VolumetricLightingComponent.h"
 #include "TransformComponent.h"
 #include "AnimatorComponent.h"
 
@@ -28,10 +29,28 @@ void RenderService::Initialize()
 
     mShadowEffect.Initialize();
     mShadowEffect.SetDirectionalLight(mDirectionalLight);
+
+    GraphicsSystem* gs = GraphicsSystem::Get();
+    const uint32_t screenWidth = gs->GetBackBufferWidth();
+    const uint32_t screenHeight = gs->GetBackBufferHeight();
+    mRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+    mRenderTargetHelper.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+    mDepthBuffer.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+
+    mVolumetricLighting.Initialize();
+    mVolumetricLighting.SetCamera(mCameraService->GetMain());
+    mVolumetricLighting.SetDepthTexture(&mDepthBuffer);
+
+    MeshPX screenQuad = MeshBuilder::CreateScreenQuad();
+    mScreenQuad.meshBuffer.Initialize(screenQuad);
 }
 
 void RenderService::Terminate()
 {
+    mScreenQuad.Terminate();
+    mRenderTarget.Terminate();
+    mDepthBuffer.Terminate();
+
     mShadowEffect.Terminate();
     mStandardEffect.Terminate();
 }
@@ -64,12 +83,42 @@ void RenderService::Render()
     }
     mShadowEffect.End();
 
+    mRenderTarget.BeginRender();
     mStandardEffect.Begin();
     for (Entry& entry : mRenderEntries)
     {
         DrawRenderGroup(mStandardEffect, entry.renderGroup);
     }
     mStandardEffect.End();
+    mRenderTarget.EndRender();
+
+    mDepthBuffer.BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
+    mStandardEffect.Begin();
+    for (Entry& entry : mRenderEntries)
+    {
+        DrawRenderGroup(mStandardEffect, entry.renderGroup);
+    }
+    mDepthBuffer.EndRender();
+
+    // Get render Texture
+
+    if (mRenderVolumes.size() > 0)
+    {
+        for (const VolumeEntry& entry : mRenderVolumes)
+        {
+            mVolumetricLighting.UpdateRenderImage();
+
+            mVolumetricLighting.Render(entry.renderComponent->GetLight(), 
+                entry.renderComponent->GetLightModelFront(),
+                entry.renderComponent->GetLightModelBack());
+
+            mRenderTarget.BeginRender();
+            mVolumetricLighting.RenderScreenQuad(entry.renderComponent->GetLight(), mScreenQuad);
+            mRenderTarget.EndRender();
+        }
+    }
+
+    // Render las image
 }
 
 void RenderService::DebugUI()
@@ -114,6 +163,8 @@ void RenderService::Register(const RenderObjectComponent* renderObjectComponent)
     {
         entry.renderGroup = CreateRenderGroup(renderObjectComponent->GetModel());
     }
+
+    mVolumetricLighting.RegisterObject(entry.renderGroup);
 }
 
 void RenderService::Unregister(const RenderObjectComponent* renderObjectComponent)
@@ -130,5 +181,29 @@ void RenderService::Unregister(const RenderObjectComponent* renderObjectComponen
     {
         CleanRenderGroup(iter->renderGroup);
         mRenderEntries.erase(iter);
+    }
+}
+
+void RenderService::Register(const VolumetricLightComponent* volumeObjectComponent)
+{
+    VolumeEntry& entry = mRenderVolumes.emplace_back();
+
+    entry.renderComponent = volumeObjectComponent;
+    entry.transformComponent = volumeObjectComponent->GetOwner().GetComponent<TransformComponent>();
+}
+
+void RenderService::Unregister(const VolumetricLightComponent* volumeObjectComponent)
+{
+    auto iter = std::find_if(
+        mRenderVolumes.begin(),
+        mRenderVolumes.end(),
+        [&](const VolumeEntry& entry)
+        {
+            return entry.renderComponent == volumeObjectComponent;
+        });
+
+    if (iter != mRenderVolumes.end())
+    {
+        mRenderVolumes.erase(iter);
     }
 }

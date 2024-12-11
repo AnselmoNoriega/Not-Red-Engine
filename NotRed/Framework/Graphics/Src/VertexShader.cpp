@@ -94,7 +94,7 @@ void VertexShader::Terminate()
 	SafeRelease(mVertexShader);
 }
 
-void VertexShader::Bind()
+void VertexShader::Bind() const
 {
 	auto context = GraphicsSystem::Get()->GetContext();
 

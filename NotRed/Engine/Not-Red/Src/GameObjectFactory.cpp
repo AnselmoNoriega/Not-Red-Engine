@@ -14,6 +14,7 @@
 #include "SoundBankComponent.h"
 #include "UITextComponent.h"
 #include "UISpriteComponent.h"
+#include "VolumetricLightingComponent.h"
 
 namespace
 {
@@ -66,6 +67,10 @@ namespace
 		else if (componentName == "UISpriteComponent")
 		{
 			newComponent = gameObject.AddComponent<UISpriteComponent>();
+		}
+		else if (componentName == "VolumetricLightComponent")
+		{
+			newComponent = gameObject.AddComponent<VolumetricLightComponent>();
 		}
 		else
 		{
@@ -122,6 +127,10 @@ namespace
 		else if (componentName == "UISpriteComponent")
 		{
 			newComponent = gameObject.GetComponent<UISpriteComponent>();
+		}
+		else if (componentName == "VolumetricLightComponent")
+		{
+			newComponent = gameObject.GetComponent<VolumetricLightComponent>();
 		}
 		else
 		{

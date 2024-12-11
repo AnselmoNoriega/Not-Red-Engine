@@ -1,0 +1,19 @@
+{
+  "Components": {
+    "TransformComponent": {
+      "Position": [ 3, 5, 0 ],
+      "Rotation": [ 0, 0, 0, 1 ],
+      "Scale": [ 1, 1, 1 ]
+    },
+    "VolumetricLightComponent": {
+      "Shape": {
+        "SlicesCount": 100,
+        "Heigth": 10.0,
+        "Radius": 5.0
+      },
+      "Light": {
+        "lightColor": [ 1.0, 1.0, 0.8 ]
+      }
+    }
+  }
+}

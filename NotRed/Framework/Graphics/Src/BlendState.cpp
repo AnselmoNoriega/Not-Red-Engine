@@ -68,7 +68,7 @@ void BlendState::Terminate()
 	SafeRelease(mBlendState);
 }
 
-void BlendState::Set()
+void BlendState::Set() const
 {
 	auto context = GraphicsSystem::Get()->GetContext();
 	context->OMSetBlendState(mBlendState, nullptr, UINT_MAX);

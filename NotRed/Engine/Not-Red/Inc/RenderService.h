@@ -1,10 +1,12 @@
 #pragma once
 #include "Service.h"
+
 namespace NotRed
 {
 	class CameraService;
 	class RenderObjectComponent;
 	class TransformComponent;
+	class VolumetricLightComponent;
 
 	class RenderService final : public Service
 	{
@@ -21,6 +23,9 @@ namespace NotRed
 		void Register(const RenderObjectComponent* renderObjectComponent);
 		void Unregister(const RenderObjectComponent* renderObjectComponent);
 
+		void Register(const VolumetricLightComponent* volumeObjectComponent);
+		void Unregister(const VolumetricLightComponent* volumeObjectComponent);
+
 	private:
 		struct Entry
 		{
@@ -31,14 +36,32 @@ namespace NotRed
 
 		using RenderEntries = std::vector<Entry>;
 
+		struct VolumeEntry
+		{
+			const VolumetricLightComponent* renderComponent = nullptr;
+			const TransformComponent* transformComponent = nullptr;
+		};
+
+		using VolumeRenderEntries = std::vector<VolumeEntry>;
+
 	private:
 		const CameraService* mCameraService = nullptr;
 
 		Graphics::DirectionalLight mDirectionalLight;
 		Graphics::StandardEffect mStandardEffect;
+		Graphics::VolumetricLightingEffect mVolumetricLighting;
 		Graphics::ShadowEffect mShadowEffect;
 
 		RenderEntries mRenderEntries;
+		VolumeRenderEntries mRenderVolumes;
 		float mFPS = 0.0f;
+
+		//PostProcessing
+		NotRed::Graphics::RenderTarget mRenderTarget;
+		NotRed::Graphics::RenderTarget mDepthBuffer;
+		NotRed::Graphics::RenderTarget mRenderTargetHelper;
+
+		//ScreenQuad
+		NotRed::Graphics::RenderObject mScreenQuad;
 	};
 }

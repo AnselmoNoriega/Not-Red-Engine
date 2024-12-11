@@ -1,0 +1,48 @@
+
+{
+    "Capacity": 100,
+    "Services": {
+      "CameraService": {
+      },
+      "RenderService": {
+      },
+      "PhysicsService":{
+        "Gravity": [0.0, -9.81, 0.0],
+        "SimSteps": 10,
+        "FixedTimeStep": 0.016
+      },
+      "CustomDebugDrawService":{
+      },
+      "UIRenderService": {
+      }
+    },
+    "GameObjects": {
+      "Camera": {
+        "Template": "../../Assets/Saves/FPS_Cam.json"
+      },
+      "Object0": {
+        "Template": "../../Assets/Saves/Obj.json",
+        "Components": {
+          "TransformComponent": {
+            "Position": [ 2.0, 0.0, 0.0 ]
+          }
+        }
+      },
+      "Object1": {
+        "Template": "../../Assets/Saves/TestModel.json",
+        "Components": {
+          "TransformComponent": {
+            "Position": [ -2.0, 0.0, 0.0 ]
+          }
+        }
+      },
+      "ConeLight": {
+        "Template": "../../Assets/Saves/ConeLight.json",
+        "Components": {
+          "TransformComponent": {
+            "Position": [ -2.0, 0.0, 0.0 ]
+          }
+        }
+      }
+    }
+  }

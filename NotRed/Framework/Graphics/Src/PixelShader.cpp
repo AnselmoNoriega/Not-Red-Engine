@@ -44,7 +44,7 @@ void PixelShader::Terminate()
 	SafeRelease(mPixelShader);
 }
 
-void PixelShader::Bind()
+void PixelShader::Bind() const
 {
 	auto context = GraphicsSystem::Get()->GetContext();
 

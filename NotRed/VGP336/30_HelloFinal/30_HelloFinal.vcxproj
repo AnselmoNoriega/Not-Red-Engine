@@ -138,12 +138,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="VolumetricLightingComponent.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="VolumetricLightingComponent.h" />
     <ClInclude Include="CustomTypeIDs.h" />
     <ClInclude Include="GameState.h" />
   </ItemGroup>

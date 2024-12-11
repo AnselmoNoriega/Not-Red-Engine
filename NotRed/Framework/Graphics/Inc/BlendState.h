@@ -24,7 +24,7 @@ namespace NotRed::Graphics
 		void Initialize(Mode mode);
 		void Terminate();
 
-		void Set();
+		void Set() const;
 	private:
 		ID3D11BlendState* mBlendState = nullptr;
 	};

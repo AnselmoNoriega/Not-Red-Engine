@@ -35,6 +35,7 @@
 #include "RenderObjectComponent.h"
 #include "SoundEffectComponent.h"
 #include "SoundBankComponent.h"
+#include "VolumetricLightingComponent.h"
 
 namespace NotRed
 {

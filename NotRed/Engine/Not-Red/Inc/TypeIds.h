@@ -17,6 +17,7 @@ namespace NotRed
         UIText,
         UISprite,
         UIButton,
+        VolumetricLight,
         Count
     };
     enum class ServiceId

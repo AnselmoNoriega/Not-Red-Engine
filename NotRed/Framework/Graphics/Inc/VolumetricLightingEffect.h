@@ -23,11 +23,12 @@ namespace NotRed::Graphics
     {
         SpotLight()
         {
-            cameraObj.SetPosition({ 0.0f, 10.0f, 0.0f });
-            cameraObj.SetDirection({ 0.0f, -0.99f, 0.1f });
+            CameraObj.SetPosition({ 0.0f, 10.0f, 0.0f });
+            CameraObj.SetDirection({ 0.0f, -0.99f, 0.1f });
         }
 
-        Camera cameraObj;
+        Camera CameraObj;
+        Math::Vector3 LightColor{};
     };
 
     class VolumetricLightingEffect
@@ -36,17 +37,23 @@ namespace NotRed::Graphics
         void Initialize();
         void Terminate();
 
-        void Render(const RenderObject& renderObject, const RenderObject& inRenderObject, const RenderObject& renderTarget);
+        void Render(const SpotLight& light,
+            const RenderObject& renderObject, 
+            const RenderObject& inRenderObject);
+
+        void RenderScreenQuad(const SpotLight& light, const RenderObject& renderTarget)const;
 
         void DebugUI();
 
-        void Render(const RenderObject& renderObject);
-
         void SetCamera(const Camera& camera);
-        inline void SetTextures(const Texture* renderTarget, const Texture* depthTarget)
+        inline void SetDepthTexture(const Texture* depthTarget)
+        {
+            mGeometryPositionTetxure = depthTarget;
+        }
+
+        inline void UpdateRenderImage(const Texture* renderTarget)
         {
             mGeometryTexture = renderTarget;
-            mGeometryPositionTetxure = depthTarget;
         }
 
         inline void RegisterObject(const RenderGroup& obj)
@@ -56,7 +63,7 @@ namespace NotRed::Graphics
 
     private:
         void RenderDepth(const RenderObject& renderObject, RenderTarget& target);
-        void RenderDepthFromLight();
+        void RenderDepthFromLight(const SpotLight& light);
 
     private:
 
