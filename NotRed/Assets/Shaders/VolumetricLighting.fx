@@ -216,7 +216,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
     if (length(lightDepth) <= 0.001)
     {
-        // return float4(0.0, 1.0, 1.0, 1.0);
         return geometryTexture.Sample(textureSampler, input.texCoord); // No volumetric effect if light depth is invalid
     }
 
@@ -226,9 +225,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float3 worldGeoPos = GetWorldPosition(geometryPos * 100.0f, Inverse(viewMatrix), Inverse(geoMatrix));
     
     float3 camViewDir = normalize(camPos - lightGeomPos);
-    
-    // Light source properties
-    float3 lightPos = float3(0.0f, 10.0f, 0.0f);
 
     // Raymarch settings
     float mainRayLength = length(lightGeomInPos - lightGeomPos);
@@ -263,7 +259,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
         if (lightTexCoords.x >= 0.0 && lightTexCoords.x <= 1.0 &&
             lightTexCoords.y >= 0.0 && lightTexCoords.y <= 1.0)
         {
-            float depthFromLightView = lightViewTarget.Sample(textureSampler, lightTexCoords).r;
+            float depthFromLightView = length(lightViewTarget.Sample(textureSampler, lightTexCoords).rgb);
 
             if (projectedPos.z > depthFromLightView + 0.005)
             {

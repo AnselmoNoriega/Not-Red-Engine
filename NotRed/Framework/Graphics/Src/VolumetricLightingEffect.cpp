@@ -98,13 +98,13 @@ namespace NotRed::Graphics
         lightData.lightColor = light.LightColor;
         lightData.wvp = lightData.lightViewProj;
 
+        mLightDataBuffer.Update(lightData);
         mLightDataBuffer.BindVS(1);
         mLightDataBuffer.BindPS(1);
-        mLightDataBuffer.Update(lightData);
 
         MatrixData matrixData;
         matrixData.geoMatrix = Math::Matrix4::Identity;
-        matrixData.lightMatrix = Math::Matrix4::Identity;
+        matrixData.lightMatrix = Math::Matrix4::Translation(light.LightPosition);
 
         mMatrixDataBuffer.BindVS(2);
         mMatrixDataBuffer.BindPS(2);
