@@ -28,7 +28,8 @@ namespace NotRed::Graphics
         }
 
         Camera CameraObj;
-        Math::Vector3 LightColor{};
+        Math::Vector3 LightPosition{ 0.0f, 10.0f, 0.0f };
+        Math::Vector3 LightColor{ 1.0f, 1.0f, 0.8f };
     };
 
     class VolumetricLightingEffect
@@ -79,7 +80,8 @@ namespace NotRed::Graphics
             Math::Matrix4 wvp;
             Math::Matrix4 lightViewProj;
             Math::Vector3 lightPos;
-            float padding;
+            Math::Vector3 lightColor;
+            float padding[2];
         };
         struct MatrixData
         {

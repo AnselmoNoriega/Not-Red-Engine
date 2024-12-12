@@ -51,6 +51,7 @@ namespace NotRed
 		Graphics::StandardEffect mStandardEffect;
 		Graphics::VolumetricLightingEffect mVolumetricLighting;
 		Graphics::ShadowEffect mShadowEffect;
+		Graphics::DepthEffect mDepthEffect;
 
 		RenderEntries mRenderEntries;
 		VolumeRenderEntries mRenderVolumes;

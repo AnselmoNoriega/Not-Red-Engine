@@ -95,6 +95,7 @@ namespace NotRed::Graphics
         LightData lightData;
         lightData.lightViewProj = Math::Transpose(light.CameraObj.GetViewMatrix() * light.CameraObj.GetProjectionMatrix());
         lightData.lightPos = light.CameraObj.GetPosition();
+        lightData.lightColor = light.LightColor;
         lightData.wvp = lightData.lightViewProj;
 
         mLightDataBuffer.BindVS(1);

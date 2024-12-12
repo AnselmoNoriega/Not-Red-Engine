@@ -26,13 +26,6 @@
           "BumpMap":  "../../Assets/Images/planets/earth/earth_bump.jpg"
         }
       },
-      "RigidBodyComponent":{
-        "Mass": 0.0,
-        "ColliderData":{
-          "Shape": "Sphere",
-          "Radius": 1.0
-        }
-      },
       "SoundEffectComponent":{
         "FileName": "../../Assets/Sounds/explosion.wav",
         "Looping": false

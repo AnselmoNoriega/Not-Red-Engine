@@ -30,6 +30,8 @@ void RenderService::Initialize()
 	mShadowEffect.Initialize();
 	mShadowEffect.SetDirectionalLight(mDirectionalLight);
 
+	mDepthEffect.Initialize("../../Assets/Shaders/NewDepth.fx");
+
 	GraphicsSystem* gs = GraphicsSystem::Get();
 	const uint32_t screenWidth = gs->GetBackBufferWidth();
 	const uint32_t screenHeight = gs->GetBackBufferHeight();
@@ -55,6 +57,7 @@ void RenderService::Initialize()
 void RenderService::Terminate()
 {
 	mVolumetricLighting.Terminate();
+	mDepthEffect.Terminate();
 
 	mPostProcessingTargets[0].Terminate();
 	mPostProcessingTargets[1].Terminate();
@@ -80,6 +83,7 @@ void RenderService::Render()
 {
 	const Camera& camera = mCameraService->GetMain();
 	mStandardEffect.SetCamera(camera);
+	mDepthEffect.SetCamera(camera);
 
 	for (Entry& entry : mRenderEntries)
 	{
@@ -109,11 +113,12 @@ void RenderService::Render()
 	mRenderTarget.EndRender();
 
 	mDepthBuffer.BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
-	mStandardEffect.Begin();
+	mDepthEffect.Begin();
 	for (Entry& entry : mRenderEntries)
 	{
-		DrawRenderGroup(mStandardEffect, entry.renderGroup);
+		DrawRenderGroup(mDepthEffect, entry.renderGroup);
 	}
+	mDepthEffect.End();
 	mDepthBuffer.EndRender();
 
 	// Get render Texture
@@ -170,6 +175,11 @@ void RenderService::DebugUI()
 		}
 		mStandardEffect.DebugUI();
 		mShadowEffect.DebugUI();
+	}
+
+	if (ImGui::CollapsingHeader("Postprocessing"))
+	{
+		mVolumetricLighting.DebugUI();
 	}
 }
 

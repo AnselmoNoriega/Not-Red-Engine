@@ -5,6 +5,8 @@
 
 namespace NotRed
 {
+	class TransformComponent;
+
 	class VolumetricLightComponent final : public Component
 	{
 	public:
@@ -35,6 +37,8 @@ namespace NotRed
 	private:
 		Graphics::RenderObject mLightObj;
 		Graphics::RenderObject mInLightObj;
+
+		TransformComponent* mTransformComponent = nullptr;
 
 		Graphics::SpotLight mLight;
 	};

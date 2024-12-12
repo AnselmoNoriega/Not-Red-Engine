@@ -11,6 +11,7 @@ cbuffer LightBuffer : register(b1)
     matrix lwvp;
     matrix lightViewProj;
     float3 lightPos;
+    float3 lightColor;
 }
 
 cbuffer MatrixBuffer : register(b2)
@@ -228,7 +229,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
     
     // Light source properties
     float3 lightPos = float3(0.0f, 10.0f, 0.0f);
-    float3 lightColor = float3(1.0f, 1.0f, 0.8f);
 
     // Raymarch settings
     float mainRayLength = length(lightGeomInPos - lightGeomPos);
@@ -299,7 +299,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
     // Blend accumulated light with the base geometry texture
     float4 baseColor = geometryTexture.Sample(textureSampler, input.texCoord);
-    baseColor = LitTexture(baseColor, worldGeoPos, input.texCoord);
+    //baseColor = LitTexture(baseColor, worldGeoPos, input.texCoord);
     float alpha = saturate(accumulatedLight);// / (5 / (length(lightGeomInPos - lightGeomPos) / 2)); // Scale blending factor
     float3 finalColor = lerp(baseColor.rgb, lightColor, alpha * 3);
 

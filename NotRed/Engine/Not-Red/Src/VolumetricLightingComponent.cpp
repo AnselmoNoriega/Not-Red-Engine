@@ -3,6 +3,8 @@
 
 #include "RenderService.h"
 #include "GameWorld.h"
+#include "GameObject.h"
+#include "TransformComponent.h"
 
 using namespace NotRed;
 using namespace NotRed::Graphics;
@@ -11,6 +13,8 @@ void VolumetricLightComponent::Initialize()
 {
     RenderService* renderService = GetOwner().GetWorld().GetService<RenderService>();
     renderService->Register(this);
+    
+    mTransformComponent = GetOwner().GetComponent<TransformComponent>();
 }
 
 void VolumetricLightComponent::Terminate()
@@ -21,6 +25,12 @@ void VolumetricLightComponent::Terminate()
 
 void VolumetricLightComponent::Update(float deltaTime)
 {
+    if (mTransformComponent)
+    {
+        mLight.CameraObj.SetPosition(mTransformComponent->position + mLight.LightPosition);
+        mLightObj.transform.position = mTransformComponent->position;
+        mInLightObj.transform.position = mTransformComponent->position;
+    }
 }
 
 void VolumetricLightComponent::Deserialize(const rapidjson::Value& value)
@@ -54,4 +64,5 @@ void VolumetricLightComponent::Deserialize(const rapidjson::Value& value)
     const auto& lightData = value["Light"].GetObj(); 
     const auto lightColor = lightData["Color"].GetArray();
     mLight.LightColor = Math::Vector3(lightColor[0].GetFloat(), lightColor[1].GetFloat(), lightColor[2].GetFloat());
+    mLight.LightPosition = Math::Vector3(0.0f, shapeHeigth, 0.0f);
 }
