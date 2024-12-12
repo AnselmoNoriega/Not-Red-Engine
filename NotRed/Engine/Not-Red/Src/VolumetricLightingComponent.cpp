@@ -2,6 +2,7 @@
 #include "VolumetricLightingComponent.h"
 
 #include "RenderService.h"
+#include "GameWorld.h"
 
 using namespace NotRed;
 using namespace NotRed::Graphics;

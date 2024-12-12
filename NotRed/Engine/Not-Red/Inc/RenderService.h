@@ -60,6 +60,11 @@ namespace NotRed
 		NotRed::Graphics::RenderTarget mRenderTarget;
 		NotRed::Graphics::RenderTarget mDepthBuffer;
 		NotRed::Graphics::RenderTarget mRenderTargetHelper;
+		
+		NotRed::Graphics::VertexShader mVertexShader;
+		NotRed::Graphics::PixelShader mPixelShader;
+		NotRed::Graphics::Sampler mSampler;
+		NotRed::Graphics::RenderTarget mPostProcessingTargets[2];
 
 		//ScreenQuad
 		NotRed::Graphics::RenderObject mScreenQuad;
