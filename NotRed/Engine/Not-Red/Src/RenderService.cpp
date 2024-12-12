@@ -22,7 +22,7 @@ void RenderService::Initialize()
 	mDirectionalLight.diffuse = { 0.8f, 0.8f, 0.8f, 1.0f };
 	mDirectionalLight.specular = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-	mStandardEffect.Initialize(L"../../Assets/Shaders/PostProcessingBasic.fx");
+	mStandardEffect.Initialize(L"../../Assets/Shaders/Standard.fx");
 	mStandardEffect.SetDirectionalLight(mDirectionalLight);
 	mStandardEffect.SetLightCamera(mShadowEffect.GetLightCamera());
 	mStandardEffect.SetShadowMap(mShadowEffect.GetDepthMap());
@@ -37,7 +37,7 @@ void RenderService::Initialize()
 	mRenderTargetHelper.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 	mDepthBuffer.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 
-	std::filesystem::path shaderFile = "../../Assets/Shaders/Blur.fx";
+	std::filesystem::path shaderFile = "../../Assets/Shaders/PostProcessingBasic.fx";
 	mVertexShader.Initialize<VertexPX>(shaderFile);
 	mPixelShader.Initialize(shaderFile);
 	mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
@@ -46,7 +46,6 @@ void RenderService::Initialize()
 	mPostProcessingTargets[1].Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 
 	mVolumetricLighting.Initialize();
-	mVolumetricLighting.SetCamera(mCameraService->GetMain());
 	mVolumetricLighting.SetDepthTexture(&mDepthBuffer);
 
 	MeshPX screenQuad = MeshBuilder::CreateScreenQuad();
@@ -55,10 +54,16 @@ void RenderService::Initialize()
 
 void RenderService::Terminate()
 {
+	mVolumetricLighting.Terminate();
+
 	mPostProcessingTargets[0].Terminate();
 	mPostProcessingTargets[1].Terminate();
+	mVertexShader.Terminate();
+	mPixelShader.Terminate();
+	mSampler.Terminate();
 
 	mScreenQuad.Terminate();
+	mRenderTargetHelper.Terminate();
 	mRenderTarget.Terminate();
 	mDepthBuffer.Terminate();
 
@@ -124,6 +129,7 @@ void RenderService::Render()
 	int i = 0;
 	if (mRenderVolumes.size() > 0)
 	{
+		mVolumetricLighting.SetCamera(mCameraService->GetMain());
 		for (const VolumeEntry& entry : mRenderVolumes)
 		{
 			mVolumetricLighting.UpdateRenderImage(&mPostProcessingTargets[(i % 2) ? 0 : 1]);
@@ -142,11 +148,9 @@ void RenderService::Render()
 	mVertexShader.Bind();
 	mPixelShader.Bind();
 	mSampler.BindPS(0);
-	mPostProcessingTargets[(i % 2) ? 0 : 1].BindPS(0);
+	mPostProcessingTargets[(i == 1) ? 0 : 1].BindPS(0);
 
-	mPostProcessingTargets[i].BeginRender();
 	mScreenQuad.meshBuffer.Render();
-	mPostProcessingTargets[i].EndRender();
 }
 
 void RenderService::DebugUI()
