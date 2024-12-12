@@ -179,31 +179,41 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 // ========================================================================
 // ========================================================================
 float4 LitTexture(float4 color, float3 worldPos, float2 texCoord)
-{
-    float4 cameraDepthColor = geometryPositionTetxure.Sample(textureSampler, texCoord);
-    float cameraDepth = length(cameraDepthColor.rgb) * 100.0f;
-    float4 clipSpacePosition = float4(texCoord * 2.0 - 1.0, cameraDepth, 1.0);
-    float4 viewSpacePosition = mul(Inverse(viewProjection), clipSpacePosition);
-    //viewSpacePosition /= viewSpacePosition.w;
-    
-    float4 lightSpacePosition = mul(lightViewProj, viewSpacePosition);
-    //lightSpacePosition /= lightSpacePosition.w;
-    
-    float2 lightUV = lightSpacePosition.xy * 0.5 + 0.5;
-    
-    float4 lightDepthColor = lightViewTarget.Sample(textureSampler, lightUV);
-    if(lightDepthColor.a <= 0.001)
+{ 
+    // Sample the color
+    float4 color = ColorTexture.Sample(textureSampler, input.uv);
+
+    // Sample the camera depth
+    float cameraDepth = CameraDepthTexture.Sample(textureSampler, input.uv).r;
+
+    // Reconstruct world position from camera depth
+    float4 clipSpacePos = float4(input.uv * 2.0 - 1.0, cameraDepth, 1.0);
+    float4 viewSpacePos = mul(cameraToWorldMatrix, clipSpacePos);
+    float3 worldPos = viewSpacePos.xyz / viewSpacePos.w;
+
+    // Transform world position to light space
+    float4 lightSpacePos = mul(worldToLightMatrix, float4(worldPos, 1.0));
+    lightSpacePos /= lightSpacePos.w; // Perspective divide
+
+    // Convert light space position to texture UV
+    float2 lightUV = lightSpacePos.xy * 0.5 + 0.5;
+
+    // Sample the light's depth texture
+    float lightDepth = LightDepthTexture.Sample(textureSampler, lightUV).r;
+
+    // Compare depths to determine if the fragment is lit
+    bool isLit = (lightDepth + 0.001) > lightSpacePos.z; // Add bias to avoid precision issues
+
+    // Apply lighting
+    if (isLit)
     {
-        return color;
+        color.rgb *= 1.5; // Brighten if lit
     }
-    
-    return float4(1.0, 0.5, 0.0, 1.0);
-    float lightDepth = length(lightDepthColor.rgb) * 100.0f;
-    if (lightSpacePosition.z <= lightDepth + 0.005)
+    else
     {
-        return float4(1.0, 0.5, 0.0, 1.0); // Highlight in red
+        color.rgb *= 0.5; // Darken if in shadow
     }
-    
+
     return color;
 }
 
@@ -297,7 +307,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float4 baseColor = geometryTexture.Sample(textureSampler, input.texCoord);
     //baseColor = LitTexture(baseColor, worldGeoPos, input.texCoord);
     float alpha = saturate(accumulatedLight);// / (5 / (length(lightGeomInPos - lightGeomPos) / 2)); // Scale blending factor
-    float3 finalColor = lerp(baseColor.rgb, lightColor, alpha * 3);
+    float3 finalColor = lerp(baseColor.rgb, lightColor, alpha * 2);
 
     return float4(finalColor, 1.0f);
 }
