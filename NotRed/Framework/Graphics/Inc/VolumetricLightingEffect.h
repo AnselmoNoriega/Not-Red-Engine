@@ -79,9 +79,11 @@ namespace NotRed::Graphics
         {
             Math::Matrix4 wvp;
             Math::Matrix4 lightViewProj;
+            Math::Matrix4 lightView;
             Math::Vector3 lightPos;
+            float padding = 0.0f;
             Math::Vector3 lightColor;
-            float padding[2];
+            float padding2 = 0.0f;
         };
         struct MatrixData
         {

@@ -10,6 +10,7 @@ cbuffer LightBuffer : register(b1)
 {
     matrix lwvp;
     matrix lightViewProj;
+    matrix lightView;
     float3 lightPos;
     float3 lightColor;
 }
@@ -178,42 +179,31 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 }
 // ========================================================================
 // ========================================================================
-float4 LitTexture(float4 color, float3 worldPos, float2 texCoord)
-{ 
-    // Sample the color
-    float4 color = ColorTexture.Sample(textureSampler, input.uv);
+float4 LitTexture(float4 color, float2 texCoord)
+{
+    return color;
+    float3 cameraDepthViewPos = geometryPositionTetxure.Sample(textureSampler, texCoord).rgb * 100.0f;
 
-    // Sample the camera depth
-    float cameraDepth = CameraDepthTexture.Sample(textureSampler, input.uv).r;
+    // Reconstruct world position from depth
+    float4 cameraDepthViewPos4 = float4(cameraDepthViewPos, 1.0f);
+    float4 worldPos = mul(Inverse(viewMatrix), cameraDepthViewPos4);
 
-    // Reconstruct world position from camera depth
-    float4 clipSpacePos = float4(input.uv * 2.0 - 1.0, cameraDepth, 1.0);
-    float4 viewSpacePos = mul(cameraToWorldMatrix, clipSpacePos);
-    float3 worldPos = viewSpacePos.xyz / viewSpacePos.w;
+    // Transform world position into the light's view space
+    float4 lightViewPos = mul(lightView, worldPos);
 
-    // Transform world position to light space
-    float4 lightSpacePos = mul(worldToLightMatrix, float4(worldPos, 1.0));
-    lightSpacePos /= lightSpacePos.w; // Perspective divide
-
-    // Convert light space position to texture UV
-    float2 lightUV = lightSpacePos.xy * 0.5 + 0.5;
+    // Normalize light view position
+    float3 lightDepth = lightViewPos.xyz / lightViewPos.w; // Perspective division
+  
+    float2 lightUV = lightViewPos.xy / lightViewPos.w * 0.5f + 0.5f;
 
     // Sample the light's depth texture
-    float lightDepth = LightDepthTexture.Sample(textureSampler, lightUV).r;
+    float3 sampledLightDepth = lightViewTarget.Sample(textureSampler, lightUV).rgb * 100.0f;
 
-    // Compare depths to determine if the fragment is lit
-    bool isLit = (lightDepth + 0.001) > lightSpacePos.z; // Add bias to avoid precision issues
+    // Compare depths (light hitting point in view of light)
+    float lightHit = (lightDepth.z <= sampledLightDepth.z + 0.001) ? 1.0f : 0.0f;
 
-    // Apply lighting
-    if (isLit)
-    {
-        color.rgb *= 1.5; // Brighten if lit
-    }
-    else
-    {
-        color.rgb *= 0.5; // Darken if in shadow
-    }
-
+    // Return color based on light hitting
+    return float4(lightHit, lightHit, lightHit, 1.0f); 
     return color;
 }
 
@@ -305,7 +295,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
     // Blend accumulated light with the base geometry texture
     float4 baseColor = geometryTexture.Sample(textureSampler, input.texCoord);
-    //baseColor = LitTexture(baseColor, worldGeoPos, input.texCoord);
+    baseColor = LitTexture(baseColor, input.texCoord);
     float alpha = saturate(accumulatedLight);// / (5 / (length(lightGeomInPos - lightGeomPos) / 2)); // Scale blending factor
     float3 finalColor = lerp(baseColor.rgb, lightColor, alpha * 2);
 
