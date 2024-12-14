@@ -224,6 +224,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float3 lightGeomInPos = GetWorldPosition(lightDepthIn * 100.0f, Inverse(viewMatrix), Inverse(lightMatrix));
     float3 worldGeoPos = GetWorldPosition(geometryPos * 100.0f, Inverse(viewMatrix), Inverse(geoMatrix));
     
+    // world pos try compering it with light
+    
     float3 camViewDir = normalize(camPos - lightGeomPos);
 
     // Raymarch settings
