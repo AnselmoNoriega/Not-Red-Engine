@@ -9,10 +9,8 @@ namespace NotRed::Graphics
 {
     void VolumetricLightingEffect::Initialize()
     {
-        mViewDataBuffer.Initialize();
-        mLightDataBuffer.Initialize();
-        mMatrixDataBuffer.Initialize();
-
+        mPerFrameBuffer.Initialize();
+        mRayMarchingBuffer.Initialize();
         mDepthDataBuffer.Initialize();
 
         std::filesystem::path shaderFile = "../../Assets/Shaders/VolumetricLighting.fx";
@@ -47,10 +45,8 @@ namespace NotRed::Graphics
         mLightPixelShader.Terminate();
 
         mDepthDataBuffer.Terminate();
-
-        mViewDataBuffer.Terminate();
-        mMatrixDataBuffer.Terminate();
-        mLightDataBuffer.Terminate();
+        mRayMarchingBuffer.Terminate();
+        mPerFrameBuffer.Terminate();
 
         mLightGeometryTarget.Terminate();
         mLightInGeometryTarget.Terminate();
@@ -76,40 +72,30 @@ namespace NotRed::Graphics
 
         {
             mGeometryTexture->BindPS(0);
-            mGeometryPositionTetxure->BindPS(1);
+            //mGeometryPositionTetxure->BindPS(1);
 
-            mLightGeometryTarget.BindPS(2);
-            mLightInGeometryTarget.BindPS(3);
-            mLightViewTarget.BindPS(4);
+            mLightGeometryTarget.BindPS(1);
+            mLightInGeometryTarget.BindPS(2);
+            //mLightViewTarget.BindPS(4);
         }
 
-        ViewData viewData;
-        viewData.viewProjection = Math::Transpose(mCamera->GetViewMatrix() * mCamera->GetProjectionMatrix());
-        viewData.viewMatrix = mCamera->GetViewMatrix();
-        viewData.camPos = mCamera->GetPosition();
+        PerFrameData perFrameData;
+        perFrameData.viewMatrix = Math::Transpose(mCamera->GetViewMatrix());
 
-        mViewDataBuffer.BindVS(0);
-        mViewDataBuffer.BindPS(0);
-        mViewDataBuffer.Update(viewData);
+        perFrameData.invViewMatrix = Math::Transpose(mCamera->GetViewMatrix().Inverse());
+        perFrameData.invProjectionMatrix = Math::Transpose(mCamera->GetProjectionMatrix().Inverse());
+        perFrameData.invModelMatrix = Math::Matrix4::Translation(light.LightPosition);
 
-        LightData lightData;
-        lightData.lightViewProj = Math::Transpose(light.CameraObj.GetViewMatrix() * light.CameraObj.GetProjectionMatrix());
-        lightData.lightView = Math::Transpose(light.CameraObj.GetViewMatrix());
-        lightData.lightPos = light.CameraObj.GetPosition();
-        lightData.lightColor = light.LightColor;
-        lightData.wvp = lightData.lightViewProj;
+        perFrameData.cameraPosition = mCamera->GetPosition();
+        mPerFrameBuffer.Update(perFrameData);
+        mPerFrameBuffer.BindPS(0);
 
-        mLightDataBuffer.Update(lightData);
-        mLightDataBuffer.BindVS(1);
-        mLightDataBuffer.BindPS(1);
-
-        MatrixData matrixData;
-        matrixData.geoMatrix = Math::Matrix4::Identity;
-        matrixData.lightMatrix = Math::Matrix4::Translation(light.LightPosition);
-
-        mMatrixDataBuffer.BindVS(2);
-        mMatrixDataBuffer.BindPS(2);
-        mMatrixDataBuffer.Update(matrixData);
+        RayMarchingData marchData;
+        marchData.stepSize = mStepSize;
+        marchData.densityMultiplier = mDensityMultiplier;
+        marchData.lightIntensity = mLightIntensity;
+        mRayMarchingBuffer.Update(marchData);
+        mRayMarchingBuffer.BindPS(1);
 
         renderTarget.meshBuffer.Render();
 
@@ -211,6 +197,12 @@ namespace NotRed::Graphics
                 { 1, 1 },
                 { 1, 1, 1, 1 },
                 { 1, 1, 1, 1 });
+        }
+        if (ImGui::CollapsingHeader("Shader Data:"))
+        {
+            ImGui::DragFloat("Step Size", &mStepSize, 0.002f, 0.001f, 10.0f);
+            ImGui::DragFloat("Density Multiplier", &mDensityMultiplier, 0.2f);
+            ImGui::DragFloat("Light Intensity", &mLightIntensity, 0.2f);
         }
     }
 }

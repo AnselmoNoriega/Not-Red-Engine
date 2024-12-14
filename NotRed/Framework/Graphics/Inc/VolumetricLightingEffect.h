@@ -68,27 +68,24 @@ namespace NotRed::Graphics
 
     private:
 
-        struct ViewData
+        struct PerFrameData
         {
             Math::Matrix4 viewMatrix;
-            Math::Matrix4 viewProjection;
-            Math::Vector3 camPos;
+
+            Math::Matrix4 invViewMatrix;
+            Math::Matrix4 invProjectionMatrix;
+            Math::Matrix4 invModelMatrix;
+
+            Math::Vector3 cameraPosition;
             float padding;
         };
-        struct LightData
+
+        struct RayMarchingData
         {
-            Math::Matrix4 wvp;
-            Math::Matrix4 lightViewProj;
-            Math::Matrix4 lightView;
-            Math::Vector3 lightPos;
-            float padding = 0.0f;
-            Math::Vector3 lightColor;
-            float padding2 = 0.0f;
-        };
-        struct MatrixData
-        {
-            Math::Matrix4 lightMatrix;
-            Math::Matrix4 geoMatrix;
+            float stepSize;
+            float densityMultiplier;
+            float lightIntensity;
+            float padding1;
         };
 
         struct DepthData
@@ -98,17 +95,17 @@ namespace NotRed::Graphics
             Math::Matrix4 viewProjectionMatrix;
         };
 
-        using ViewDataBuffer = TypedConstantBuffer<ViewData>;
-        using LightDataBuffer = TypedConstantBuffer<LightData>;
-        using MatrixDataBuffer = TypedConstantBuffer<MatrixData>;
-
+        using PerFrameBuffer = TypedConstantBuffer<PerFrameData>;
+        using RayMarchingDataBuffer = TypedConstantBuffer<RayMarchingData>;
         using DepthDataBuffer = TypedConstantBuffer<DepthData>;
 
     private:
 
-        ViewDataBuffer mViewDataBuffer;
-        LightDataBuffer mLightDataBuffer;
-        MatrixDataBuffer mMatrixDataBuffer;
+        PerFrameBuffer mPerFrameBuffer;
+        RayMarchingDataBuffer mRayMarchingBuffer;
+        float mStepSize = 0.1f;
+        float mDensityMultiplier = 2.0f;
+        float mLightIntensity = 78.0f;
 
         DepthDataBuffer mDepthDataBuffer;
 
