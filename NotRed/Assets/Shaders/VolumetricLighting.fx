@@ -165,13 +165,11 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float3 exitViewPos = backDepthEncoded.xyz * 100.0f;
 
     // Ensure entry and exit positions are valid
-    if (backDepthEncoded.a < 0.001)
+    bool objectOutsideVolume = length(depthEncoded.xyz) < length(frontDepthEncoded.xyz) && depthEncoded.a > 0.001;
+    if (backDepthEncoded.a < 0.001 || objectOutsideVolume)
     {
         return baseColorTexture.Sample(samplerState, input.texCoord);
     }
-    
-    bool objectViewedFromInside = frontDepthEncoded.a < 0.001 && backDepthEncoded.a > 0.001 && depthEncoded.a > 0.001;
-    bool objectOutsideVolume = length(depthEncoded.xyz) < length(frontDepthEncoded.xyz) && depthEncoded.a > 0.001;
 
     // Transform to world-space
     float3 entryWorldPos = mul(float4(entryViewPos, 1.0f), invViewMatrix).xyz;
@@ -189,9 +187,16 @@ float4 PS(VS_OUTPUT input) : SV_Target
         scattering += ComputeScattering(-rayDir, rayDir, density) * density * lightIntensity * stepSize;
         currentPos += rayDir * stepSize;
     }
-
+    
+    // Cehck if theres something in the way
+    float objInterferingValue = 1;
+    if (backDepthEncoded.a > 0.001 && depthEncoded.a > 0.001)
+    {
+        objInterferingValue = 1.5;
+    }
+    
     // Combine scattering with base color
     float4 baseColor = baseColorTexture.Sample(samplerState, input.texCoord);
     float lightEffect = exp(-densityMultiplier * scattering);
-    return lerp(baseColor, float4(lightColor, 1.0), (1.0 - lightEffect) * inOutDistance * 10);
+    return lerp(baseColor, float4(lightColor, 1.0), (1.0 - lightEffect) * inOutDistance * 10 / objInterferingValue);
 }
