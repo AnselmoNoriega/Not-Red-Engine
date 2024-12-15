@@ -21,7 +21,6 @@ void VolumetricLightComponent::Terminate()
 {
     mLightObj.Terminate();
     mInLightObj.Terminate();
-    mLightRays.Terminate();
 }
 
 void VolumetricLightComponent::Update(float deltaTime)
@@ -31,7 +30,6 @@ void VolumetricLightComponent::Update(float deltaTime)
         mLight.CameraObj.SetPosition(mTransformComponent->position + mLight.LightPosition);
         mLightObj.transform.position = mTransformComponent->position;
         mInLightObj.transform.position = mTransformComponent->position;
-        mLightRays.transform.position = mTransformComponent->position;
     }
 }
 
@@ -42,23 +40,6 @@ void VolumetricLightComponent::Deserialize(const rapidjson::Value& value)
     float shapeHeigth = shapeData["Heigth"].GetFloat();
     float shapeRadius = shapeData["Radius"].GetFloat();
 
-    {
-        const MeshPC& m = NotRed::Graphics::MeshBuilder::CreateMergedCylinders(
-            20,                       // Number of cylinders
-            16,                       // Slices
-            12,                       // Rings
-            0.01f,                    // Min radius
-            0.2f,                     // Max radius
-            { -5.0f, 0.0f, -5.0f },   // Spawn minimum bounds
-            { 5.0f, 0.0f, 5.0f });    // Max offset);
-        mLightRays.meshBuffer.Initialize(
-            m.vertices.data(),
-            static_cast<uint32_t>(sizeof(VertexPC)),
-            static_cast<uint32_t>(m.vertices.size()),
-            m.indices.data(),
-            static_cast<uint32_t>(m.indices.size())
-        );
-    }
     {
         const MeshPC& m = NotRed::Graphics::MeshBuilder::CreateCone(shapeSlices, shapeHeigth, shapeRadius);   // Max offset);
         mLightObj.meshBuffer.Initialize(

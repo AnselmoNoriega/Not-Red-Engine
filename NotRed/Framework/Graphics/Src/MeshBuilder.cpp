@@ -558,14 +558,11 @@ MeshPC NotRed::Graphics::MeshBuilder::CreateMergedCylinders(
     const float angleStep = Math::Constants::TwoPi / static_cast<float>(slices); // Angle step per slice
 
     // Define a fixed tilt direction (unit vector)
-    Math::Vector3 tiltDirection = Math::Normalize(Math::Vector3(0.6f, 1.0f, 0.0f)); // Example: Tilt equally along X and Y
+    Math::Vector3 tiltDirection = Math::Normalize(Math::Vector3(1.0f, 1.0f, 0.0f)); // Example: Tilt equally along X and Y
     float infiniteExtension = 1000.0f; // Arbitrary large value to simulate infinite extension
 
     for (uint32_t c = 0; c < numCylinders; ++c)
     {
-        // Fixed radius
-        float radius = Math::Random(minRadius, maxRadius);
-
         // Randomize starting position within bounds
         Math::Vector3 startBase = {
             Math::Random(spawnMinBounds.x, spawnMaxBounds.x),
@@ -577,6 +574,10 @@ MeshPC NotRed::Graphics::MeshBuilder::CreateMergedCylinders(
         Math::Vector3 startOffset = startBase - (tiltDirection * infiniteExtension); // Extend infinitely backward
         Math::Vector3 endOffset = startBase + (tiltDirection * infiniteExtension);   // Extend infinitely forward
 
+        // Randomize radii
+        float startRadius = Math::Random(minRadius, maxRadius);
+        float endRadius = Math::Random(startRadius, maxRadius); // Ensures the end radius is same or thicker
+
         // Base vertex index for this cylinder
         uint32_t baseVertexIndex = static_cast<uint32_t>(mergedMesh.vertices.size());
 
@@ -585,12 +586,13 @@ MeshPC NotRed::Graphics::MeshBuilder::CreateMergedCylinders(
         {
             float t = static_cast<float>(r) / static_cast<float>(rings); // Interpolation factor
             Math::Vector3 ringCenter = Math::Lerp(startOffset, endOffset, t); // Interpolated ring center
+            float currentRadius = Math::Lerp(startRadius, endRadius, t); // Interpolated radius
 
             for (uint32_t s = 0; s <= slices; ++s)
             {
                 float angle = s * angleStep;
-                float x = cos(angle) * radius;
-                float z = sin(angle) * radius;
+                float x = cos(angle) * currentRadius;
+                float z = sin(angle) * currentRadius;
 
                 Math::Vector3 vertexPos = ringCenter + Math::Vector3(x, 0.0f, z);
                 mergedMesh.vertices.push_back({ vertexPos, Colors::White });

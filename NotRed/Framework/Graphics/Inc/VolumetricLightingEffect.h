@@ -40,8 +40,7 @@ namespace NotRed::Graphics
 
         void Render(
             const RenderObject& renderObject, 
-            const RenderObject& inRenderObject,
-            const RenderObject& raysObject);
+            const RenderObject& inRenderObject);
 
         void RenderScreenQuad(const SpotLight& light, const RenderObject& renderTarget)const;
 
@@ -66,7 +65,6 @@ namespace NotRed::Graphics
 
     private:
         void RenderDepth(const RenderObject& renderObject, RenderTarget& target);
-        void RenderRays(const RenderObject& renderObject);
 
     private:
 
@@ -132,13 +130,12 @@ namespace NotRed::Graphics
 
         RenderTarget mLightGeometryTarget;
         RenderTarget mLightInGeometryTarget;
-        RenderTarget mLightRaysTarget;
 
         std::vector<const RenderGroup*> mCharacters;
 
         // RayMarching stuff
-        float mStepSize = 0.1f;
-        float mDensityMultiplier = 2.0f;
-        float mLightIntensity = 78.0f;
+        float mStepSize = 0.012f;
+        float mDensityMultiplier = 0.2f;
+        float mLightIntensity = 15.0f;
     };
 }

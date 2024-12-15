@@ -27,7 +27,6 @@ Texture2D depthTexture : register(t1); // Object's depths
 Texture2D normalsTexture : register(t2); // Object's normals
 Texture2D lightInGeometryTexture : register(t3); // Back-face depth
 Texture2D lightGeometryTexture : register(t4); // Front-face depth
-Texture2D RaysTexture : register(t5); // Rays
 
 SamplerState samplerState : register(s0);
 
@@ -52,28 +51,19 @@ VS_OUTPUT VS(VS_INPUT input)
     return output;
 }
 
-float3 GetWorldPosition(float3 viewSpacePosition, matrix invViewMatrix, matrix invModelMatrix)
-{
-    // Convert to world-space position
-    float4 worldSpacePosition = mul(float4(viewSpacePosition, 1.0), invViewMatrix);
-
-    // Convert to object-space position (original position)
-    float4 originalPosition = mul(worldSpacePosition, invModelMatrix);
-
-    return originalPosition.xyz;
-}
-
 // Functions for 3D noise =================================================
 // ========================================================================
 // ========================================================================
 float3 FadeCurve(float3 t)
 {
-    return t * t * (3.0 - 2.0 * t); // Smooth fade curve
+    return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
 }
 
 float Hash(float3 p) // Point
 {
-    return frac(sin(dot(p, float3(12.9898, 78.233, 45.543))) * 43758.5453);
+    p = frac(p * 0.3183099 + 0.1);
+    p *= 17.0;
+    return frac(p.x * p.y * p.z * (p.x + p.y + p.z));
 }
 
 float Noise3D(float3 p)
@@ -113,10 +103,39 @@ float SampleDensity(float inputDensity)
     return saturate(density);
 }
 
-float GetProceduralDensity(float3 coords)
+float FractalNoise3D(float3 p, int octaves, float lacunarity, float gain)
 {
-    float noiseValue = Noise3D(coords * 0.1); // Scale the coordinates for the noise
-    return SampleDensity(noiseValue); // Apply the density function
+    float frequency = 1.0;
+    float amplitude = 1.0;
+    float total = 0.0;
+    float maxValue = 0.0; // Used for normalization
+
+    for (int i = 0; i < octaves; ++i)
+    {
+        total += Noise3D(p * frequency) * amplitude;
+        maxValue += amplitude;
+
+        frequency *= lacunarity;
+        amplitude *= gain;
+    }
+
+    return total / maxValue; // Normalize the result
+}
+
+float Turbulence3D(float3 p, int octaves, float lacunarity, float gain)
+{
+    float frequency = 1.0;
+    float amplitude = 1.0;
+    float total = 0.0;
+
+    for (int i = 0; i < octaves; ++i)
+    {
+        total += abs(Noise3D(p * frequency) * 2.0 - 1.0) * amplitude;
+        frequency *= lacunarity;
+        amplitude *= gain;
+    }
+
+    return total;
 }
 // ========================================================================
 // ========================================================================
@@ -137,19 +156,14 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 }
 // ========================================================================
 // ========================================================================
-float4 LitTexture(float4 color, float2 texCoord)
-{
-    return color;
-}
 
-float3 ReconstructViewSpacePosition(float2 uv, float depth, matrix invProjectionMatrix)
+float CloudNoise(float3 p)
 {
-    // Clip-space position
-    float4 clipSpacePosition = float4(uv * 2.0f - 1.0f, depth, 1.0f);
+    // Combine fractal noise and turbulence for cloud-like patterns
+    float fractal = FractalNoise3D(p, 5, 2.0, 0.5); // 5 octaves
+    float turbulent = Turbulence3D(p, 4, 2.0, 0.6); // 4 octaves
 
-    // View-space position
-    float4 viewSpacePosition = mul(clipSpacePosition, invProjectionMatrix);
-    return viewSpacePosition.xyz / viewSpacePosition.w;
+    return lerp(fractal, turbulent, 0.5); // Blend fractal and turbulence
 }
 
 float4 PS(VS_OUTPUT input) : SV_Target
@@ -157,7 +171,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float4 frontDepthEncoded = lightGeometryTexture.Sample(samplerState, input.texCoord);
     float4 backDepthEncoded = lightInGeometryTexture.Sample(samplerState, input.texCoord);
     float4 depthEncoded = depthTexture.Sample(samplerState, input.texCoord);
-    float4 raysEncoded = RaysTexture.Sample(samplerState, input.texCoord);
     
     // Get volume thickness from vewPoint
     float inOutDistance = length(frontDepthEncoded.xyz - backDepthEncoded.xyz);
@@ -185,7 +198,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
     for (float t = 0.0f; t < rayLength; t += stepSize)
     {
-        float density = GetProceduralDensity(currentPos);
+        float density = CloudNoise(currentPos);
         scattering += ComputeScattering(-rayDir, rayDir, density) * density * lightIntensity * stepSize;
         currentPos += rayDir * stepSize;
     }
@@ -195,12 +208,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
     if (backDepthEncoded.a > 0.001 && depthEncoded.a > 0.001)
     {
         objInterferingValue = 1.5;
-    }
-    bool rayInVolume = length(frontDepthEncoded.xyz) + 0.001 < length(raysEncoded.xyz) &&
-                       length(backDepthEncoded.xyz) > length(raysEncoded.xyz) + 0.001;
-    if (raysEncoded.a > 0.001 && rayInVolume)
-    {
-        scattering *= 2.2;
     }
     
     // Combine scattering with base color
