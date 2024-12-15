@@ -51,7 +51,7 @@ namespace NotRed
 		Graphics::StandardEffect mStandardEffect;
 		Graphics::VolumetricLightingEffect mVolumetricLighting;
 		Graphics::ShadowEffect mShadowEffect;
-		Graphics::DepthEffect mDepthEffect;
+		Graphics::NormalsEffect mNormalsEffect;
 
 		RenderEntries mRenderEntries;
 		VolumeRenderEntries mRenderVolumes;
@@ -59,7 +59,7 @@ namespace NotRed
 
 		//PostProcessing
 		NotRed::Graphics::RenderTarget mRenderTarget;
-		NotRed::Graphics::RenderTarget mDepthBuffer;
+		NotRed::Graphics::RenderTarget mNormalsBuffer;
 		NotRed::Graphics::RenderTarget mRenderTargetHelper;
 		
 		NotRed::Graphics::VertexShader mVertexShader;

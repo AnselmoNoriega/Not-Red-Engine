@@ -24,6 +24,7 @@
 #include "MeshBuffer.h"
 #include "MeshBuilder.h"
 #include "MeshTypes.h"
+#include "NormalsEffect.h"
 #include "Transform.h"
 #include "UIFont.h"
 #include "UISprite.h"

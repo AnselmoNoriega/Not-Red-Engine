@@ -47,9 +47,9 @@ namespace NotRed::Graphics
         void DebugUI();
 
         void SetCamera(const Camera& camera);
-        inline void SetDepthTexture(const Texture* depthTarget)
+        inline void SetNormalsTexture(const Texture* depthTarget)
         {
-            mGeometryPositionTetxure = depthTarget;
+            mNormalsTetxure = depthTarget;
         }
 
         inline void UpdateRenderImage(const Texture* renderTarget)
@@ -125,7 +125,7 @@ namespace NotRed::Graphics
         const Camera* mCamera = nullptr;
 
         const Texture* mGeometryTexture = nullptr;
-        const Texture* mGeometryPositionTetxure = nullptr;
+        const Texture* mNormalsTetxure = nullptr;
 
         RenderTarget mLightGeometryTarget;
         RenderTarget mLightInGeometryTarget;

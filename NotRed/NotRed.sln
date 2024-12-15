@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32228.343
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35219.272
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{CA042ACC-0993-41AC-A551-E6EA5BDEA50A}"
 EndProject
@@ -49,6 +49,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{2E58
 		Assets\Shaders\CellShader.fx = Assets\Shaders\CellShader.fx
 		Assets\Shaders\Depth.fx = Assets\Shaders\Depth.fx
 		Assets\Shaders\NewDepth.fx = Assets\Shaders\NewDepth.fx
+		Assets\Shaders\Normals.fx = Assets\Shaders\Normals.fx
 		Particle.fx = Particle.fx
 		Assets\Shaders\PostProcessing.fx = Assets\Shaders\PostProcessing.fx
 		Assets\Shaders\PostProcessingBasic.fx = Assets\Shaders\PostProcessingBasic.fx
