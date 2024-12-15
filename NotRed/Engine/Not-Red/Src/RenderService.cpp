@@ -72,6 +72,7 @@ void RenderService::Terminate()
 	mRenderTargetHelper.Terminate();
 	mRenderTarget.Terminate();
 	mNormalsBuffer.Terminate();
+	mDepthBuffer.Terminate();
 
 	mShadowEffect.Terminate();
 	mStandardEffect.Terminate();

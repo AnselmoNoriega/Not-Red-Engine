@@ -25,8 +25,8 @@ cbuffer LightData : register(b2)
 Texture2D baseColorTexture : register(t0); // Object's base color
 Texture2D depthTexture : register(t1); // Object's depths
 Texture2D normalsTexture : register(t2); // Object's normals
-Texture2D lightGeometryTexture : register(t3); // Front-face depth
-Texture2D lightInGeometryTexture : register(t4); // Back-face depth
+Texture2D lightInGeometryTexture : register(t3); // Back-face depth
+Texture2D lightGeometryTexture : register(t4); // Front-face depth
 
 SamplerState samplerState : register(s0);
 
@@ -155,7 +155,11 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
     float4 frontDepthEncoded = lightGeometryTexture.Sample(samplerState, input.texCoord);
     float4 backDepthEncoded = lightInGeometryTexture.Sample(samplerState, input.texCoord);
-
+    float4 depthEncoded = depthTexture.Sample(samplerState, input.texCoord);
+    
+    // Get volume thickness from vewPoint
+    float inOutDistance = length(frontDepthEncoded.xyz - backDepthEncoded.xyz);
+    
     // Decode to get view-space positions
     float3 entryViewPos = frontDepthEncoded.xyz * 100.0f;
     float3 exitViewPos = backDepthEncoded.xyz * 100.0f;
@@ -165,10 +169,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
     {
         return baseColorTexture.Sample(samplerState, input.texCoord);
     }
-    if (frontDepthEncoded.a < 0.001)
-    {
-        entryViewPos = float3(0, 0, 0);
-    }
+    
+    bool objectViewedFromInside = frontDepthEncoded.a < 0.001 && backDepthEncoded.a > 0.001 && depthEncoded.a > 0.001;
+    bool objectOutsideVolume = length(depthEncoded.xyz) < length(frontDepthEncoded.xyz) && depthEncoded.a > 0.001;
 
     // Transform to world-space
     float3 entryWorldPos = mul(float4(entryViewPos, 1.0f), invViewMatrix).xyz;
@@ -190,5 +193,5 @@ float4 PS(VS_OUTPUT input) : SV_Target
     // Combine scattering with base color
     float4 baseColor = baseColorTexture.Sample(samplerState, input.texCoord);
     float lightEffect = exp(-densityMultiplier * scattering);
-    return lerp(baseColor, float4(lightColor, 1.0), 1.0 - lightEffect);
+    return lerp(baseColor, float4(lightColor, 1.0), (1.0 - lightEffect) * inOutDistance * 10);
 }
