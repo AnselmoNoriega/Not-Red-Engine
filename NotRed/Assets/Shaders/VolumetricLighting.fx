@@ -10,11 +10,16 @@ cbuffer PerFrame : register(b0)
     float3 cameraPosition;
 }
 
-cbuffer PerFrame : register(b1)
+cbuffer RayMarching : register(b1)
 {
     float stepSize;
     float densityMultiplier;
     float lightIntensity;
+}
+
+cbuffer LightData : register(b2)
+{
+    float3 lightColor;
 }
 
 Texture2D baseColorTexture : register(t0); // Object's base color
@@ -183,5 +188,5 @@ float4 PS(VS_OUTPUT input) : SV_Target
     // Combine scattering with base color
     float4 baseColor = baseColorTexture.Sample(samplerState, input.texCoord);
     float lightEffect = exp(-densityMultiplier * scattering);
-    return lerp(baseColor, float4(1.0, 1.0, 1.0, 1.0), 1.0 - lightEffect);
+    return lerp(baseColor, float4(lightColor, 1.0), 1.0 - lightEffect);
 }

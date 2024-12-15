@@ -80,6 +80,12 @@ namespace NotRed::Graphics
             float padding;
         };
 
+        struct LightData
+        {
+            Math::Vector3 LightColor;
+            float padding;
+        };
+
         struct RayMarchingData
         {
             float stepSize;
@@ -97,15 +103,14 @@ namespace NotRed::Graphics
 
         using PerFrameBuffer = TypedConstantBuffer<PerFrameData>;
         using RayMarchingDataBuffer = TypedConstantBuffer<RayMarchingData>;
+        using LightDataBuffer = TypedConstantBuffer<LightData>;
         using DepthDataBuffer = TypedConstantBuffer<DepthData>;
 
     private:
 
         PerFrameBuffer mPerFrameBuffer;
         RayMarchingDataBuffer mRayMarchingBuffer;
-        float mStepSize = 0.1f;
-        float mDensityMultiplier = 2.0f;
-        float mLightIntensity = 78.0f;
+        LightDataBuffer mLightDataBuffer;
 
         DepthDataBuffer mDepthDataBuffer;
 
@@ -127,5 +132,10 @@ namespace NotRed::Graphics
         RenderTarget mLightViewTarget;
 
         std::vector<const RenderGroup*> mCharacters;
+
+        // RayMarching stuff
+        float mStepSize = 0.1f;
+        float mDensityMultiplier = 2.0f;
+        float mLightIntensity = 78.0f;
     };
 }

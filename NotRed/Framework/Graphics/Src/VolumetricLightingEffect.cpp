@@ -11,6 +11,7 @@ namespace NotRed::Graphics
     {
         mPerFrameBuffer.Initialize();
         mRayMarchingBuffer.Initialize();
+        mLightDataBuffer.Initialize();
         mDepthDataBuffer.Initialize();
 
         std::filesystem::path shaderFile = "../../Assets/Shaders/VolumetricLighting.fx";
@@ -45,6 +46,7 @@ namespace NotRed::Graphics
         mLightPixelShader.Terminate();
 
         mDepthDataBuffer.Terminate();
+        mLightDataBuffer.Terminate();
         mRayMarchingBuffer.Terminate();
         mPerFrameBuffer.Terminate();
 
@@ -95,7 +97,12 @@ namespace NotRed::Graphics
         marchData.densityMultiplier = mDensityMultiplier;
         marchData.lightIntensity = mLightIntensity;
         mRayMarchingBuffer.Update(marchData);
-        mRayMarchingBuffer.BindPS(1);
+        mRayMarchingBuffer.BindPS(1); 
+        
+        LightData lightData;
+        lightData.LightColor = light.LightColor;
+        mLightDataBuffer.Update(lightData);
+        mLightDataBuffer.BindPS(2);
 
         renderTarget.meshBuffer.Render();
 
