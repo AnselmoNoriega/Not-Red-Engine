@@ -153,9 +153,10 @@ void RenderService::Render()
 		{
 			mVolumetricLighting.UpdateRenderImage(&mPostProcessingTargets[(i % 2) ? 0 : 1]);
 
-			mVolumetricLighting.Render(entry.renderComponent->GetLight(),
+			mVolumetricLighting.Render(
 				entry.renderComponent->GetLightModelFront(),
-				entry.renderComponent->GetLightModelBack());
+				entry.renderComponent->GetLightModelBack(),
+				entry.renderComponent->GetRaysModel());
 
 			mPostProcessingTargets[i % 2].BeginRender();
 			mVolumetricLighting.RenderScreenQuad(entry.renderComponent->GetLight(), mScreenQuad);

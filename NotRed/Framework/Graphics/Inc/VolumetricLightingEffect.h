@@ -38,9 +38,10 @@ namespace NotRed::Graphics
         void Initialize();
         void Terminate();
 
-        void Render(const SpotLight& light,
+        void Render(
             const RenderObject& renderObject, 
-            const RenderObject& inRenderObject);
+            const RenderObject& inRenderObject,
+            const RenderObject& raysObject);
 
         void RenderScreenQuad(const SpotLight& light, const RenderObject& renderTarget)const;
 
@@ -65,7 +66,7 @@ namespace NotRed::Graphics
 
     private:
         void RenderDepth(const RenderObject& renderObject, RenderTarget& target);
-        void RenderDepthFromLight(const SpotLight& light);
+        void RenderRays(const RenderObject& renderObject);
 
     private:
 
@@ -131,7 +132,7 @@ namespace NotRed::Graphics
 
         RenderTarget mLightGeometryTarget;
         RenderTarget mLightInGeometryTarget;
-        RenderTarget mLightViewTarget;
+        RenderTarget mLightRaysTarget;
 
         std::vector<const RenderGroup*> mCharacters;
 

@@ -25,6 +25,14 @@ namespace NotRed::Graphics
 		static MeshPC CreateInCone(uint32_t numSlices, float height, float radius);
 
 		static MeshPC CreateCylinderPC(uint32_t slices, uint32_t rings);
+		static MeshPC CreateMergedCylinders(
+			uint32_t numCylinders,
+			uint32_t slices,
+			uint32_t rings,
+			float minRadius,
+			float maxRadius,
+			Math::Vector3 spawnMinBounds,
+			Math::Vector3 spawnMaxBounds);
 
 		static MeshPC CreateSpherePC(uint32_t slices, uint32_t rings, float radius);
 		static MeshPX CreateSpherePX(uint32_t slices, uint32_t rings, float radius);

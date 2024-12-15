@@ -31,7 +31,7 @@ namespace NotRed::Graphics
 
         mLightGeometryTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U32);
         mLightInGeometryTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U32);
-        mLightViewTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U32);
+        mLightRaysTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U32);
     }
 
     void VolumetricLightingEffect::Terminate()
@@ -52,16 +52,17 @@ namespace NotRed::Graphics
 
         mLightGeometryTarget.Terminate();
         mLightInGeometryTarget.Terminate();
-        mLightViewTarget.Terminate();
+        mLightRaysTarget.Terminate();
     }
 
-    void VolumetricLightingEffect::Render(const SpotLight& light,
+    void VolumetricLightingEffect::Render(
         const RenderObject& renderObject,
-        const RenderObject& inRenderObject)
+        const RenderObject& inRenderObject,
+        const RenderObject& raysObject)
     {
         RenderDepth(renderObject, mLightGeometryTarget);
         RenderDepth(inRenderObject, mLightInGeometryTarget);
-        RenderDepthFromLight(light);
+        RenderRays(raysObject);
     }
 
     void VolumetricLightingEffect::RenderScreenQuad(const SpotLight& light, const RenderObject& renderTarget) const
@@ -79,6 +80,7 @@ namespace NotRed::Graphics
 
             mLightGeometryTarget.BindPS(3);
             mLightInGeometryTarget.BindPS(4);
+            mLightRaysTarget.BindPS(5);
         }
 
         PerFrameData perFrameData;
@@ -106,7 +108,7 @@ namespace NotRed::Graphics
 
         renderTarget.meshBuffer.Render();
 
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i < 6; ++i)
         {
             Texture::UnbindPS(i);
         }
@@ -138,37 +140,38 @@ namespace NotRed::Graphics
         target.EndRender();
     }
 
-    void VolumetricLightingEffect::RenderDepthFromLight(const SpotLight& light)
+    void VolumetricLightingEffect::RenderRays(const RenderObject& renderObject)
     {
-        mLightViewTarget.BeginRender();
+        mLightRaysTarget.BeginRender();
 
         mLightVertexShader.Bind();
         mLightPixelShader.Bind();
         mDepthDataBuffer.BindVS(0);
         mDepthDataBuffer.BindPS(0);
-        
+
         DepthData transformData;
-        transformData.viewMatrix = light.CameraObj.GetViewMatrix();
-        transformData.viewProjectionMatrix = light.CameraObj.GetViewMatrix() * light.CameraObj.GetProjectionMatrix();
+        transformData.modelTransform = renderObject.transform.GetMatrix();
+        transformData.viewMatrix = mCamera->GetViewMatrix();
+        transformData.viewProjectionMatrix = mCamera->GetViewMatrix() * mCamera->GetProjectionMatrix();
 
-        for (const auto& obj : mCharacters)
-        {
-            for (const RenderObject& renderObject : *obj)
-            {
-                transformData.modelTransform = renderObject.transform.GetMatrix();
-                mDepthDataBuffer.Update(transformData);
+        mDepthDataBuffer.Update(transformData);
 
-                renderObject.meshBuffer.Render();
-            }
-        }
+        renderObject.meshBuffer.Render();
 
-        mLightViewTarget.EndRender();
+        mLightRaysTarget.EndRender();
     }
 
     void VolumetricLightingEffect::DebugUI()
     {
         if (ImGui::CollapsingHeader("Textures:"))
         {
+            ImGui::Image(
+                mLightRaysTarget.GetRawData(),
+                { 144, 144 },
+                { 0, 0 },
+                { 1, 1 },
+                { 1, 1, 1, 1 },
+                { 1, 1, 1, 1 });
             ImGui::Image(
                 mGeometryTexture->GetRawData(),
                 { 144, 144 },
@@ -199,13 +202,6 @@ namespace NotRed::Graphics
                 { 1, 1, 1, 1 });
             ImGui::Image(
                 mLightInGeometryTarget.GetRawData(),
-                { 144, 144 },
-                { 0, 0 },
-                { 1, 1 },
-                { 1, 1, 1, 1 },
-                { 1, 1, 1, 1 });
-            ImGui::Image(
-                mLightViewTarget.GetRawData(),
                 { 144, 144 },
                 { 0, 0 },
                 { 1, 1 },

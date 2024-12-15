@@ -27,6 +27,7 @@ Texture2D depthTexture : register(t1); // Object's depths
 Texture2D normalsTexture : register(t2); // Object's normals
 Texture2D lightInGeometryTexture : register(t3); // Back-face depth
 Texture2D lightGeometryTexture : register(t4); // Front-face depth
+Texture2D RaysTexture : register(t5); // Rays
 
 SamplerState samplerState : register(s0);
 
@@ -165,7 +166,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float3 exitViewPos = backDepthEncoded.xyz * 100.0f;
 
     // Ensure entry and exit positions are valid
-    bool objectOutsideVolume = length(depthEncoded.xyz) < length(frontDepthEncoded.xyz) && depthEncoded.a > 0.001;
+    bool objectOutsideVolume = length(depthEncoded.xyz) + 0.001 < length(frontDepthEncoded.xyz) && depthEncoded.a > 0.001;
     if (backDepthEncoded.a < 0.001 || objectOutsideVolume)
     {
         return baseColorTexture.Sample(samplerState, input.texCoord);
@@ -188,11 +189,16 @@ float4 PS(VS_OUTPUT input) : SV_Target
         currentPos += rayDir * stepSize;
     }
     
-    // Cehck if theres something in the way
+    // Decrese light strength depending on suroundings
     float objInterferingValue = 1;
     if (backDepthEncoded.a > 0.001 && depthEncoded.a > 0.001)
     {
         objInterferingValue = 1.5;
+    }
+    float rays = RaysTexture.Sample(samplerState, input.texCoord).a;
+    if (rays > 0.001)
+    {
+        scattering *= 2.2;
     }
     
     // Combine scattering with base color

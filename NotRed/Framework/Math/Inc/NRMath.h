@@ -168,4 +168,9 @@ namespace NotRed::Math
 	{
 		return 3.1415927f;
 	}
+	
+	inline float Random(float min, float max)
+	{
+		return min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (max - min)));
+	}
 }

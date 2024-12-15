@@ -34,9 +34,16 @@ namespace NotRed
 			return mInLightObj;
 		}
 
+		inline const Graphics::RenderObject& GetRaysModel() const
+		{
+			return mLightRays;
+		}
+
 	private:
 		Graphics::RenderObject mLightObj;
 		Graphics::RenderObject mInLightObj;
+
+		Graphics::RenderObject mLightRays;
 
 		TransformComponent* mTransformComponent = nullptr;
 
