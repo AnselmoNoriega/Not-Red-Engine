@@ -74,11 +74,11 @@ namespace NotRed::Graphics
 
         {
             mGeometryTexture->BindPS(0);
-            mNormalsTetxure->BindPS(1);
+            mDepthTetxure->BindPS(1);
+            mNormalsTetxure->BindPS(2);
 
-            mLightGeometryTarget.BindPS(2);
-            mLightInGeometryTarget.BindPS(3);
-            //mLightViewTarget.BindPS(4);
+            mLightGeometryTarget.BindPS(3);
+            mLightInGeometryTarget.BindPS(4);
         }
 
         PerFrameData perFrameData;
@@ -171,6 +171,13 @@ namespace NotRed::Graphics
         {
             ImGui::Image(
                 mGeometryTexture->GetRawData(),
+                { 144, 144 },
+                { 0, 0 },
+                { 1, 1 },
+                { 1, 1, 1, 1 },
+                { 1, 1, 1, 1 });
+            ImGui::Image(
+                mDepthTetxure->GetRawData(),
                 { 144, 144 },
                 { 0, 0 },
                 { 1, 1 },

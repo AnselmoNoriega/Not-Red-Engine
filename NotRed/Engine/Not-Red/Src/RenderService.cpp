@@ -30,6 +30,7 @@ void RenderService::Initialize()
 	mShadowEffect.Initialize();
 	mShadowEffect.SetDirectionalLight(mDirectionalLight);
 
+	mDepthEffect.Initialize("../../Assets/Shaders/NewDepth.fx");
 	mNormalsEffect.Initialize();
 
 	GraphicsSystem* gs = GraphicsSystem::Get();
@@ -37,6 +38,7 @@ void RenderService::Initialize()
 	const uint32_t screenHeight = gs->GetBackBufferHeight();
 	mRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 	mRenderTargetHelper.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+	mDepthBuffer.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 	mNormalsBuffer.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 
 	std::filesystem::path shaderFile = "../../Assets/Shaders/PostProcessingBasic.fx";
@@ -48,7 +50,7 @@ void RenderService::Initialize()
 	mPostProcessingTargets[1].Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 
 	mVolumetricLighting.Initialize();
-	mVolumetricLighting.SetNormalsTexture(&mNormalsBuffer);
+	mVolumetricLighting.SetTextures(&mDepthBuffer, &mNormalsBuffer);
 
 	MeshPX screenQuad = MeshBuilder::CreateScreenQuad();
 	mScreenQuad.meshBuffer.Initialize(screenQuad);
@@ -58,6 +60,7 @@ void RenderService::Terminate()
 {
 	mVolumetricLighting.Terminate();
 	mNormalsEffect.Terminate();
+	mDepthEffect.Terminate();
 
 	mPostProcessingTargets[0].Terminate();
 	mPostProcessingTargets[1].Terminate();
@@ -83,6 +86,7 @@ void RenderService::Render()
 {
 	const Camera& camera = mCameraService->GetMain();
 	mStandardEffect.SetCamera(camera);
+	mDepthEffect.SetCamera(camera);
 	mNormalsEffect.SetCamera(camera);
 
 	for (Entry& entry : mRenderEntries)
@@ -111,6 +115,15 @@ void RenderService::Render()
 	}
 	mStandardEffect.End();
 	mRenderTarget.EndRender();
+
+	mDepthBuffer.BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
+	mDepthEffect.Begin();
+	for (Entry& entry : mRenderEntries)
+	{
+		DrawRenderGroup(mDepthEffect, entry.renderGroup);
+	}
+	mDepthEffect.End();
+	mDepthBuffer.EndRender();
 
 	mNormalsBuffer.BeginRender(Color(0.0f, 0.0f, 0.0f, 0.0f));
 	mNormalsEffect.Begin();

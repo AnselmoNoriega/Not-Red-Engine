@@ -23,9 +23,10 @@ cbuffer LightData : register(b2)
 }
 
 Texture2D baseColorTexture : register(t0); // Object's base color
-Texture2D normalsTexture : register(t1); // Object's normals
-Texture2D lightGeometryTexture : register(t2); // Front-face depth
-Texture2D lightInGeometryTexture : register(t3); // Back-face depth
+Texture2D depthTexture : register(t1); // Object's depths
+Texture2D normalsTexture : register(t2); // Object's normals
+Texture2D lightGeometryTexture : register(t3); // Front-face depth
+Texture2D lightInGeometryTexture : register(t4); // Back-face depth
 
 SamplerState samplerState : register(s0);
 
