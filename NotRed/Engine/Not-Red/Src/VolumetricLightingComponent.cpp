@@ -44,13 +44,13 @@ void VolumetricLightComponent::Deserialize(const rapidjson::Value& value)
 
     {
         const MeshPC& m = NotRed::Graphics::MeshBuilder::CreateMergedCylinders(
-            15,                       // Number of cylinders
+            20,                       // Number of cylinders
             16,                       // Slices
             12,                       // Rings
             0.01f,                    // Min radius
             0.2f,                     // Max radius
-            { -10.0f, 0.0f, -10.0f },   // Spawn minimum bounds
-            { 10.0f, 0.0f, 10.0f });    // Max offset);
+            { -5.0f, 0.0f, -5.0f },   // Spawn minimum bounds
+            { 5.0f, 0.0f, 5.0f });    // Max offset);
         mLightRays.meshBuffer.Initialize(
             m.vertices.data(),
             static_cast<uint32_t>(sizeof(VertexPC)),

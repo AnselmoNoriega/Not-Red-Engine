@@ -157,6 +157,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float4 frontDepthEncoded = lightGeometryTexture.Sample(samplerState, input.texCoord);
     float4 backDepthEncoded = lightInGeometryTexture.Sample(samplerState, input.texCoord);
     float4 depthEncoded = depthTexture.Sample(samplerState, input.texCoord);
+    float4 raysEncoded = RaysTexture.Sample(samplerState, input.texCoord);
     
     // Get volume thickness from vewPoint
     float inOutDistance = length(frontDepthEncoded.xyz - backDepthEncoded.xyz);
@@ -195,8 +196,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
     {
         objInterferingValue = 1.5;
     }
-    float rays = RaysTexture.Sample(samplerState, input.texCoord).a;
-    if (rays > 0.001)
+    bool rayInVolume = length(frontDepthEncoded.xyz) + 0.001 < length(raysEncoded.xyz) &&
+                       length(backDepthEncoded.xyz) > length(raysEncoded.xyz) + 0.001;
+    if (raysEncoded.a > 0.001 && rayInVolume)
     {
         scattering *= 2.2;
     }
