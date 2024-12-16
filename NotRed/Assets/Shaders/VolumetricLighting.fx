@@ -20,6 +20,8 @@ cbuffer RayMarching : register(b1)
 cbuffer LightData : register(b2)
 {
     float3 lightColor;
+    float padding;
+    float3 moveDirection;
 }
 
 Texture2D baseColorTexture : register(t0); // Object's base color
@@ -198,7 +200,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
     for (float t = 0.0f; t < rayLength; t += stepSize)
     {
-        float density = CloudNoise(currentPos);
+        float density = CloudNoise(currentPos + moveDirection);
         scattering += ComputeScattering(-rayDir, rayDir, density) * density * lightIntensity * stepSize;
         currentPos += rayDir * stepSize;
     }

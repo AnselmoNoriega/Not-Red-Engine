@@ -98,6 +98,7 @@ namespace NotRed::Graphics
         
         LightData lightData;
         lightData.LightColor = light.LightColor;
+        lightData.MoveDirection = mDustMoveDirection * light.TimeRunning;
         mLightDataBuffer.Update(lightData);
         mLightDataBuffer.BindPS(2);
 
@@ -137,49 +138,12 @@ namespace NotRed::Graphics
 
     void VolumetricLightingEffect::DebugUI()
     {
-        if (ImGui::CollapsingHeader("Textures:"))
-        {
-            ImGui::Image(
-                mGeometryTexture->GetRawData(),
-                { 144, 144 },
-                { 0, 0 },
-                { 1, 1 },
-                { 1, 1, 1, 1 },
-                { 1, 1, 1, 1 });
-            ImGui::Image(
-                mDepthTetxure->GetRawData(),
-                { 144, 144 },
-                { 0, 0 },
-                { 1, 1 },
-                { 1, 1, 1, 1 },
-                { 1, 1, 1, 1 });
-            ImGui::Image(
-                mNormalsTetxure->GetRawData(),
-                { 144, 144 },
-                { 0, 0 },
-                { 1, 1 },
-                { 1, 1, 1, 1 },
-                { 1, 1, 1, 1 });
-            ImGui::Image(
-                mLightGeometryTarget.GetRawData(),
-                { 144, 144 },
-                { 0, 0 },
-                { 1, 1 },
-                { 1, 1, 1, 1 },
-                { 1, 1, 1, 1 });
-            ImGui::Image(
-                mLightInGeometryTarget.GetRawData(),
-                { 144, 144 },
-                { 0, 0 },
-                { 1, 1 },
-                { 1, 1, 1, 1 },
-                { 1, 1, 1, 1 });
-        }
         if (ImGui::CollapsingHeader("Shader Data:"))
         {
             ImGui::DragFloat("Step Size", &mStepSize, 0.002f, 0.001f, 10.0f);
             ImGui::DragFloat("Density Multiplier", &mDensityMultiplier, 0.01f);
             ImGui::DragFloat("Light Intensity", &mLightIntensity, 0.2f);
+            ImGui::DragFloat3("Move Direction", &mDustMoveDirection.x, 0.05f);
         }
     }
 }

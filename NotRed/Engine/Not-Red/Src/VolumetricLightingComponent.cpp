@@ -25,6 +25,8 @@ void VolumetricLightComponent::Terminate()
 
 void VolumetricLightComponent::Update(float deltaTime)
 {
+    mLight.TimeRunning += deltaTime;
+
     if (mTransformComponent)
     {
         mLight.CameraObj.SetPosition(mTransformComponent->position + mLight.LightPosition);

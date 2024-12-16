@@ -30,6 +30,7 @@ namespace NotRed::Graphics
         Camera CameraObj;
         Math::Vector3 LightPosition{ 0.0f, 10.0f, 0.0f };
         Math::Vector3 LightColor{ 1.0f, 1.0f, 0.8f };
+        float TimeRunning = 0.0f;
     };
 
     class VolumetricLightingEffect
@@ -83,7 +84,9 @@ namespace NotRed::Graphics
         struct LightData
         {
             Math::Vector3 LightColor;
-            float padding;
+            float padding1;
+            Math::Vector3 MoveDirection;
+            float padding2;
         };
 
         struct RayMarchingData
@@ -137,5 +140,6 @@ namespace NotRed::Graphics
         float mStepSize = 0.012f;
         float mDensityMultiplier = 0.2f;
         float mLightIntensity = 15.0f;
+        Math::Vector3 mDustMoveDirection = Math::Normalize({1.0f, 0.5f, 0.3f});
     };
 }
