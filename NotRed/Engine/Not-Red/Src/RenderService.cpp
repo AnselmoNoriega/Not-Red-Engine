@@ -219,8 +219,6 @@ void RenderService::Register(const RenderObjectComponent* renderObjectComponent)
 	{
 		entry.renderGroup = CreateRenderGroup(renderObjectComponent->GetModel());
 	}
-
-	mVolumetricLighting.RegisterObject(entry.renderGroup);
 }
 
 void RenderService::Unregister(const RenderObjectComponent* renderObjectComponent)

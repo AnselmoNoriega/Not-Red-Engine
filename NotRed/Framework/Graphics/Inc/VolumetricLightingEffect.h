@@ -59,11 +59,6 @@ namespace NotRed::Graphics
             mGeometryTexture = renderTarget;
         }
 
-        inline void RegisterObject(const RenderGroup& obj)
-        {
-            mCharacters.push_back(&obj);
-        }
-
     private:
         void RenderDepth(const RenderObject& renderObject, RenderTarget& target);
 
@@ -133,8 +128,6 @@ namespace NotRed::Graphics
 
         RenderTarget mLightGeometryTarget;
         RenderTarget mLightInGeometryTarget;
-
-        std::vector<const RenderGroup*> mCharacters;
 
         // RayMarching stuff
         float mStepSize = 0.012f;

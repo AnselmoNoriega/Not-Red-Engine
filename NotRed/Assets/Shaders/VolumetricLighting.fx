@@ -168,6 +168,11 @@ float CloudNoise(float3 p)
     return lerp(fractal, turbulent, 0.5); // Blend fractal and turbulence
 }
 
+float3 LitColor(float3 color)
+{
+    return color + lightColor * 0.3;
+}
+
 float4 PS(VS_OUTPUT input) : SV_Target
 {
     float4 frontDepthEncoded = lightGeometryTexture.Sample(samplerState, input.texCoord);
@@ -212,8 +217,16 @@ float4 PS(VS_OUTPUT input) : SV_Target
         objInterferingValue = 1.5;
     }
     
-    // Combine scattering with base color
+    // Lit objects
     float4 baseColor = baseColorTexture.Sample(samplerState, input.texCoord);
+    if (length(depthEncoded.xyz) > length(frontDepthEncoded.xyz) + 0.001 &&
+        length(depthEncoded.xyz) < length(backDepthEncoded.xyz) + 0.001 && 
+        depthEncoded.a > 0.001)
+    {
+        baseColor.xyz = LitColor(baseColor.xyz);
+    }
+    
+    // Combine scattering with base color
     float lightEffect = exp(-densityMultiplier * scattering);
     return lerp(baseColor, float4(lightColor, 1.0), (1.0 - lightEffect) * inOutDistance * 10 / objInterferingValue);
 }
