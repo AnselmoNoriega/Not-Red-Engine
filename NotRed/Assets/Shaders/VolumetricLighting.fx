@@ -86,24 +86,6 @@ float Noise3D(float3 p)
             u.y),
         u.z);
 }
-// ========================================================================
-// ========================================================================
-
-// Functions for dust density =============================================
-// ========================================================================
-// ========================================================================
-float SampleDensity(float inputDensity)
-{
-    // Smooth adjustment curve
-    float density = pow(inputDensity, 2.0);
-
-    // Additional noise for subtle variation
-    float3 noiseCoord = float3(inputDensity * 12.34, inputDensity * 56.78, inputDensity * 90.12);
-    float extraNoise = frac(sin(dot(noiseCoord, float3(12.9898, 78.233, 37.719))) * 43758.5453);
-    density += extraNoise * 0.05; // Add a small noise variation
-
-    return saturate(density);
-}
 
 float FractalNoise3D(float3 p, int octaves, float lacunarity, float gain)
 {
@@ -139,6 +121,15 @@ float Turbulence3D(float3 p, int octaves, float lacunarity, float gain)
 
     return total;
 }
+
+float CloudNoise(float3 p)
+{
+    // Combine fractal noise and turbulence for cloud-like patterns
+    float fractal = FractalNoise3D(p, 5, 2.0, 0.5); // 5 octaves
+    float turbulent = Turbulence3D(p, 4, 2.0, 0.6); // 4 octaves
+
+    return lerp(fractal, turbulent, 0.5); // Blend fractal and turbulence
+}
 // ========================================================================
 // ========================================================================
 
@@ -158,20 +149,6 @@ float ComputeScattering(float3 lightDir, float3 viewDir, float density)
 }
 // ========================================================================
 // ========================================================================
-
-float CloudNoise(float3 p)
-{
-    // Combine fractal noise and turbulence for cloud-like patterns
-    float fractal = FractalNoise3D(p, 5, 2.0, 0.5); // 5 octaves
-    float turbulent = Turbulence3D(p, 4, 2.0, 0.6); // 4 octaves
-
-    return lerp(fractal, turbulent, 0.5); // Blend fractal and turbulence
-}
-
-float3 LitColor(float3 color)
-{
-    return color + lightColor * 0.3;
-}
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
@@ -223,7 +200,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
         length(depthEncoded.xyz) < length(backDepthEncoded.xyz) + 0.001 && 
         depthEncoded.a > 0.001)
     {
-        baseColor.xyz = LitColor(baseColor.xyz);
+        baseColor.xyz += lightColor * 0.3;
     }
     
     // Combine scattering with base color
