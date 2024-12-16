@@ -19,6 +19,8 @@ namespace NotRed
 
 		void Deserialize(const rapidjson::Value& value) override;
 
+		void DebugUI() override;
+
 		inline const Graphics::SpotLight& GetLight() const
 		{
 			return mLight;
@@ -41,5 +43,7 @@ namespace NotRed
 		TransformComponent* mTransformComponent = nullptr;
 
 		Graphics::SpotLight mLight;
+
+		float mTimeSpeed = 1.0f;
 	};
 }

@@ -25,7 +25,7 @@ void VolumetricLightComponent::Terminate()
 
 void VolumetricLightComponent::Update(float deltaTime)
 {
-    mLight.TimeRunning += deltaTime;
+    mLight.TimeRunning += deltaTime * mTimeSpeed;
 
     if (mTransformComponent)
     {
@@ -67,4 +67,13 @@ void VolumetricLightComponent::Deserialize(const rapidjson::Value& value)
     const auto lightColor = lightData["Color"].GetArray();
     mLight.LightColor = Math::Vector3(lightColor[0].GetFloat(), lightColor[1].GetFloat(), lightColor[2].GetFloat());
     mLight.LightPosition = Math::Vector3(0.0f, shapeHeigth, 0.0f);
+}
+
+void NotRed::VolumetricLightComponent::DebugUI()
+{
+    if (ImGui::CollapsingHeader("Ligght Data:"))
+    {
+        ImGui::DragFloat("Time Speed", &mTimeSpeed, 0.02f);
+        ImGui::ColorEdit3("Light Color", &mLight.LightColor.x, 0.05f);
+    }
 }

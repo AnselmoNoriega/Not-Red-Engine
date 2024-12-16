@@ -138,7 +138,7 @@ namespace NotRed::Graphics
 
     void VolumetricLightingEffect::DebugUI()
     {
-        if (ImGui::CollapsingHeader("Shader Data:"))
+        if (ImGui::CollapsingHeader("Shader Volume Data:"))
         {
             ImGui::DragFloat("Step Size", &mStepSize, 0.002f, 0.001f, 10.0f);
             ImGui::DragFloat("Density Multiplier", &mDensityMultiplier, 0.01f);
