@@ -22,6 +22,8 @@ cbuffer LightData : register(b2)
     float3 lightColor;
     float padding;
     float3 moveDirection;
+    float padding2;
+    float3 lightPos;
 }
 
 Texture2D baseColorTexture : register(t0); // Object's base color
@@ -200,7 +202,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
         length(depthEncoded.xyz) < length(backDepthEncoded.xyz) + 0.001 && 
         depthEncoded.a > 0.001)
     {
-        baseColor.xyz += lightColor * 0.3;
+        float3 normal = normalsTexture.Sample(samplerState, input.texCoord).xyz;
+        float dirVal = max(dot(normal, normalize(lightPos - depthEncoded.xyz)) * -1, 0.0);
+        baseColor.xyz += lightColor * pow(dirVal, 2);
     }
     
     // Combine scattering with base color

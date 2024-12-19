@@ -82,6 +82,8 @@ namespace NotRed::Graphics
             float padding1;
             Math::Vector3 MoveDirection;
             float padding2;
+            Math::Vector3 LightPosition;
+            float padding3;
         };
 
         struct RayMarchingData

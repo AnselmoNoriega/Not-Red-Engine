@@ -67,6 +67,7 @@ void VolumetricLightComponent::Deserialize(const rapidjson::Value& value)
     const auto lightColor = lightData["Color"].GetArray();
     mLight.LightColor = Math::Vector3(lightColor[0].GetFloat(), lightColor[1].GetFloat(), lightColor[2].GetFloat());
     mLight.LightPosition = Math::Vector3(0.0f, shapeHeigth, 0.0f);
+    mTimeSpeed = lightData["TimeSpeed"].GetFloat();
 }
 
 void NotRed::VolumetricLightComponent::DebugUI()

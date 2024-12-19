@@ -99,6 +99,7 @@ namespace NotRed::Graphics
         LightData lightData;
         lightData.LightColor = light.LightColor;
         lightData.MoveDirection = mDustMoveDirection * light.TimeRunning;
+        lightData.LightPosition = light.CameraObj.GetPosition();
         mLightDataBuffer.Update(lightData);
         mLightDataBuffer.BindPS(2);
 
